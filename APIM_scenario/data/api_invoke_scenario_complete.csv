@@ -1,0 +1,27 @@
+Online Shopping,5,news,GET,1,getnews
+Online Shopping,5,places,GET,2,getplace
+Online Shopping,20,news,GET,30,getnews
+Online Shopping,20,places,GET,20,getplace
+Online Shopping,20,payment,GET,6,payg
+Online Shopping,20,payment,POST,3,pay
+Online Shopping,5,news,GET,10,getnews
+Online Shopping,5,places,GET,15,getplace
+Online Shopping,5,payment,GET,8,payg
+Online Shopping,5,payment,POST,4,pay
+Online Shopping,10,news,GET,50,getnews
+Online Shopping,10,places,GET,30,getplace
+Taxi,20,map,GET,2,getmap
+Taxi,20,places,GET,1,getplace
+Taxi,20,weather,GET,2,getweather
+Taxi,40,map,GET,50,getmap
+Taxi,40,places,GET,20,getplace
+Taxi,40,weather,GET,20,getweather
+Taxi,10,map,GET,50,getmap
+Taxi,10,places,GET,20,getplace
+Taxi,10,weather,GET,20,getweather
+Taxi,10,payment,GET,16,payg
+Taxi,10,payment,POST,8,pay
+CricScore,5,news,GET,2,getnews
+CricScore,5,cricket,GET,5,getcric
+CricScore,35,news,GET,40,getnews
+CricScore,35,cricket,GET,70,getcric
