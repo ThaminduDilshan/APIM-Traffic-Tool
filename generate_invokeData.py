@@ -11,7 +11,6 @@ user_ip = {}
 user_cookie = {}
 users_apps = {}
 
-# final_string = "access_token,ip_address,cookie\n"
 fake_generator = Factory.create()
 
 
@@ -175,7 +174,7 @@ with open('APIM_scenario/data/api_invoke_scenario.csv') as file:
             api_version = "1"
             full_path = api_name + "/" + api_version + "/" + path + "/"
 
-            for user in users:
+            for user in users:              # user[username,token,ip,cookie]
                 no_of_requests = varySlightly(call_median, user_count) + 10
                 simultaneous_requests = random.randrange(no_of_requests)
 
