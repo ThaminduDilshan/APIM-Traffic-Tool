@@ -9,9 +9,8 @@ import datetime
 filename = "api_invoke_1.csv"
 user_ip = {}
 user_cookie = {}
-users_shopping = []
-users_taxi = []
-users_cricscore = []
+users_apps = {}
+
 # final_string = "access_token,ip_address,cookie\n"
 fake_generator = Factory.create()
 
@@ -95,21 +94,6 @@ def genUniqueCookieList(count:int):
 
 
 '''
-    This method will pop and return an user from the relevant user list
-'''
-def getUser(app_name):
-    user = None
-    if app_name == "Online Shopping":
-        user = users_shopping.pop()
-    elif app_name == "Taxi":
-        user = users_taxi.pop()
-    elif app_name == "CricScore":
-        user = users_cricscore.pop()
-
-    return user
-
-
-'''
     This method will generate a random time stamp list for a given number of invokes
 '''
 def genTimeList(starttime, no_of_invokes:int):
@@ -130,7 +114,7 @@ def genTimeList(starttime, no_of_invokes:int):
 '''
 
 # generate set of ips and cookies for each user
-with open('data/user_generation.csv') as file:
+with open('APIM_scenario/data/user_generation.csv') as file:
     userlist = file.read().split('\n')
 
     ip_list = genUniqueIPList(len(userlist))
@@ -141,8 +125,17 @@ with open('data/user_generation.csv') as file:
         user_ip.update( {username: ip_list.pop()} )
         user_cookie.update( {username: cookie_list.pop()} )
 
+# update dictionary for apps and their users
+with open('APIM_scenario/data/app_creation.csv') as file:
+    appList = file.read().split('\n')
+
+    for app in appList:
+        if app != "":
+            appName = app.split('$ ')[0]
+            users_apps.update( {appName: []} )
+
 # set ips with username, access tokens and append to relevant lists
-with open('api_invoke_tokens.csv') as file:
+with open('APIM_scenario/api_invoke_tokens.csv') as file:
     user_token = csv.reader(file)
 
     for row in user_token:
@@ -152,18 +145,13 @@ with open('api_invoke_tokens.csv') as file:
         ip = user_ip.get(username)
         cookie = user_cookie.get(username)
 
-        if app_name == "Online Shopping":
-            users_shopping.append([username,token,ip,cookie])
-        elif app_name == "Taxi":
-            users_taxi.append([username,token,ip,cookie])
-        elif app_name == "CricScore":
-            users_cricscore.append([username,token,ip,cookie])
+        (users_apps[app_name]).append([username,token,ip,cookie])
 
 # execute the scenario according to the script
 with open('dataset/generated/{}'.format(filename), 'w') as file:
-    file.write("timestamp,api,access_token,ip_address,cookie\n")
+    file.write("timestamp,api,access_token,ip_address,cookie,invoke_path,http_method\n")
 
-with open('data/api_invoke_scenario.csv') as file:
+with open('APIM_scenario/data/api_invoke_scenario.csv') as file:
     scenario_data = csv.reader(file, delimiter='$')
     req_count = 0
 
@@ -176,7 +164,7 @@ with open('data/api_invoke_scenario.csv') as file:
         user_count = int(invokes[0].split(',')[0])
         users = []
         for i in range(user_count):
-            users.append(getUser(app_name))
+            users.append(users_apps.get(app_name).pop())
 
         for invoke in invokes:
             row2 = invoke.split(',')
@@ -184,22 +172,29 @@ with open('data/api_invoke_scenario.csv') as file:
             method = row2[2]
             call_median = int(row2[3])
             path = row2[4]
+            api_version = "1"
+            full_path = api_name + "/" + api_version + "/" + path + "/"
 
             for user in users:
-                no_of_requests = varySlightly(call_median, user_count)
+                no_of_requests = varySlightly(call_median, user_count) + 10
+                simultaneous_requests = random.randrange(no_of_requests)
 
                 # time stamp list
-                time_stamps = genTimeList(starttime, no_of_requests)
+                time_stamps = genTimeList(starttime, no_of_requests-simultaneous_requests+1)
 
-                for i in range(no_of_requests):     # access_token,ip,cookie
-                    timestamp = str(time_stamps.pop(0))
-                    final_string = timestamp + "," + api_name + "," + user[1] + "," + user[2] + "," + user[3] + "\n"      # api_name,access_token,ip,cookie,timestamp
+                simultaneous_timestamp = str(time_stamps.pop(0))
+                for i in range(simultaneous_requests):
+                    final_string = simultaneous_timestamp + "," + api_name + "," + user[1] + "," + user[2] + "," + user[3] + "," + full_path + "," + method + "\n"      # timestamp,api_name,access_token,ip,cookie,path,method
 
                     with open('dataset/generated/{}'.format(filename), 'a+') as file:
                         file.write(final_string)
 
-# # write final output
-# with open('dataset/{}'.format(filename), 'w') as file:
-#     file.write(final_string)
+                for i in range(no_of_requests-simultaneous_requests):
+                    timestamp = str(time_stamps.pop(0))
+                    final_string = timestamp + "," + api_name + "," + user[1] + "," + user[2] + "," + user[3] + "," + full_path + "," + method + "\n"      # timestamp,api_name,access_token,ip,cookie,path,method
+
+                    with open('dataset/generated/{}'.format(filename), 'a+') as file:
+                        file.write(final_string)
+
 
 print("Data generation successful!")
