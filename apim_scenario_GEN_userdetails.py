@@ -7,6 +7,7 @@ delimiter : '$$ '
 
 import rstr
 from faker import Faker
+import argparse
 
 # global variables
 faker = Faker()
@@ -88,5 +89,14 @@ def genUsersCSV():
 
 
 # execute
-genUsersCSV()
-app_userScenario()
+parser = argparse.ArgumentParser("generate user details")
+parser.add_argument("option", help="add 0 to generate only user details. Add 1 to generate user details and the scenario distribution", type=int)
+args = parser.parse_args()
+
+if args.option == 0:
+    genUsersCSV()
+elif args.option == 1:
+    genUsersCSV()
+    app_userScenario()
+else:
+    print("Invalid argument value {}!".format(args.option))
