@@ -12,7 +12,7 @@ import sys
 
 # Configurations
 filename = "api_invoke_1.csv"
-script_runtime = 5 * 60       # in seconds
+script_runtime = 1/2 * 60       # in seconds
 no_of_threads = 20
 active_threads = 0
 max_connection_refuse_count = 50

@@ -304,7 +304,7 @@ vars.put(&quot;b64encryptedValue&quot;,new String(b64encrypted));
               </ResponseAssertion>
               <hashTree/>
               <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="CSV Data Set Config" enabled="true">
-                <stringProp name="filename">APIM_scenario/data/api_creation.csv</stringProp>
+                <stringProp name="filename">${__BeanShell(import org.apache.jmeter.services.FileServer; FileServer.getFileServer().getBaseDir();)}${__BeanShell(File.separator,)}APIM_scenario/data/api_creation.csv</stringProp>
                 <stringProp name="fileEncoding">UTF-8</stringProp>
                 <stringProp name="variableNames">apiName,apiDescription,apiPath,apiTags</stringProp>
                 <boolProp name="ignoreFirstLine">false</boolProp>
@@ -316,7 +316,7 @@ vars.put(&quot;b64encryptedValue&quot;,new String(b64encrypted));
               </CSVDataSet>
               <hashTree/>
               <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="CSV Data Set Config" enabled="true">
-                <stringProp name="filename">APIM_scenario/data/api_creation_swagger.csv</stringProp>
+                <stringProp name="filename">${__BeanShell(import org.apache.jmeter.services.FileServer; FileServer.getFileServer().getBaseDir();)}${__BeanShell(File.separator,)}APIM_scenario/data/api_creation_swagger.csv</stringProp>
                 <stringProp name="fileEncoding">UTF-8</stringProp>
                 <stringProp name="variableNames">swagger</stringProp>
                 <boolProp name="ignoreFirstLine">false</boolProp>
@@ -590,7 +590,7 @@ vars.put(&quot;fields&quot;, new String(fields));
               </JSR223PreProcessor>
               <hashTree/>
               <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="CSV Data Set Config" enabled="true">
-                <stringProp name="filename">APIM_scenario/data/user_generation.csv</stringProp>
+                <stringProp name="filename">${__BeanShell(import org.apache.jmeter.services.FileServer; FileServer.getFileServer().getBaseDir();)}${__BeanShell(File.separator,)}APIM_scenario/data/user_generation.csv</stringProp>
                 <stringProp name="fileEncoding">UTF-8</stringProp>
                 <stringProp name="variableNames">username,password,firstname,lastname,organization,country,email,land,mobile,IM,url</stringProp>
                 <boolProp name="ignoreFirstLine">false</boolProp>
@@ -680,7 +680,11 @@ vars.put(&quot;fields&quot;, new String(fields));
               <stringProp name="parameters"></stringProp>
               <stringProp name="filename"></stringProp>
               <stringProp name="cacheKey">true</stringProp>
-              <stringProp name="script">BufferedReader reader = new BufferedReader(new FileReader(&quot;APIM_scenario/data/user_app_pattern.csv&quot;));
+              <stringProp name="script">import org.apache.jmeter.services.FileServer;
+
+String baseDir = FileServer.getFileServer().getBaseDir();
+
+BufferedReader reader = new BufferedReader(new FileReader(baseDir+&quot;APIM_scenario/data/user_app_pattern.csv&quot;));
 int lines = 0;
 
 while (reader.readLine() != null) lines++;
@@ -697,7 +701,7 @@ vars.put(&quot;noOfLines&quot;, Integer.toString(lines));
           </LoopController>
           <hashTree>
             <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="CSV Data Set Config" enabled="true">
-              <stringProp name="filename">APIM_scenario/data/user_app_pattern.csv</stringProp>
+              <stringProp name="filename">${__BeanShell(import org.apache.jmeter.services.FileServer; FileServer.getFileServer().getBaseDir();)}${__BeanShell(File.separator,)}APIM_scenario/data/user_app_pattern.csv</stringProp>
               <stringProp name="fileEncoding">UTF-8</stringProp>
               <stringProp name="variableNames">username,app_name</stringProp>
               <boolProp name="ignoreFirstLine">false</boolProp>
@@ -714,9 +718,12 @@ vars.put(&quot;noOfLines&quot;, Integer.toString(lines));
               <stringProp name="filename"></stringProp>
               <stringProp name="cacheKey">true</stringProp>
               <stringProp name="script">import groovy.json.JsonSlurper;
+import org.apache.jmeter.services.FileServer;
+
+String baseDir = FileServer.getFileServer().getBaseDir();
 
 def jsonSlurper = new JsonSlurper();
-File file = new File(&quot;APIM_scenario/data/app_api_subscription.json&quot;);
+File file = new File(baseDir+&quot;APIM_scenario/data/app_api_subscription.json&quot;);
 def obj = jsonSlurper.parse(file);
 String appName = vars.get(&quot;app_name&quot;);
 
@@ -938,9 +945,11 @@ vars.put(&quot;b64encryptedValue&quot;,new String(b64encrypted));
                 <stringProp name="script">import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
+import org.apache.jmeter.services.FileServer;
 
+String baseDir = FileServer.getFileServer().getBaseDir();
 String appName = vars.get(&quot;app_name&quot;);
-String appPath = &quot;/home/thamindu/Documents/Applications/description_&quot; + appName + &quot;.csv&quot;;
+String appPath = baseDir+&quot;APIM_scenario/data/description_&quot; + appName + &quot;.csv&quot;;
 
 File file = new File(appPath);
 Scanner sc = new Scanner(file);
@@ -1324,7 +1333,7 @@ vars.put(&quot;final_string&quot;, final_string);
         </WhileController>
         <hashTree>
           <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="CSV Data Set Config" enabled="true">
-            <stringProp name="filename">APIM_scenario/data/user_app_pattern.csv</stringProp>
+            <stringProp name="filename">${__BeanShell(import org.apache.jmeter.services.FileServer; FileServer.getFileServer().getBaseDir();)}${__BeanShell(File.separator,)}APIM_scenario/data/user_app_pattern.csv</stringProp>
             <stringProp name="fileEncoding"></stringProp>
             <stringProp name="variableNames">username,app_name</stringProp>
             <boolProp name="ignoreFirstLine">false</boolProp>
@@ -1539,7 +1548,10 @@ vars.put(&quot;b64encryptedValue&quot;,new String(b64encrypted));
               <stringProp name="parameters"></stringProp>
               <stringProp name="filename"></stringProp>
               <stringProp name="cacheKey">true</stringProp>
-              <stringProp name="script">String final_string = vars.get(&quot;final_string&quot;);
+              <stringProp name="script">import org.apache.jmeter.services.FileServer;
+
+String baseDir = FileServer.getFileServer().getBaseDir();
+String final_string = vars.get(&quot;final_string&quot;);
 
 String username = vars.get(&quot;username&quot;);
 String app_name = vars.get(&quot;app_name&quot;);
@@ -1552,7 +1564,7 @@ vars.put(&quot;final_string&quot;, final_string);
 
 
 // write each token to the file [PLEASE DELETE THE FILE BEFORE RUNNING THIS, IF FILE ALREADY EXISTS]
-FileWriter fstream = new FileWriter(&quot;APIM_scenario/api_invoke_tokens.csv&quot;, true);
+FileWriter fstream = new FileWriter(baseDir+&quot;APIM_scenario/api_invoke_tokens.csv&quot;, true);
 BufferedWriter out = new BufferedWriter(fstream);
 out.write(current_line);
 out.close();
@@ -1575,9 +1587,12 @@ fstream.close();
             <stringProp name="parameters"></stringProp>
             <stringProp name="filename"></stringProp>
             <stringProp name="cacheKey">true</stringProp>
-            <stringProp name="script">String final_string = vars.get(&quot;final_string&quot;);
+            <stringProp name="script">import org.apache.jmeter.services.FileServer;
 
-FileWriter fstream = new FileWriter(&quot;APIM_scenario/api_invoke_tokens.csv&quot;, false);
+String baseDir = FileServer.getFileServer().getBaseDir();
+String final_string = vars.get(&quot;final_string&quot;);
+
+FileWriter fstream = new FileWriter(baseDir+&quot;APIM_scenario/api_invoke_tokens.csv&quot;, false);
 BufferedWriter out = new BufferedWriter(fstream);
 out.write(final_string);
 out.close();
