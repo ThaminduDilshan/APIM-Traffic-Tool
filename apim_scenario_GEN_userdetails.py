@@ -90,7 +90,7 @@ def genUsersCSV():
 
 # execute
 parser = argparse.ArgumentParser("generate user details")
-parser.add_argument("option", help="add 0 to generate only user details. Add 1 to generate user details and the scenario distribution", type=int)
+parser.add_argument("option", help="Pass 0 to generate only user details. Pass 1 to generate user details and the scenario distribution", type=int)
 args = parser.parse_args()
 
 if args.option == 0:

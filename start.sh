@@ -1,68 +1,111 @@
 #!/bin/sh
 
+#JMPATH="/home/thamindu/Documents/Applications/apache-jmeter-5.1.1/bin"
+
 func_help() {
-  echo "\nTraffic Tool Options"
-  echo "1. To generate user details\t\t\t: gen_user_details"
-  echo "2. To create scenario in WSO2 APIM\t\t: create_scenario"
-  echo "3. To generate access tokens\t\t\t: gen_tokens"
-  echo "4. To generate traffic data (without invoking)\t: gen_invoke_data"
-  echo "5. To simulate a traffic\t\t\t: traffic"
+  echo "Traffic Tool Options"
+  echo "1: To generate user details"
+  echo "2: To generate user details and the example scenario"
+  echo "3: To create scenario in WSO2 APIM"
+  echo "4: To generate access tokens"
+  echo "5: To generate traffic data (without invoking)"
+  echo "6: To simulate a traffic"
 }
 
 func_gen_user_details() {
-  # run apim_scenario_GEN_userdetails.py with arg: 0
+  if command -v python3 &>/dev/null; then
+    python3 apim_scenario_GEN_userdetails.py 0
+  else
+    echo "Python 3 is required for the command!"
+    exit 1
+  fi
+}
+
+func_gen_example_scenario() {
+  if command -v python3 &>/dev/null; then
+    python3 apim_scenario_GEN_userdetails.py 1
+  else
+    echo "Python 3 is required for the command!"
+    exit 1
+  fi
 }
 
 func_create_scenario() {
-  # check if these files exists-> $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-  # if not-> error
-  # run API Scenario - multiple end users.jmx
+  if [ -e "$(pwd)"/APIM_scenario/data/api_creation.csv -a -e "$(pwd)"/APIM_scenario/data/api_creation_swagger.csv -a -e "$(pwd)"/APIM_scenario/data/app_creation.csv -a -e "$(pwd)"/APIM_scenario/data/app_api_subscription_admin.csv -a -e "$(pwd)"/APIM_scenario/data/user_generation.csv ];
+  then
+    echo "Enter your jmeter path (Ex:- /home/user/Documents/apache-jmeter-5.1.1/bin)"
+    read JMPATH
+    $JMPATH/jmeter -n -t 'API Scenario - multiple end users.jmx' -l logs/jmeter-results.log -j logs/jmeter.log
+  else
+    echo "Missing one or more required files in the 'APIM_scenario/data' directory"
+    exit 1
+  fi
 }
 
 func_gen_tokens() {
-  # check if these files exists-> $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-  # if not-> error
-  # remove these existing files-> $$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-  # run Generate token list.jmx
+  if [ -e "$(pwd)"/APIM_scenario/data/app_creation.csv -a -e "$(pwd)"/APIM_scenario/data/user_app_pattern.csv ];
+  then
+    rm -f APIM_scenario/api_invoke_keySecret-multipleEndUsers.csv
+    rm -f APIM_scenario/api_invoke_tokens.csv
+    echo "Enter your jmeter path (Ex:- /home/user/Documents/apache-jmeter-5.1.1/bin)"
+    read JMPATH
+    $JMPATH/jmeter -n -t 'Generate token list.jmx' -l logs/jmeter-results.log -j logs/jmeter.log
+  else
+    echo "Missing one or more required files in the 'APIM_scenario/data' directory"
+    exit 1
+  fi
 }
 
 func_gen_invoke_data() {
-  # check if these files exists-> $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-  # if not-> error
-  # remove these existing files-> $$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-  # run generate_invokeData.py
+  if [ -e "$(pwd)"/APIM_scenario/data/user_generation.csv -a -e "$(pwd)"/APIM_scenario/data/app_creation.csv -a -e "$(pwd)"/APIM_scenario/api_invoke_tokens.csv -a -e "$(pwd)"/APIM_scenario/data/api_invoke_scenario.csv ];
+  then
+    echo "Enter filename (with file extension):"
+    read FILENAME
+    python3 generate_invokeData.py $FILENAME
+  else
+    echo "Missing one or more required files in the 'APIM_scenario/data' directory"
+    exit 1
+  fi
 }
 
 func_traffic() {
-  # check if these files exists-> $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-  # if not-> error
-  # remove these existing files-> $$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-  # run invoke_API.py
+  if [ -e "$(pwd)"/APIM_scenario/data/user_generation.csv -a -e "$(pwd)"/APIM_scenario/data/app_creation.csv -a -e "$(pwd)"/APIM_scenario/api_invoke_tokens.csv -a -e "$(pwd)"/APIM_scenario/data/api_invoke_scenario.csv ];
+  then
+    echo "Enter filename (with file extension):"
+    read FILENAME
+    python3 invoke_API.py $FILENAME
+  else
+    echo "Missing one or more required files in the 'APIM_scenario/data' directory"
+    exit 1
+  fi
 }
-
 
 case "$1" in
   -h)
     func_help
     exit 0
   ;;
-  gen_user_details)
+  1)
     func_gen_user_details | tee -a logs/shell-logs.log
     exit 0
   ;;
-  create_scenario)
+  2)
+    func_gen_example_scenario | tee -a logs/shell-logs.log
+    exit 0
+  ;;
+  3)
     func_create_scenario | tee -a logs/shell-logs.log
     exit 0
   ;;
-  gen_tokens)
+  4)
     func_gen_tokens | tee -a logs/shell-logs.log
     exit 0
   ;;
-  gen_invoke_data)
+  5)
     func_gen_invoke_data | tee -a logs/shell-logs.log
     exit 0
   ;;
-  traffic)
+  6)
     func_traffic | tee -a logs/shell-logs.log
     exit 0
   ;;
@@ -72,34 +115,3 @@ case "$1" in
     exit 1
   ;;
 esac
-
-
-
-
-
-
-
-# echo "Do you want to create the scenario in WSO2 API Manager [Yes/No]?"
-# read response1
-#
-# if ["$response1" == "Yes"] || ["$response1" == "yes"] || ["$response1" == "Y"] || ["$response1" == "y"]
-# then
-#   #
-# elif ["$response1" == "No"] || ["$response1" == "no"] || ["$response1" == "N"] || ["$response1" == "n"]
-# then
-#   #
-# else
-#   #
-# fi
-#
-#
-#
-# run_script() {
-#   echo "Make sure WSO2 API Manager running on default ports. Do you want to continue [Yes/No]?"
-#   read response2
-# }
-#
-#
-# echo "What is your name?"
-# read PERSON
-# echo "Hello, $PERSON"

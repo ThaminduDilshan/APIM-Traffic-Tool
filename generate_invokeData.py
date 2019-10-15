@@ -3,10 +3,10 @@ import random
 import string
 from faker import Factory
 import datetime
+import argparse
 
 
 # Variables
-filename = "api_invoke_1.csv"
 user_ip = {}
 user_cookie = {}
 users_apps = {}
@@ -147,6 +147,11 @@ with open('APIM_scenario/api_invoke_tokens.csv') as file:
         (users_apps[app_name]).append([username,token,ip,cookie])
 
 # execute the scenario according to the script
+parser = argparse.ArgumentParser("generate traffic data")
+parser.add_argument("filename", help="Enter a filename to write final output", type=int)
+args = parser.parse_args()
+filename = args.filename
+
 with open('dataset/generated/{}'.format(filename), 'w') as file:
     file.write("timestamp,api,access_token,ip_address,cookie,invoke_path,http_method\n")
 

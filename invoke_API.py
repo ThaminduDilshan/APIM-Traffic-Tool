@@ -8,10 +8,10 @@ from faker import Factory
 import threading
 import multiprocessing
 import sys
+import argparse
 
 
 # Configurations
-filename = "api_invoke_1.csv"
 script_runtime = 1/2 * 60       # in seconds
 no_of_threads = 20
 active_threads = 0
@@ -232,6 +232,10 @@ class ScenarioExecutor(threading.Thread):
     Usage: python3 generate_invokeData.py
     output folder: dataset/
 '''
+parser = argparse.ArgumentParser("run traffic tool")
+parser.add_argument("filename", help="Enter a filename to write final output", type=int)
+args = parser.parse_args()
+filename = args.filename
 
 # generate set of ips and cookies for each user
 with open('APIM_scenario/data/user_generation.csv') as file:

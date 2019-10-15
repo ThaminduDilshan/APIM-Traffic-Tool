@@ -350,7 +350,7 @@ final_string += current_line;
 vars.put(&quot;final_string&quot;, final_string);
 
 // write each token to the file [PLEASE DELETE THE FILE BEFORE RUNNING THIS, IF FILE ALREADY EXISTS]
-FileWriter fstream = new FileWriter(baseDir+&quot;APIM_scenario/api_invoke_keySecret-multipleEndUsers.csv&quot;, true);
+FileWriter fstream = new FileWriter(baseDir+&quot;/APIM_scenario/api_invoke_keySecret-multipleEndUsers.csv&quot;, true);
 BufferedWriter out = new BufferedWriter(fstream);
 out.write(current_line);
 out.close();
