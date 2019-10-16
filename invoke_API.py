@@ -28,6 +28,11 @@ connection_refuse_count = 0
 
 fake_generator = Factory.create()
 
+parser = argparse.ArgumentParser("run traffic tool")
+parser.add_argument("filename", help="Enter a filename to write final output", type=str)
+args = parser.parse_args()
+filename = args.filename + ".csv"
+
 
 '''
     This function will write the given log output to the log.txt file
@@ -232,10 +237,6 @@ class ScenarioExecutor(threading.Thread):
     Usage: python3 generate_invokeData.py
     output folder: dataset/
 '''
-parser = argparse.ArgumentParser("run traffic tool")
-parser.add_argument("filename", help="Enter a filename to write final output", type=int)
-args = parser.parse_args()
-filename = args.filename
 
 # generate set of ips and cookies for each user
 with open('APIM_scenario/data/user_generation.csv') as file:

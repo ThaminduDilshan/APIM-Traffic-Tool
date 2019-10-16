@@ -59,9 +59,11 @@ func_gen_tokens() {
 func_gen_invoke_data() {
   if [ -e "$(pwd)"/APIM_scenario/data/user_generation.csv -a -e "$(pwd)"/APIM_scenario/data/app_creation.csv -a -e "$(pwd)"/APIM_scenario/api_invoke_tokens.csv -a -e "$(pwd)"/APIM_scenario/data/api_invoke_scenario.csv ];
   then
-    echo "Enter filename (with file extension):"
+    echo "Enter filename (without file extension):"
     read FILENAME
-    python3 generate_invokeData.py $FILENAME
+    # python3 generate_invokeData.py $FILENAME
+    #chmod +x generate_invokeData.py
+    nohup python3 generate_invokeData.py $FILENAME >> logs/nohup_.log &
   else
     echo "Missing one or more required files in the 'APIM_scenario/data' directory"
     exit 1
@@ -71,9 +73,11 @@ func_gen_invoke_data() {
 func_traffic() {
   if [ -e "$(pwd)"/APIM_scenario/data/user_generation.csv -a -e "$(pwd)"/APIM_scenario/data/app_creation.csv -a -e "$(pwd)"/APIM_scenario/api_invoke_tokens.csv -a -e "$(pwd)"/APIM_scenario/data/api_invoke_scenario.csv ];
   then
-    echo "Enter filename (with file extension):"
+    echo "Enter filename (without file extension):"
     read FILENAME
-    python3 invoke_API.py $FILENAME
+    # python3 invoke_API.py $FILENAME
+    chmod +x invoke_API.py
+    nohup python3 invoke_API.py $FILENAME >> logs/nohup_.log &
   else
     echo "Missing one or more required files in the 'APIM_scenario/data' directory"
     exit 1

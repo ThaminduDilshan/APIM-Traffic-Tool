@@ -21,3 +21,44 @@
 [INFO] 2019-10-08 17:26:12.811478: Scenario thread thread_18 started!
 [INFO] 2019-10-08 17:26:17.785658: Script completed successfully!
 [INFO] 2019-10-08 17:28:48.704528: thread_10 stopped. Execution finished!
+[INFO] 2019-10-16 11:41:36.798935: Scenario thread thread_0 started!
+[INFO] 2019-10-16 11:41:36.799915: Scenario thread thread_2 started!
+[INFO] 2019-10-16 11:41:36.799985: Scenario thread thread_1 started!
+[INFO] 2019-10-16 11:41:36.801580: Scenario thread thread_3 started!
+[INFO] 2019-10-16 11:41:36.802173: Scenario thread thread_5 started!
+[INFO] 2019-10-16 11:41:36.802929: Scenario thread thread_6 started!
+[INFO] 2019-10-16 11:41:36.803699: Scenario thread thread_4 started!
+[INFO] 2019-10-16 11:41:36.804127: Scenario thread thread_7 started!
+[INFO] 2019-10-16 11:41:36.804520: Scenario thread thread_8 started!
+[INFO] 2019-10-16 11:41:36.805856: Scenario thread thread_9 started!
+[INFO] 2019-10-16 11:41:36.805935: Scenario thread thread_10 started!
+[INFO] 2019-10-16 11:41:36.807722: Scenario thread thread_11 started!
+[INFO] 2019-10-16 11:41:36.824647: Scenario thread thread_12 started!
+[INFO] 2019-10-16 11:41:36.832049: Scenario thread thread_14 started!
+[INFO] 2019-10-16 11:41:36.839766: Scenario thread thread_13 started!
+[INFO] 2019-10-16 11:41:36.841280: Scenario thread thread_15 started!
+[INFO] 2019-10-16 11:41:36.843118: Scenario thread thread_16 started!
+[INFO] 2019-10-16 11:41:36.869718: Scenario thread thread_18 started!
+[INFO] 2019-10-16 11:41:36.869786: Scenario thread thread_17 started!
+[INFO] 2019-10-16 11:41:36.885006: Scenario loaded successfully. Wait 0.5 minutes before closing the terminal!
+[INFO] 2019-10-16 11:41:36.944921: Scenario thread thread_19 started!
+[ERROR] 2019-10-16 11:41:36.947526: Terminating the thread due to maximum no of connection refuses!
+[ERROR] 2019-10-16 11:41:36.951298: Terminating the thread due to maximum no of connection refuses!
+[ERROR] 2019-10-16 11:41:36.951441: Terminating the thread due to maximum no of connection refuses!
+[ERROR] 2019-10-16 11:41:36.951912: Terminating the thread due to maximum no of connection refuses!
+[ERROR] 2019-10-16 11:41:36.955833: Terminating the thread due to maximum no of connection refuses!
+[ERROR] 2019-10-16 11:41:36.956611: Terminating the thread due to maximum no of connection refuses!
+[ERROR] 2019-10-16 11:41:36.958570: Terminating the thread due to maximum no of connection refuses!
+[ERROR] 2019-10-16 11:41:36.958746: Terminating the thread due to maximum no of connection refuses!
+[ERROR] 2019-10-16 11:41:36.959425: Terminating the thread due to maximum no of connection refuses!
+[ERROR] 2019-10-16 11:41:36.959625: Terminating the thread due to maximum no of connection refuses!
+[ERROR] 2019-10-16 11:41:36.959682: Terminating the thread due to maximum no of connection refuses!
+[ERROR] 2019-10-16 11:41:36.959985: Terminating the thread due to maximum no of connection refuses!
+[ERROR] 2019-10-16 11:41:36.960665: Terminating the thread due to maximum no of connection refuses!
+[ERROR] 2019-10-16 11:41:36.963199: Terminating the thread due to maximum no of connection refuses!
+[ERROR] 2019-10-16 11:41:36.963491: Terminating the thread due to maximum no of connection refuses!
+[ERROR] 2019-10-16 11:41:36.963644: Terminating the thread due to maximum no of connection refuses!
+[ERROR] 2019-10-16 11:41:36.963873: Terminating the thread due to maximum no of connection refuses!
+[ERROR] 2019-10-16 11:41:36.964959: Terminating the thread due to maximum no of connection refuses!
+[ERROR] 2019-10-16 11:41:36.965477: Terminating the thread due to maximum no of connection refuses!
+[ERROR] 2019-10-16 11:41:36.965790: Terminating the thread due to maximum no of connection refuses!
