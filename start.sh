@@ -63,7 +63,7 @@ func_gen_invoke_data() {
     read FILENAME
     # python3 generate_invokeData.py $FILENAME
     #chmod +x generate_invokeData.py
-    nohup python3 generate_invokeData.py $FILENAME >> logs/nohup_.log &
+    nohup python3 generate_invokeData.py $FILENAME >> logs/shell-logs.log &
   else
     echo "Missing one or more required files in the 'APIM_scenario/data' directory"
     exit 1
@@ -77,7 +77,7 @@ func_traffic() {
     read FILENAME
     # python3 invoke_API.py $FILENAME
     chmod +x invoke_API.py
-    nohup python3 invoke_API.py $FILENAME >> logs/nohup_.log &
+    nohup python3 invoke_API.py $FILENAME >> logs/shell-logs.log &
   else
     echo "Missing one or more required files in the 'APIM_scenario/data' directory"
     exit 1
