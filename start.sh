@@ -10,6 +10,7 @@ func_help() {
   echo "4: To generate access tokens"
   echo "5: To generate traffic data (without invoking)"
   echo "6: To simulate a traffic"
+  echo "7: To stop the traffic tool"
 }
 
 func_gen_user_details() {
@@ -73,16 +74,41 @@ func_gen_invoke_data() {
 func_traffic() {
   if [ -e "$(pwd)"/APIM_scenario/data/user_generation.csv -a -e "$(pwd)"/APIM_scenario/data/app_creation.csv -a -e "$(pwd)"/APIM_scenario/api_invoke_tokens.csv -a -e "$(pwd)"/APIM_scenario/data/api_invoke_scenario.csv ];
   then
-    echo "Enter filename (without file extension):"
+    echo "Enter filename (without file extension): "
     read FILENAME
+    echo "Enter script execution time in minutes: "
+    read EXECTIME
     # python3 invoke_API.py $FILENAME
     chmod +x invoke_API.py
-    nohup python3 invoke_API.py $FILENAME >> logs/shell-logs.log &
+    nohup python3 invoke_API.py $FILENAME $EXECTIME >> logs/shell-logs.log &
+    echo $! > data/invoke_API.pid
   else
     echo "Missing one or more required files in the 'APIM_scenario/data' directory"
     exit 1
   fi
 }
+
+func_stop_traffic() {
+  PID=`cat data/invoke_API.pid 2>/dev/null`
+  if [ -z $PID ]
+  then
+    echo "Traffic Tool is Not Running"
+  else
+    kill -0 $PID 2>/dev/null
+    if [ $? -eq 0 ]
+    then
+      kill -9 $PID
+      if [ $? -eq 0 ]
+      then
+          echo "Traffic Tool Stopped Successfully"
+      fi
+    else
+      echo "Traffic Tool Already Stopped"
+    fi
+  fi
+  > data/invoke_API.pid
+}
+
 
 case "$1" in
   -h)
@@ -111,6 +137,10 @@ case "$1" in
   ;;
   6)
     func_traffic | tee -a logs/shell-logs.log
+    exit 0
+  ;;
+  7)
+    func_stop_traffic | tee -a logs/shell-logs.log
     exit 0
   ;;
   *)

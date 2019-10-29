@@ -9,10 +9,20 @@ import threading
 import multiprocessing
 import sys
 import argparse
+import urllib3
+
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
+parser = argparse.ArgumentParser("run traffic tool")
+parser.add_argument("filename", help="Enter a filename to write final output", type=str)
+parser.add_argument("runtime", help="Enter the script execution time in minutes", type=float)
+args = parser.parse_args()
+filename = args.filename + ".csv"
+script_runtime = args.runtime * 60       # in seconds
 
 
 # Configurations
-script_runtime = 1/2 * 60       # in seconds
+# script_runtime = 10 * 60       # in seconds
 no_of_threads = 20
 active_threads = 0
 max_connection_refuse_count = 50
@@ -27,11 +37,6 @@ pool_lock = multiprocessing.Lock()
 connection_refuse_count = 0
 
 fake_generator = Factory.create()
-
-parser = argparse.ArgumentParser("run traffic tool")
-parser.add_argument("filename", help="Enter a filename to write final output", type=str)
-args = parser.parse_args()
-filename = args.filename + ".csv"
 
 
 '''
@@ -314,11 +319,18 @@ for i in range(no_of_threads):
 print("[INFO] Scenario loaded successfully. Wait {} minutes before closing the terminal!".format(str(script_runtime/60)))
 log("INFO", "Scenario loaded successfully. Wait {} minutes before closing the terminal!".format(str(script_runtime/60)))
 
-if active_threads != 0:
-    time.sleep(5)
-
-if connection_refuse_count < max_connection_refuse_count:
-    print("[INFO] Script completed successfully!")
-    log("INFO", "Script completed successfully!")
-else:
-    print("[ERROR] Program terminated!")
+while True:
+    uptime = datetime.now() - script_starttime
+    if uptime.seconds >= script_runtime:
+        print("[INFO] Script terminated successfully. uptime:{} minutes".format(uptime.seconds/60.0))
+        log("INFO", "Script terminated successfully. uptime:{} minutes".format(uptime.seconds/60.0))
+        break
+    if active_threads != 0:
+        time.sleep(5)
+    else:
+        if connection_refuse_count < max_connection_refuse_count:
+            print("[INFO] Script completed successfully!")
+            log("INFO", "Script completed successfully!")
+        else:
+            print("[ERROR] Program terminated!")
+        break

@@ -1,2 +1,17 @@
-Enter filename (without file extension):
-Enter filename (without file extension):
+Traffic Tool Stopped Successfully
+Enter filename (without file extension): 
+Enter script execution time in minutes: 
+Enter filename (without file extension): 
+Enter script execution time in minutes: 
+[INFO] Scenario loaded successfully. Wait 7.0 minutes before closing the terminal!
+[INFO] Script terminated successfully. uptime:420 s
+Enter filename (without file extension): 
+Enter script execution time in minutes: 
+[INFO] Scenario loaded successfully. Wait 1.0 minutes before closing the terminal!
+Traffic Tool Stopped Successfully
+Enter filename (without file extension): 
+Enter script execution time in minutes: 
+[INFO] Scenario loaded successfully. Wait 1.0 minutes before closing the terminal!
+[INFO] Script terminated successfully. uptime:1.0 s
+[INFO] Scenario loaded successfully. Wait 1.0 minutes before closing the terminal!
+[INFO] Script terminated successfully. uptime:3027 s
