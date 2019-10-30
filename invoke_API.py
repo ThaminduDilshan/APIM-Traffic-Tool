@@ -99,7 +99,7 @@ def genUniqueIPList(count:int):
     ip_all_str = "ip_address\n"
     for ip in unique_list:
         ip_all_str += ip + "\n"
-    with open('dataset/ip_list_{}'.format(filename), 'w') as file:
+    with open('data/ip_list_{}'.format(filename), 'w') as file:
         file.write(ip_all_str)
 
     return unique_list
@@ -155,6 +155,9 @@ def sendRequest(url_ip, url_port, api_name, api_version, path, access_token, met
             res_txt = 'Invalid type!'
     except ConnectionRefusedError:
         log("ERROR", "HTTP Connection Refused!")
+        code = '404'
+    except Exception as e:
+        log("ERROR", str(e))
         code = '404'
 
     # write data to files
@@ -307,12 +310,24 @@ with open('APIM_scenario/data/api_invoke_scenario.csv') as file:
                 no_of_requests = varySlightly(call_median, user_count)
                 scenario_pool.append([no_of_requests, api_name, "1", path, user[1], method, user[2], user[3], app_name, user[0]])
 
+# save scenario data
+write_str = "no_of_requests,api_name,api_version,invoke_path,access_token,http_method,ip_address,user_cookie,app_name,username\n"
+
+for row in scenario_pool:
+    for row_data in row:
+        write_str += str(row_data) + ','
+    write_str = write_str[:-1] + "\n"
+
+with open('data/user_scenario_distribution_{}'.format(filename), 'w') as file:
+    file.write(write_str)
+
 # record script starttime
 script_starttime = datetime.now()
 
 # create and start threads
 for i in range(no_of_threads):
     thread = ScenarioExecutor(i, 'thread_{}'.format(i), pool_lock)
+    thread.daemon = True
     thread.start()
     active_threads += 1
 
@@ -322,8 +337,8 @@ log("INFO", "Scenario loaded successfully. Wait {} minutes before closing the te
 while True:
     uptime = datetime.now() - script_starttime
     if uptime.seconds >= script_runtime:
-        print("[INFO] Script terminated successfully. uptime:{} minutes".format(uptime.seconds/60.0))
-        log("INFO", "Script terminated successfully. uptime:{} minutes".format(uptime.seconds/60.0))
+        print("[INFO] Script terminated successfully. uptime: {} minutes".format(uptime.seconds/60.0))
+        log("INFO", "Script terminated successfully. uptime: {} minutes".format(uptime.seconds/60.0))
         break
     if active_threads != 0:
         time.sleep(5)

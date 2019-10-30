@@ -312,3 +312,637 @@
 1572337660842,6,Generate token,200,OK,Generate token list 2-1,text,true,,451,369,1,1,https://localhost:8243/token,6,0,0
 1572337660851,8,Generate token,200,OK,Generate token list 2-1,text,true,,451,367,1,1,https://localhost:8243/token,8,0,0
 1572337660862,7,Generate token,200,OK,Generate token list 2-1,text,true,,451,367,1,1,https://localhost:8243/token,7,0,0
+1572367675436,609,Get Id and secret,200,OK,"Generate consumer_key, consumer_secret list 1-1",text,true,,458,451,1,1,https://localhost:9443/client-registration/v0.14/register,608,0,223
+1572367676101,447,Get access token,200,OK,"Generate consumer_key, consumer_secret list 1-1",text,true,,472,376,1,1,https://localhost:8243/token,447,0,27
+1572367676551,435,Retrieve applications and set app_id,200,OK,"Generate consumer_key, consumer_secret list 1-1",text,true,,1735,209,1,1,https://localhost:9443/api/am/store/v0.14/applications,435,0,0
+1572367677000,384,"Generate production keys and get consumer key, consumer secret",409,Conflict,"Generate consumer_key, consumer_secret list 1-1",text,false,Test failed: code expected to contain /200/,330,611,1,1,https://localhost:9443/api/am/store/v0.14/applications/generate-keys?applicationId=8d13f4a7-c1de-4329-bc26-16f52c05d595,384,0,0
+1572367677429,18,Get access token,200,OK,"Generate consumer_key, consumer_secret list 1-1",text,true,,472,376,1,1,https://localhost:8243/token,18,0,0
+1572367677448,8,Retrieve applications and set app_id,200,OK,"Generate consumer_key, consumer_secret list 1-1",text,true,,1735,209,1,1,https://localhost:9443/api/am/store/v0.14/applications,8,0,0
+1572367677457,58,"Generate production keys and get consumer key, consumer secret",409,Conflict,"Generate consumer_key, consumer_secret list 1-1",text,false,Test failed: code expected to contain /200/,330,611,1,1,https://localhost:9443/api/am/store/v0.14/applications/generate-keys?applicationId=eb683088-01dc-4ed0-a0d6-0c09394d0a3a,58,0,11
+1572367677519,16,Get access token,200,OK,"Generate consumer_key, consumer_secret list 1-1",text,true,,472,376,1,1,https://localhost:8243/token,15,0,0
+1572367677536,7,Retrieve applications and set app_id,200,OK,"Generate consumer_key, consumer_secret list 1-1",text,true,,1735,209,1,1,https://localhost:9443/api/am/store/v0.14/applications,7,0,0
+1572367677544,23,"Generate production keys and get consumer key, consumer secret",409,Conflict,"Generate consumer_key, consumer_secret list 1-1",text,false,Test failed: code expected to contain /200/,330,611,1,1,https://localhost:9443/api/am/store/v0.14/applications/generate-keys?applicationId=7608a34f-d0ec-47b3-9ed1-bea0a9b9516d,23,0,0
+1572367677605,35,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,35,0,15
+1572367677660,26,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,311,1,1,https://localhost:8243/token,26,0,0
+1572367677691,12,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,313,1,1,https://localhost:8243/token,12,0,0
+1572367677707,12,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,321,1,1,https://localhost:8243/token,12,0,0
+1572367677722,10,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,315,1,1,https://localhost:8243/token,10,0,0
+1572367677735,11,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,315,1,1,https://localhost:8243/token,11,0,0
+1572367677749,11,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,313,1,1,https://localhost:8243/token,11,0,0
+1572367677763,14,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,14,0,0
+1572367677780,14,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,315,1,1,https://localhost:8243/token,14,0,0
+1572367677798,10,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,319,1,1,https://localhost:8243/token,10,0,0
+1572367677811,8,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,319,1,1,https://localhost:8243/token,8,0,0
+1572367677823,8,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,321,1,1,https://localhost:8243/token,8,0,0
+1572367677834,9,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,319,1,1,https://localhost:8243/token,9,0,0
+1572367677846,9,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,319,1,1,https://localhost:8243/token,9,0,0
+1572367677858,11,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,325,1,1,https://localhost:8243/token,11,0,0
+1572367677872,9,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,9,0,0
+1572367677884,9,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,321,1,1,https://localhost:8243/token,9,0,0
+1572367677897,8,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,319,1,1,https://localhost:8243/token,8,0,0
+1572367677908,8,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,323,1,1,https://localhost:8243/token,8,0,0
+1572367677919,10,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,319,1,1,https://localhost:8243/token,10,0,0
+1572367677933,9,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,319,1,1,https://localhost:8243/token,9,0,0
+1572367677945,10,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,321,1,1,https://localhost:8243/token,10,0,0
+1572367677958,9,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,319,1,1,https://localhost:8243/token,9,0,0
+1572367677971,8,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,323,1,1,https://localhost:8243/token,7,0,0
+1572367677982,8,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,319,1,1,https://localhost:8243/token,8,0,0
+1572367677994,8,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,8,0,0
+1572367678005,8,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,8,0,0
+1572367678016,8,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,323,1,1,https://localhost:8243/token,8,0,0
+1572367678027,9,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,323,1,1,https://localhost:8243/token,9,0,0
+1572367678039,10,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,315,1,1,https://localhost:8243/token,10,0,0
+1572367678052,8,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,319,1,1,https://localhost:8243/token,8,0,0
+1572367678064,7,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,7,0,0
+1572367678074,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,6,0,0
+1572367678083,7,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,321,1,1,https://localhost:8243/token,7,0,0
+1572367678093,9,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,319,1,1,https://localhost:8243/token,9,0,0
+1572367678106,8,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,319,1,1,https://localhost:8243/token,8,0,0
+1572367678118,7,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,321,1,1,https://localhost:8243/token,7,0,0
+1572367678129,10,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,9,0,0
+1572367678144,8,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,319,1,1,https://localhost:8243/token,8,0,0
+1572367678156,8,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,321,1,1,https://localhost:8243/token,8,0,0
+1572367678167,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,6,0,0
+1572367678176,7,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,7,0,0
+1572367678186,8,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,321,1,1,https://localhost:8243/token,8,0,0
+1572367678198,7,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,7,0,0
+1572367678208,8,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,7,0,0
+1572367678219,8,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,319,1,1,https://localhost:8243/token,8,0,0
+1572367678230,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,323,1,1,https://localhost:8243/token,6,0,0
+1572367678240,7,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,319,1,1,https://localhost:8243/token,7,0,0
+1572367678250,9,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,315,1,1,https://localhost:8243/token,9,0,0
+1572367678262,7,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,321,1,1,https://localhost:8243/token,7,0,0
+1572367678272,7,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,7,0,0
+1572367678282,7,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,321,1,1,https://localhost:8243/token,7,0,0
+1572367678294,8,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,315,1,1,https://localhost:8243/token,8,0,0
+1572367678306,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,319,1,1,https://localhost:8243/token,6,0,0
+1572367678316,9,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,319,1,1,https://localhost:8243/token,8,0,0
+1572367678328,7,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,315,1,1,https://localhost:8243/token,7,0,0
+1572367678338,7,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,319,1,1,https://localhost:8243/token,7,0,0
+1572367678348,7,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,315,1,1,https://localhost:8243/token,7,0,0
+1572367678358,7,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,7,0,0
+1572367678369,10,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,321,1,1,https://localhost:8243/token,10,0,0
+1572367678383,8,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,321,1,1,https://localhost:8243/token,8,0,0
+1572367678395,7,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,329,1,1,https://localhost:8243/token,7,0,0
+1572367678407,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,6,0,0
+1572367678416,8,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,325,1,1,https://localhost:8243/token,8,0,0
+1572367678427,7,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,315,1,1,https://localhost:8243/token,6,0,0
+1572367678437,7,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,7,0,0
+1572367678447,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,6,0,0
+1572367678457,7,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,321,1,1,https://localhost:8243/token,7,0,0
+1572367678467,8,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,315,1,1,https://localhost:8243/token,8,0,0
+1572367678479,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,6,0,0
+1572367678489,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,321,1,1,https://localhost:8243/token,6,0,0
+1572367678498,11,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,329,1,1,https://localhost:8243/token,11,0,0
+1572367678512,8,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,8,0,0
+1572367678524,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,325,1,1,https://localhost:8243/token,6,0,0
+1572367678534,7,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,315,1,1,https://localhost:8243/token,7,0,0
+1572367678546,7,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,7,0,0
+1572367678558,8,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,8,0,0
+1572367678570,8,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,321,1,1,https://localhost:8243/token,8,0,0
+1572367678581,8,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,315,1,1,https://localhost:8243/token,8,0,0
+1572367678593,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,6,0,0
+1572367678603,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,323,1,1,https://localhost:8243/token,6,0,0
+1572367678613,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,319,1,1,https://localhost:8243/token,5,0,0
+1572367678622,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,321,1,1,https://localhost:8243/token,6,0,0
+1572367678631,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,6,0,0
+1572367678640,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,315,1,1,https://localhost:8243/token,6,0,0
+1572367678650,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,323,1,1,https://localhost:8243/token,6,0,0
+1572367678660,7,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,319,1,1,https://localhost:8243/token,7,0,0
+1572367678671,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,321,1,1,https://localhost:8243/token,6,0,0
+1572367678681,7,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,7,0,0
+1572367678693,7,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,315,1,1,https://localhost:8243/token,7,0,0
+1572367678705,8,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,329,1,1,https://localhost:8243/token,8,0,0
+1572367678716,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,319,1,1,https://localhost:8243/token,6,0,0
+1572367678726,7,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,321,1,1,https://localhost:8243/token,6,0,0
+1572367678736,8,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,315,1,1,https://localhost:8243/token,8,0,0
+1572367678748,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,315,1,1,https://localhost:8243/token,6,0,0
+1572367678757,7,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,7,0,0
+1572367678770,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,325,1,1,https://localhost:8243/token,6,0,0
+1572367678779,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,6,0,0
+1572367678788,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,6,0,0
+1572367678798,7,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,7,0,0
+1572367678809,7,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,7,0,0
+1572367678820,7,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,325,1,1,https://localhost:8243/token,7,0,0
+1572367678832,9,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,315,1,1,https://localhost:8243/token,8,0,0
+1572367678847,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,323,1,1,https://localhost:8243/token,6,0,0
+1572367678857,5,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,323,1,1,https://localhost:8243/token,5,0,0
+1572367678866,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,329,1,1,https://localhost:8243/token,6,0,0
+1572367678876,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,319,1,1,https://localhost:8243/token,6,0,0
+1572367678886,8,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,321,1,1,https://localhost:8243/token,7,0,0
+1572367678897,7,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,315,1,1,https://localhost:8243/token,7,0,0
+1572367678907,7,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,315,1,1,https://localhost:8243/token,7,0,0
+1572367678917,7,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,7,0,0
+1572367678928,7,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,325,1,1,https://localhost:8243/token,7,0,0
+1572367678939,7,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,7,0,0
+1572367678951,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,6,0,0
+1572367678969,8,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,8,0,0
+1572367678980,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,6,0,0
+1572367678990,11,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,325,1,1,https://localhost:8243/token,11,0,0
+1572367679006,8,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,315,1,1,https://localhost:8243/token,8,0,0
+1572367679017,7,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,323,1,1,https://localhost:8243/token,6,0,0
+1572367679027,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,323,1,1,https://localhost:8243/token,6,0,0
+1572367679037,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,319,1,1,https://localhost:8243/token,6,0,0
+1572367679047,7,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,315,1,1,https://localhost:8243/token,6,0,0
+1572367679058,7,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,7,0,0
+1572367679070,8,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,319,1,1,https://localhost:8243/token,8,0,0
+1572367679082,8,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,313,1,1,https://localhost:8243/token,8,0,0
+1572367679094,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,6,0,0
+1572367679103,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,6,0,0
+1572367679113,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,321,1,1,https://localhost:8243/token,6,0,0
+1572367679123,5,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,319,1,1,https://localhost:8243/token,5,0,0
+1572367679132,5,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,319,1,1,https://localhost:8243/token,5,0,0
+1572367679142,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,319,1,1,https://localhost:8243/token,6,0,0
+1572367679152,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,315,1,1,https://localhost:8243/token,6,0,0
+1572367679162,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,6,0,0
+1572367679173,7,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,319,1,1,https://localhost:8243/token,7,0,0
+1572367679184,7,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,313,1,1,https://localhost:8243/token,7,0,0
+1572367679197,7,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,7,0,0
+1572367679208,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,6,0,0
+1572367679218,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,321,1,1,https://localhost:8243/token,6,0,0
+1572367679228,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,319,1,1,https://localhost:8243/token,6,0,0
+1572367679241,8,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,319,1,1,https://localhost:8243/token,8,0,0
+1572367679253,5,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,319,1,1,https://localhost:8243/token,5,0,0
+1572367679262,8,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,315,1,1,https://localhost:8243/token,8,0,0
+1572367679274,7,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,7,0,0
+1572367679285,8,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,319,1,1,https://localhost:8243/token,8,0,0
+1572367679297,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,313,1,1,https://localhost:8243/token,6,0,0
+1572367679306,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,6,0,0
+1572367679315,7,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,6,0,0
+1572367679325,8,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,321,1,1,https://localhost:8243/token,8,0,0
+1572367679337,7,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,319,1,1,https://localhost:8243/token,7,0,0
+1572367679348,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,319,1,1,https://localhost:8243/token,6,0,0
+1572367922679,353,Get Id and secret,200,OK,"Generate consumer_key, consumer_secret list 1-1",text,true,,458,451,1,1,https://localhost:9443/client-registration/v0.14/register,352,0,239
+1572367923124,63,Get access token,200,OK,"Generate consumer_key, consumer_secret list 1-1",text,true,,472,376,1,1,https://localhost:8243/token,63,0,19
+1572367923189,11,Retrieve applications and set app_id,200,OK,"Generate consumer_key, consumer_secret list 1-1",text,true,,1735,209,1,1,https://localhost:9443/api/am/store/v0.14/applications,10,0,0
+1572367923213,43,"Generate production keys and get consumer key, consumer secret",409,Conflict,"Generate consumer_key, consumer_secret list 1-1",text,false,Test failed: code expected to contain /200/,330,611,1,1,https://localhost:9443/api/am/store/v0.14/applications/generate-keys?applicationId=8d13f4a7-c1de-4329-bc26-16f52c05d595,43,0,0
+1572367923297,18,Get access token,200,OK,"Generate consumer_key, consumer_secret list 1-1",text,true,,472,376,1,1,https://localhost:8243/token,18,0,0
+1572367923315,9,Retrieve applications and set app_id,200,OK,"Generate consumer_key, consumer_secret list 1-1",text,true,,1735,209,1,1,https://localhost:9443/api/am/store/v0.14/applications,9,0,0
+1572367923326,39,"Generate production keys and get consumer key, consumer secret",409,Conflict,"Generate consumer_key, consumer_secret list 1-1",text,false,Test failed: code expected to contain /200/,330,611,1,1,https://localhost:9443/api/am/store/v0.14/applications/generate-keys?applicationId=eb683088-01dc-4ed0-a0d6-0c09394d0a3a,39,0,0
+1572367923369,10,Get access token,200,OK,"Generate consumer_key, consumer_secret list 1-1",text,true,,472,376,1,1,https://localhost:8243/token,10,0,0
+1572367923380,6,Retrieve applications and set app_id,200,OK,"Generate consumer_key, consumer_secret list 1-1",text,true,,1735,209,1,1,https://localhost:9443/api/am/store/v0.14/applications,6,0,0
+1572367923387,29,"Generate production keys and get consumer key, consumer secret",409,Conflict,"Generate consumer_key, consumer_secret list 1-1",text,false,Test failed: code expected to contain /200/,330,611,1,1,https://localhost:9443/api/am/store/v0.14/applications/generate-keys?applicationId=7608a34f-d0ec-47b3-9ed1-bea0a9b9516d,28,0,0
+1572367923453,24,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,24,0,15
+1572367923498,8,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,311,1,1,https://localhost:8243/token,8,0,0
+1572367923509,8,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,313,1,1,https://localhost:8243/token,8,0,0
+1572367923521,7,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,321,1,1,https://localhost:8243/token,7,0,0
+1572367923531,7,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,315,1,1,https://localhost:8243/token,7,0,0
+1572367923541,7,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,315,1,1,https://localhost:8243/token,6,0,0
+1572367923551,5,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,313,1,1,https://localhost:8243/token,5,0,0
+1572367923559,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,6,0,0
+1572367923568,5,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,315,1,1,https://localhost:8243/token,5,0,0
+1572367923576,7,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,319,1,1,https://localhost:8243/token,7,0,0
+1572367923586,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,319,1,1,https://localhost:8243/token,6,0,0
+1572367923595,7,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,321,1,1,https://localhost:8243/token,7,0,0
+1572367923605,9,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,319,1,1,https://localhost:8243/token,9,0,0
+1572367923617,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,319,1,1,https://localhost:8243/token,6,0,0
+1572367923626,7,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,325,1,1,https://localhost:8243/token,7,0,0
+1572367923637,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,6,0,0
+1572367923646,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,321,1,1,https://localhost:8243/token,6,0,0
+1572367923655,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,319,1,1,https://localhost:8243/token,6,0,0
+1572367923664,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,323,1,1,https://localhost:8243/token,6,0,0
+1572367923673,7,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,319,1,1,https://localhost:8243/token,7,0,0
+1572367923683,7,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,319,1,1,https://localhost:8243/token,7,0,0
+1572367923693,7,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,321,1,1,https://localhost:8243/token,7,0,0
+1572367923703,7,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,319,1,1,https://localhost:8243/token,7,0,0
+1572367923714,7,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,323,1,1,https://localhost:8243/token,7,0,0
+1572367923724,7,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,319,1,1,https://localhost:8243/token,7,0,0
+1572367923734,7,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,7,0,0
+1572367923745,5,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,5,0,0
+1572367923753,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,323,1,1,https://localhost:8243/token,6,0,0
+1572367923762,11,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,323,1,1,https://localhost:8243/token,10,0,0
+1572367923777,9,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,315,1,1,https://localhost:8243/token,9,0,0
+1572367923789,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,319,1,1,https://localhost:8243/token,6,0,0
+1572367923798,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,6,0,0
+1572367923806,7,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,7,0,0
+1572367923816,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,321,1,1,https://localhost:8243/token,6,0,0
+1572367923825,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,319,1,1,https://localhost:8243/token,6,0,0
+1572367923834,7,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,319,1,1,https://localhost:8243/token,7,0,0
+1572367923844,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,321,1,1,https://localhost:8243/token,6,0,0
+1572367923854,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,5,0,0
+1572367923862,7,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,319,1,1,https://localhost:8243/token,7,0,0
+1572367923872,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,321,1,1,https://localhost:8243/token,6,0,0
+1572367923882,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,6,0,0
+1572367923891,5,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,5,0,0
+1572367923899,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,321,1,1,https://localhost:8243/token,6,0,0
+1572367923908,5,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,5,0,0
+1572367923917,7,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,7,0,0
+1572367923928,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,319,1,1,https://localhost:8243/token,6,0,0
+1572367923937,5,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,323,1,1,https://localhost:8243/token,5,0,0
+1572367923946,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,319,1,1,https://localhost:8243/token,6,0,0
+1572367923956,5,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,315,1,1,https://localhost:8243/token,5,0,0
+1572367923964,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,321,1,1,https://localhost:8243/token,6,0,0
+1572367923973,5,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,5,0,0
+1572367923982,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,321,1,1,https://localhost:8243/token,6,0,0
+1572367923991,5,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,315,1,1,https://localhost:8243/token,5,0,0
+1572367923999,5,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,319,1,1,https://localhost:8243/token,5,0,0
+1572367924007,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,319,1,1,https://localhost:8243/token,6,0,0
+1572367924016,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,315,1,1,https://localhost:8243/token,6,0,0
+1572367924025,5,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,319,1,1,https://localhost:8243/token,5,0,0
+1572367924034,7,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,315,1,1,https://localhost:8243/token,7,0,0
+1572367924044,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,6,0,0
+1572367924054,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,321,1,1,https://localhost:8243/token,6,0,0
+1572367924064,5,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,321,1,1,https://localhost:8243/token,5,0,0
+1572367924073,5,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,329,1,1,https://localhost:8243/token,4,0,0
+1572367924081,5,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,5,0,0
+1572367924089,5,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,325,1,1,https://localhost:8243/token,5,0,0
+1572367924098,5,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,315,1,1,https://localhost:8243/token,5,0,0
+1572367924107,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,6,0,0
+1572367924117,5,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,5,0,0
+1572367924125,5,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,321,1,1,https://localhost:8243/token,5,0,0
+1572367924133,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,315,1,1,https://localhost:8243/token,6,0,0
+1572367924143,5,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,5,0,0
+1572367924151,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,321,1,1,https://localhost:8243/token,6,0,0
+1572367924161,5,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,329,1,1,https://localhost:8243/token,5,0,0
+1572367924169,7,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,7,0,0
+1572367924181,5,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,325,1,1,https://localhost:8243/token,5,0,0
+1572367924190,7,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,315,1,1,https://localhost:8243/token,7,0,0
+1572367924201,5,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,5,0,0
+1572367924210,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,6,0,0
+1572367924219,7,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,321,1,1,https://localhost:8243/token,7,0,0
+1572367924230,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,315,1,1,https://localhost:8243/token,6,0,0
+1572367924240,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,6,0,0
+1572367924250,7,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,323,1,1,https://localhost:8243/token,7,0,0
+1572367924262,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,319,1,1,https://localhost:8243/token,6,0,0
+1572367924272,7,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,321,1,1,https://localhost:8243/token,7,0,0
+1572367924284,7,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,7,0,0
+1572367924295,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,315,1,1,https://localhost:8243/token,6,0,0
+1572367924304,5,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,323,1,1,https://localhost:8243/token,5,0,0
+1572367924313,5,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,319,1,1,https://localhost:8243/token,5,0,0
+1572367924322,5,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,321,1,1,https://localhost:8243/token,5,0,0
+1572367924331,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,6,0,0
+1572367924340,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,315,1,1,https://localhost:8243/token,6,0,0
+1572367924351,8,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,329,1,1,https://localhost:8243/token,8,0,0
+1572367924363,5,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,319,1,1,https://localhost:8243/token,5,0,0
+1572367924372,5,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,321,1,1,https://localhost:8243/token,5,0,0
+1572367924381,5,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,315,1,1,https://localhost:8243/token,5,0,0
+1572367924390,5,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,315,1,1,https://localhost:8243/token,5,0,0
+1572367924399,5,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,4,0,0
+1572367924407,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,325,1,1,https://localhost:8243/token,6,0,0
+1572367924418,5,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,5,0,0
+1572367924427,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,6,0,0
+1572367924445,7,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,7,0,0
+1572367924455,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,6,0,0
+1572367924465,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,325,1,1,https://localhost:8243/token,6,0,0
+1572367924474,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,315,1,1,https://localhost:8243/token,6,0,0
+1572367924484,7,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,323,1,1,https://localhost:8243/token,7,0,0
+1572367924495,5,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,323,1,1,https://localhost:8243/token,5,0,0
+1572367924505,5,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,329,1,1,https://localhost:8243/token,5,0,0
+1572367924514,4,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,319,1,1,https://localhost:8243/token,4,0,0
+1572367924522,5,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,321,1,1,https://localhost:8243/token,5,0,0
+1572367924531,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,315,1,1,https://localhost:8243/token,6,0,0
+1572367924540,5,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,315,1,1,https://localhost:8243/token,5,0,0
+1572367924548,5,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,5,0,0
+1572367924557,5,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,325,1,1,https://localhost:8243/token,5,0,0
+1572367924566,4,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,4,0,0
+1572367924574,5,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,5,0,0
+1572367924583,5,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,5,0,0
+1572367924592,5,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,5,0,0
+1572367924602,5,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,325,1,1,https://localhost:8243/token,5,0,0
+1572367924612,5,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,315,1,1,https://localhost:8243/token,5,0,0
+1572367924622,5,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,323,1,1,https://localhost:8243/token,5,0,0
+1572367924631,4,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,323,1,1,https://localhost:8243/token,4,0,0
+1572367924640,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,319,1,1,https://localhost:8243/token,6,0,0
+1572367924650,5,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,315,1,1,https://localhost:8243/token,5,0,0
+1572367924659,5,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,5,0,0
+1572367924670,7,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,319,1,1,https://localhost:8243/token,6,0,0
+1572367924681,5,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,313,1,1,https://localhost:8243/token,5,0,0
+1572367924691,5,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,5,0,0
+1572367924701,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,6,0,0
+1572367924711,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,321,1,1,https://localhost:8243/token,6,0,0
+1572367924721,5,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,319,1,1,https://localhost:8243/token,5,0,0
+1572367924730,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,319,1,1,https://localhost:8243/token,6,0,0
+1572367924742,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,319,1,1,https://localhost:8243/token,6,0,0
+1572367924752,5,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,315,1,1,https://localhost:8243/token,5,0,0
+1572367924761,5,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,5,0,0
+1572367924771,5,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,319,1,1,https://localhost:8243/token,5,0,0
+1572367924781,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,313,1,1,https://localhost:8243/token,6,0,0
+1572367924793,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,6,0,0
+1572367924803,5,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,4,0,0
+1572367924812,5,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,321,1,1,https://localhost:8243/token,5,0,0
+1572367924822,4,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,319,1,1,https://localhost:8243/token,4,0,0
+1572367924831,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,319,1,1,https://localhost:8243/token,6,0,0
+1572367924841,5,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,319,1,1,https://localhost:8243/token,5,0,0
+1572367924851,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,315,1,1,https://localhost:8243/token,6,0,0
+1572367924862,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,6,0,0
+1572367924872,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,319,1,1,https://localhost:8243/token,6,0,0
+1572367924883,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,313,1,1,https://localhost:8243/token,6,0,0
+1572367924893,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,6,0,0
+1572367924904,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,317,1,1,https://localhost:8243/token,5,0,0
+1572367924915,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,321,1,1,https://localhost:8243/token,6,0,0
+1572367924925,5,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,319,1,1,https://localhost:8243/token,5,0,0
+1572367924934,6,Generate token,401,Unauthorized,Generate token list 2-1,text,false,Test failed: code expected to contain /200/,363,319,1,1,https://localhost:8243/token,6,0,0
+1572369976088,760,Get Id and Secret,200,OK,Create & publish all API's 1-1,text,true,,541,443,1,1,https://localhost:9443/client-registration/v0.14/register,759,0,218
+1572369977152,263,Get access token to create,200,OK,Create & publish all API's 1-1,text,true,,473,377,1,1,https://localhost:8243/token,263,0,29
+1572369977425,921,Add new API,201,Created,Create & publish all API's 1-1,text,true,,2291,2514,1,1,https://localhost:9443/api/am/publisher/v0.14/apis,921,0,0
+1572369978349,22,Get access token to publish,200,OK,Create & publish all API's 1-1,text,true,,460,364,1,1,https://localhost:8243/token,22,0,0
+1572369978372,1058,Publish API,200,OK,Create & publish all API's 1-1,,true,,103,334,1,1,https://localhost:9443/api/am/publisher/v0.14/apis/change-lifecycle?apiId=4314acb4-b487-4460-88ed-4231cd4372b1&action=Publish,1058,0,14
+1572369979430,351,Add new API,201,Created,Create & publish all API's 1-1,text,true,,2306,2529,1,1,https://localhost:9443/api/am/publisher/v0.14/apis,351,0,0
+1572369979783,30,Get access token to publish,200,OK,Create & publish all API's 1-1,text,true,,460,364,1,1,https://localhost:8243/token,30,0,7
+1572369979814,390,Publish API,200,OK,Create & publish all API's 1-1,,true,,103,334,1,1,https://localhost:9443/api/am/publisher/v0.14/apis/change-lifecycle?apiId=4c4d100b-5ec5-4b06-9852-063ae06b11b0&action=Publish,390,0,0
+1572369980205,270,Add new API,201,Created,Create & publish all API's 1-1,text,true,,2296,2519,1,1,https://localhost:9443/api/am/publisher/v0.14/apis,270,0,0
+1572369980477,9,Get access token to publish,200,OK,Create & publish all API's 1-1,text,true,,460,364,1,1,https://localhost:8243/token,9,0,0
+1572369980487,352,Publish API,200,OK,Create & publish all API's 1-1,,true,,103,334,1,1,https://localhost:9443/api/am/publisher/v0.14/apis/change-lifecycle?apiId=d81f476b-aa84-4190-8780-5799d6233440&action=Publish,352,0,6
+1572369980839,280,Add new API,201,Created,Create & publish all API's 1-1,text,true,,2323,2546,1,1,https://localhost:9443/api/am/publisher/v0.14/apis,279,0,0
+1572369981120,12,Get access token to publish,200,OK,Create & publish all API's 1-1,text,true,,460,364,1,1,https://localhost:8243/token,11,0,0
+1572369981132,314,Publish API,200,OK,Create & publish all API's 1-1,,true,,103,334,1,1,https://localhost:9443/api/am/publisher/v0.14/apis/change-lifecycle?apiId=c379b6f2-1a93-4ec9-814a-2513dbff31fc&action=Publish,314,0,0
+1572369981446,249,Add new API,201,Created,Create & publish all API's 1-1,text,true,,2637,2860,1,1,https://localhost:9443/api/am/publisher/v0.14/apis,249,0,0
+1572369981697,12,Get access token to publish,200,OK,Create & publish all API's 1-1,text,true,,460,364,1,1,https://localhost:8243/token,12,0,0
+1572369981709,335,Publish API,200,OK,Create & publish all API's 1-1,,true,,103,334,1,1,https://localhost:9443/api/am/publisher/v0.14/apis/change-lifecycle?apiId=10c0d8ec-671e-4cf4-891d-f83a0624339b&action=Publish,335,0,0
+1572369982044,241,Add new API,201,Created,Create & publish all API's 1-1,text,true,,2306,2529,1,1,https://localhost:9443/api/am/publisher/v0.14/apis,241,0,0
+1572369982287,19,Get access token to publish,200,OK,Create & publish all API's 1-1,text,true,,460,364,1,1,https://localhost:8243/token,19,0,4
+1572369982307,301,Publish API,200,OK,Create & publish all API's 1-1,,true,,103,334,1,1,https://localhost:9443/api/am/publisher/v0.14/apis/change-lifecycle?apiId=c1d17b69-f089-4c7f-a6e7-c2f0733f12b8&action=Publish,301,0,0
+1572369982624,53,Get Id and secret,200,OK,Create Applications 2-1,text,true,,543,451,1,1,https://localhost:9443/client-registration/v0.14/register,52,0,22
+1572369982698,42,Get access token,200,OK,Create Applications 2-1,text,true,,472,376,1,1,https://localhost:8243/token,42,0,19
+1572369982750,602,Create new application,201,Created,Create Applications 2-1,text,true,,869,743,1,1,https://localhost:9443/api/am/store/v0.14/applications,602,0,0
+1572369983354,17,Create new application,201,Created,Create Applications 2-1,text,true,,718,592,1,1,https://localhost:9443/api/am/store/v0.14/applications,17,0,0
+1572369983372,10,Create new application,201,Created,Create Applications 2-1,text,true,,762,636,1,1,https://localhost:9443/api/am/store/v0.14/applications,10,0,0
+1572369985411,25,Get Id and secret,200,OK,Subscribe to applications 3-1,text,true,,458,451,1,1,https://localhost:9443/client-registration/v0.14/register,24,0,18
+1572369987438,28,Get access token,200,OK,Subscribe to applications 3-1,text,true,,472,376,1,1,https://localhost:8243/token,28,0,14
+1572369989483,101,Retrieve APIs,200,OK,Subscribe to applications 3-1,text,true,,1155,211,1,1,https://localhost:9443/api/am/store/v0.14/apis?limit=200,101,0,9
+1572369991613,25,Retrieve applications,200,OK,Subscribe to applications 3-1,text,true,,1735,219,1,1,https://localhost:9443/api/am/store/v0.14/applications?limit=200,25,0,12
+1572369993644,35,Do subscribe,201,Created,Subscribe to applications 3-1,text,true,,447,417,1,1,https://localhost:9443/api/am/store/v0.14/subscriptions,35,0,6
+1572369995685,43,Retrieve APIs,200,OK,Subscribe to applications 3-1,text,true,,2079,211,1,1,https://localhost:9443/api/am/store/v0.14/apis?limit=200,43,0,10
+1572369997733,22,Retrieve applications,200,OK,Subscribe to applications 3-1,text,true,,1735,219,1,1,https://localhost:9443/api/am/store/v0.14/applications?limit=200,22,0,14
+1572369999758,27,Do subscribe,201,Created,Subscribe to applications 3-1,text,true,,449,417,1,1,https://localhost:9443/api/am/store/v0.14/subscriptions,27,0,9
+1572370001793,30,Retrieve APIs,200,OK,Subscribe to applications 3-1,text,true,,2079,211,1,1,https://localhost:9443/api/am/store/v0.14/apis?limit=200,30,0,9
+1572370003827,16,Retrieve applications,200,OK,Subscribe to applications 3-1,text,true,,1735,219,1,1,https://localhost:9443/api/am/store/v0.14/applications?limit=200,15,0,7
+1572370005851,23,Do subscribe,201,Created,Subscribe to applications 3-1,text,true,,450,417,1,1,https://localhost:9443/api/am/store/v0.14/subscriptions,23,0,10
+1572370007877,38,Retrieve APIs,200,OK,Subscribe to applications 3-1,text,true,,2079,211,1,1,https://localhost:9443/api/am/store/v0.14/apis?limit=200,37,0,9
+1572370009920,13,Retrieve applications,200,OK,Subscribe to applications 3-1,text,true,,1735,219,1,1,https://localhost:9443/api/am/store/v0.14/applications?limit=200,12,0,5
+1572370011937,21,Do subscribe,201,Created,Subscribe to applications 3-1,text,true,,446,417,1,1,https://localhost:9443/api/am/store/v0.14/subscriptions,20,0,10
+1572370013960,31,Retrieve APIs,200,OK,Subscribe to applications 3-1,text,true,,2079,211,1,1,https://localhost:9443/api/am/store/v0.14/apis?limit=200,31,0,5
+1572370015994,28,Retrieve applications,200,OK,Subscribe to applications 3-1,text,true,,1735,219,1,1,https://localhost:9443/api/am/store/v0.14/applications?limit=200,28,0,22
+1572370018029,24,Do subscribe,201,Created,Subscribe to applications 3-1,text,true,,449,417,1,1,https://localhost:9443/api/am/store/v0.14/subscriptions,24,0,5
+1572370020057,27,Retrieve APIs,200,OK,Subscribe to applications 3-1,text,true,,2079,211,1,1,https://localhost:9443/api/am/store/v0.14/apis?limit=200,27,0,5
+1572370022088,13,Retrieve applications,200,OK,Subscribe to applications 3-1,text,true,,1735,219,1,1,https://localhost:9443/api/am/store/v0.14/applications?limit=200,13,0,6
+1572370024104,19,Do subscribe,201,Created,Subscribe to applications 3-1,text,true,,450,417,1,1,https://localhost:9443/api/am/store/v0.14/subscriptions,19,0,8
+1572370026126,25,Retrieve APIs,200,OK,Subscribe to applications 3-1,text,true,,2079,211,1,1,https://localhost:9443/api/am/store/v0.14/apis?limit=200,25,0,3
+1572370028155,9,Retrieve applications,200,OK,Subscribe to applications 3-1,text,true,,1735,219,1,1,https://localhost:9443/api/am/store/v0.14/applications?limit=200,9,0,4
+1572370030167,16,Do subscribe,201,Created,Subscribe to applications 3-1,text,true,,450,417,1,1,https://localhost:9443/api/am/store/v0.14/subscriptions,16,0,4
+1572370032185,18,Retrieve APIs,200,OK,Subscribe to applications 3-1,text,true,,2079,211,1,1,https://localhost:9443/api/am/store/v0.14/apis?limit=200,18,0,4
+1572370034207,13,Retrieve applications,200,OK,Subscribe to applications 3-1,text,true,,1735,219,1,1,https://localhost:9443/api/am/store/v0.14/applications?limit=200,13,0,7
+1572370036229,16,Do subscribe,201,Created,Subscribe to applications 3-1,text,true,,447,417,1,1,https://localhost:9443/api/am/store/v0.14/subscriptions,16,0,3
+1572370038248,23,Retrieve APIs,200,OK,Subscribe to applications 3-1,text,true,,2079,211,1,1,https://localhost:9443/api/am/store/v0.14/apis?limit=200,23,0,5
+1572370040274,9,Retrieve applications,200,OK,Subscribe to applications 3-1,text,true,,1735,219,1,1,https://localhost:9443/api/am/store/v0.14/applications?limit=200,9,0,6
+1572370042287,18,Do subscribe,201,Created,Subscribe to applications 3-1,text,true,,450,417,1,1,https://localhost:9443/api/am/store/v0.14/subscriptions,18,0,5
+1572370042333,522,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,501,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,522,0,2
+1572370042856,227,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,513,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,227,0,0
+1572370043084,229,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,504,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,229,0,0
+1572370043314,166,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,493,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,166,0,0
+1572370043481,160,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,470,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,160,0,0
+1572370043642,247,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,476,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,247,0,0
+1572370043890,190,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,479,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,190,0,0
+1572370044081,146,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,508,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,146,0,0
+1572370044228,241,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,494,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,241,0,0
+1572370044470,162,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,500,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,162,0,1
+1572370044633,149,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,475,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,149,0,0
+1572370044783,166,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,489,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,165,0,0
+1572370044949,216,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,500,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,216,0,0
+1572370045166,156,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,488,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,156,0,0
+1572370045323,177,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,515,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,177,0,0
+1572370045501,236,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,478,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,236,0,0
+1572370045738,145,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,533,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,145,0,0
+1572370045884,154,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,528,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,154,0,0
+1572370046039,142,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,509,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,142,0,0
+1572370046182,291,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,497,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,291,0,0
+1572370046473,159,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,500,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,159,0,1
+1572370046633,149,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,491,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,149,0,0
+1572370046783,154,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,500,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,154,0,0
+1572370046938,204,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,509,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,204,0,0
+1572370047142,160,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,501,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,160,0,0
+1572370047302,175,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,501,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,175,0,0
+1572370047478,198,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,504,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,198,0,0
+1572370047677,141,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,479,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,141,0,0
+1572370047818,173,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,494,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,172,0,0
+1572370047991,174,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,508,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,174,0,0
+1572370048166,240,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,504,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,240,0,0
+1572370048407,154,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,469,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,154,0,0
+1572370048562,140,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,470,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,140,0,1
+1572370048703,161,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,505,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,161,0,0
+1572370048865,245,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,499,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,245,0,0
+1572370049111,153,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,480,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,152,0,0
+1572370049264,181,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,483,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,181,0,0
+1572370049445,146,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,495,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,145,0,0
+1572370049591,214,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,492,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,214,0,0
+1572370049806,156,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,497,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,156,0,0
+1572370049963,155,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,476,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,155,0,0
+1572370050120,207,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,487,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,207,0,0
+1572370050328,148,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,484,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,148,0,0
+1572370050476,141,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,497,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,141,0,0
+1572370050618,129,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,463,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,129,0,0
+1572370050748,201,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,482,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,200,0,0
+1572370050949,132,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,489,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,132,0,0
+1572370051081,132,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,487,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,132,0,0
+1572370051214,142,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,481,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,142,0,0
+1572370051357,207,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,494,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,207,0,0
+1572370051564,161,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,470,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,161,0,0
+1572370051726,136,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,504,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,136,0,0
+1572370051863,140,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,492,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,140,0,0
+1572370052004,218,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,510,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,218,0,0
+1572370052222,150,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,495,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,150,0,0
+1572370052372,134,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,491,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,134,0,0
+1572370052507,144,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,492,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,144,0,0
+1572370052652,227,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,489,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,227,0,0
+1572370052880,151,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,476,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,150,0,0
+1572370053031,128,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,569,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,128,0,0
+1572370053160,126,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,499,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,126,0,0
+1572370053286,206,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,470,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,206,0,0
+1572370053493,141,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,496,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,141,0,0
+1572370053635,132,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,489,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,132,0,0
+1572370053768,140,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,476,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,140,0,0
+1572370053909,230,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,512,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,230,0,0
+1572370054139,124,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,506,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,124,0,0
+1572370054264,123,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,511,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,123,0,0
+1572370054387,127,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,489,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,127,0,0
+1572370054514,185,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,462,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,185,0,0
+1572370054700,116,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,497,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,116,0,0
+1572370054817,127,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,478,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,127,0,0
+1572370054945,118,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,492,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,118,0,0
+1572370055064,192,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,497,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,192,0,0
+1572370055257,128,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,486,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,128,0,0
+1572370055386,135,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,512,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,135,0,0
+1572370055521,176,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,487,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,175,0,0
+1572370055697,126,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,488,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,126,0,0
+1572370055823,122,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,497,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,122,0,0
+1572370055946,122,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,496,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,122,0,0
+1572370056069,210,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,493,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,210,0,0
+1572370056279,121,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,489,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,121,0,0
+1572370056401,118,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,499,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,118,0,0
+1572370056519,122,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,481,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,122,0,0
+1572370056642,185,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,510,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,185,0,0
+1572370056828,121,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,497,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,121,0,0
+1572370056950,115,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,494,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,115,0,0
+1572370057065,114,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,502,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,114,0,0
+1572370057180,197,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,497,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,197,0,0
+1572370057378,136,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,466,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,136,0,0
+1572370057514,116,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,508,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,116,0,0
+1572370057631,115,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,471,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,115,0,0
+1572370057747,188,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,496,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,188,0,0
+1572370057936,125,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,468,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,125,0,0
+1572370058061,122,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,490,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,122,0,0
+1572370058184,122,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,526,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,122,0,0
+1572370058307,189,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,506,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,189,0,0
+1572370058496,143,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,495,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,143,0,0
+1572370058640,127,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,490,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,127,0,0
+1572370058768,141,Sign up a new user,200,OK,Create all users 4-1,text,true,,630,498,1,1,http://localhost:9763/store/site/blocks/user/sign-up/ajax/user-add.jag,141,0,0
+1572370105456,310,Get Id and secret,200,OK,"Generate consumer_key, consumer_secret list 1-1",text,true,,458,451,1,1,https://localhost:9443/client-registration/v0.14/register,309,0,297
+1572370105835,35,Get access token,200,OK,"Generate consumer_key, consumer_secret list 1-1",text,true,,472,376,1,1,https://localhost:8243/token,35,0,14
+1572370105872,6,Retrieve applications and set app_id,200,OK,"Generate consumer_key, consumer_secret list 1-1",text,true,,1735,209,1,1,https://localhost:9443/api/am/store/v0.14/applications,6,0,0
+1572370105890,158,"Generate production keys and get consumer key, consumer secret",200,OK,"Generate consumer_key, consumer_secret list 1-1",text,true,,604,611,1,1,https://localhost:9443/api/am/store/v0.14/applications/generate-keys?applicationId=e74ba59b-b20c-48e1-845c-fb7709b4a732,158,0,0
+1572370106093,12,Get access token,200,OK,"Generate consumer_key, consumer_secret list 1-1",text,true,,472,376,1,1,https://localhost:8243/token,11,0,0
+1572370106106,5,Retrieve applications and set app_id,200,OK,"Generate consumer_key, consumer_secret list 1-1",text,true,,1735,209,1,1,https://localhost:9443/api/am/store/v0.14/applications,5,0,0
+1572370106113,91,"Generate production keys and get consumer key, consumer secret",200,OK,"Generate consumer_key, consumer_secret list 1-1",text,true,,604,611,1,1,https://localhost:9443/api/am/store/v0.14/applications/generate-keys?applicationId=0ecf6e82-dfe8-43b1-a7ae-f0c72c81a923,91,0,0
+1572370106208,9,Get access token,200,OK,"Generate consumer_key, consumer_secret list 1-1",text,true,,472,376,1,1,https://localhost:8243/token,9,0,0
+1572370106218,5,Retrieve applications and set app_id,200,OK,"Generate consumer_key, consumer_secret list 1-1",text,true,,1735,209,1,1,https://localhost:9443/api/am/store/v0.14/applications,5,0,0
+1572370106224,76,"Generate production keys and get consumer key, consumer secret",200,OK,"Generate consumer_key, consumer_secret list 1-1",text,true,,604,611,1,1,https://localhost:9443/api/am/store/v0.14/applications/generate-keys?applicationId=732f06c3-dc4b-43b3-86ed-28dd1b48d2bd,76,0,0
+1572370106337,31,Generate token,200,OK,Generate token list 2-1,text,true,,451,367,1,1,https://localhost:8243/token,31,0,13
+1572370106390,18,Generate token,200,OK,Generate token list 2-1,text,true,,451,367,1,1,https://localhost:8243/token,18,0,0
+1572370106412,21,Generate token,200,OK,Generate token list 2-1,text,true,,451,367,1,1,https://localhost:8243/token,20,0,0
+1572370106437,15,Generate token,200,OK,Generate token list 2-1,text,true,,451,367,1,1,https://localhost:8243/token,15,0,0
+1572370106456,12,Generate token,200,OK,Generate token list 2-1,text,true,,451,365,1,1,https://localhost:8243/token,12,0,0
+1572370106472,9,Generate token,200,OK,Generate token list 2-1,text,true,,451,363,1,1,https://localhost:8243/token,9,0,0
+1572370106486,12,Generate token,200,OK,Generate token list 2-1,text,true,,451,363,1,1,https://localhost:8243/token,12,0,0
+1572370106501,13,Generate token,200,OK,Generate token list 2-1,text,true,,451,363,1,1,https://localhost:8243/token,13,0,0
+1572370106518,15,Generate token,200,OK,Generate token list 2-1,text,true,,451,365,1,1,https://localhost:8243/token,15,0,0
+1572370106538,19,Generate token,200,OK,Generate token list 2-1,text,true,,451,369,1,1,https://localhost:8243/token,19,0,0
+1572370106560,13,Generate token,200,OK,Generate token list 2-1,text,true,,451,365,1,1,https://localhost:8243/token,12,0,0
+1572370106577,8,Generate token,200,OK,Generate token list 2-1,text,true,,451,367,1,1,https://localhost:8243/token,8,0,0
+1572370106589,17,Generate token,200,OK,Generate token list 2-1,text,true,,451,367,1,1,https://localhost:8243/token,17,0,0
+1572370106611,12,Generate token,200,OK,Generate token list 2-1,text,true,,451,367,1,1,https://localhost:8243/token,11,0,0
+1572370106626,10,Generate token,200,OK,Generate token list 2-1,text,true,,451,371,1,1,https://localhost:8243/token,10,0,0
+1572370106640,10,Generate token,200,OK,Generate token list 2-1,text,true,,451,365,1,1,https://localhost:8243/token,10,0,0
+1572370106653,15,Generate token,200,OK,Generate token list 2-1,text,true,,451,369,1,1,https://localhost:8243/token,14,0,0
+1572370106671,8,Generate token,200,OK,Generate token list 2-1,text,true,,451,369,1,1,https://localhost:8243/token,8,0,0
+1572370106683,8,Generate token,200,OK,Generate token list 2-1,text,true,,451,369,1,1,https://localhost:8243/token,8,0,0
+1572370106695,8,Generate token,200,OK,Generate token list 2-1,text,true,,451,369,1,1,https://localhost:8243/token,8,0,0
+1572370106707,8,Generate token,200,OK,Generate token list 2-1,text,true,,451,369,1,1,https://localhost:8243/token,8,0,0
+1572370106719,8,Generate token,200,OK,Generate token list 2-1,text,true,,451,369,1,1,https://localhost:8243/token,8,0,0
+1572370106730,9,Generate token,200,OK,Generate token list 2-1,text,true,,451,365,1,1,https://localhost:8243/token,9,0,0
+1572370106742,9,Generate token,200,OK,Generate token list 2-1,text,true,,451,371,1,1,https://localhost:8243/token,9,0,0
+1572370106755,10,Generate token,200,OK,Generate token list 2-1,text,true,,451,365,1,1,https://localhost:8243/token,10,0,0
+1572370106769,11,Generate token,200,OK,Generate token list 2-1,text,true,,451,367,1,1,https://localhost:8243/token,11,0,0
+1572370106783,9,Generate token,200,OK,Generate token list 2-1,text,true,,451,367,1,1,https://localhost:8243/token,9,0,0
+1572370106796,11,Generate token,200,OK,Generate token list 2-1,text,true,,451,365,1,1,https://localhost:8243/token,11,0,0
+1572370106811,10,Generate token,200,OK,Generate token list 2-1,text,true,,451,369,1,1,https://localhost:8243/token,10,0,0
+1572370106825,9,Generate token,200,OK,Generate token list 2-1,text,true,,451,363,1,1,https://localhost:8243/token,8,0,0
+1572370106837,10,Generate token,200,OK,Generate token list 2-1,text,true,,451,369,1,1,https://localhost:8243/token,10,0,0
+1572370106851,11,Generate token,200,OK,Generate token list 2-1,text,true,,451,367,1,1,https://localhost:8243/token,10,0,0
+1572370106866,11,Generate token,200,OK,Generate token list 2-1,text,true,,451,365,1,1,https://localhost:8243/token,10,0,0
+1572370106880,10,Generate token,200,OK,Generate token list 2-1,text,true,,451,371,1,1,https://localhost:8243/token,9,0,0
+1572370106893,9,Generate token,200,OK,Generate token list 2-1,text,true,,451,367,1,1,https://localhost:8243/token,9,0,0
+1572370106905,8,Generate token,200,OK,Generate token list 2-1,text,true,,451,369,1,1,https://localhost:8243/token,8,0,0
+1572370106917,9,Generate token,200,OK,Generate token list 2-1,text,true,,451,367,1,1,https://localhost:8243/token,9,0,0
+1572370106931,12,Generate token,200,OK,Generate token list 2-1,text,true,,451,363,1,1,https://localhost:8243/token,12,0,0
+1572370106946,8,Generate token,200,OK,Generate token list 2-1,text,true,,451,367,1,1,https://localhost:8243/token,8,0,0
+1572370106958,9,Generate token,200,OK,Generate token list 2-1,text,true,,451,367,1,1,https://localhost:8243/token,9,0,0
+1572370106971,15,Generate token,200,OK,Generate token list 2-1,text,true,,451,369,1,1,https://localhost:8243/token,14,0,0
+1572370106989,13,Generate token,200,OK,Generate token list 2-1,text,true,,451,369,1,1,https://localhost:8243/token,12,0,0
+1572370107005,10,Generate token,200,OK,Generate token list 2-1,text,true,,451,365,1,1,https://localhost:8243/token,10,0,0
+1572370107018,10,Generate token,200,OK,Generate token list 2-1,text,true,,451,365,1,1,https://localhost:8243/token,10,0,0
+1572370107032,9,Generate token,200,OK,Generate token list 2-1,text,true,,451,363,1,1,https://localhost:8243/token,9,0,0
+1572370107045,10,Generate token,200,OK,Generate token list 2-1,text,true,,451,369,1,1,https://localhost:8243/token,10,0,0
+1572370107059,12,Generate token,200,OK,Generate token list 2-1,text,true,,451,365,1,1,https://localhost:8243/token,12,0,0
+1572370107074,7,Generate token,200,OK,Generate token list 2-1,text,true,,451,365,1,1,https://localhost:8243/token,7,0,0
+1572370107084,10,Generate token,200,OK,Generate token list 2-1,text,true,,451,365,1,1,https://localhost:8243/token,10,0,0
+1572370107097,9,Generate token,200,OK,Generate token list 2-1,text,true,,451,367,1,1,https://localhost:8243/token,9,0,0
+1572370107111,11,Generate token,200,OK,Generate token list 2-1,text,true,,451,365,1,1,https://localhost:8243/token,11,0,0
+1572370107126,10,Generate token,200,OK,Generate token list 2-1,text,true,,451,367,1,1,https://localhost:8243/token,10,0,0
+1572370107139,8,Generate token,200,OK,Generate token list 2-1,text,true,,451,369,1,1,https://localhost:8243/token,8,0,0
+1572370107150,8,Generate token,200,OK,Generate token list 2-1,text,true,,451,369,1,1,https://localhost:8243/token,8,0,0
+1572370107162,7,Generate token,200,OK,Generate token list 2-1,text,true,,451,369,1,1,https://localhost:8243/token,7,0,0
+1572370107172,8,Generate token,200,OK,Generate token list 2-1,text,true,,451,367,1,1,https://localhost:8243/token,8,0,0
+1572370107183,8,Generate token,200,OK,Generate token list 2-1,text,true,,451,365,1,1,https://localhost:8243/token,8,0,0
+1572370107195,9,Generate token,200,OK,Generate token list 2-1,text,true,,451,365,1,1,https://localhost:8243/token,9,0,0
+1572370107208,8,Generate token,200,OK,Generate token list 2-1,text,true,,451,365,1,1,https://localhost:8243/token,8,0,0
+1572370107220,9,Generate token,200,OK,Generate token list 2-1,text,true,,451,373,1,1,https://localhost:8243/token,9,0,0
+1572370107232,7,Generate token,200,OK,Generate token list 2-1,text,true,,451,373,1,1,https://localhost:8243/token,7,0,0
+1572370107243,8,Generate token,200,OK,Generate token list 2-1,text,true,,451,361,1,1,https://localhost:8243/token,8,0,0
+1572370107255,9,Generate token,200,OK,Generate token list 2-1,text,true,,451,371,1,1,https://localhost:8243/token,9,0,0
+1572370107266,8,Generate token,200,OK,Generate token list 2-1,text,true,,451,365,1,1,https://localhost:8243/token,7,0,0
+1572370107277,9,Generate token,200,OK,Generate token list 2-1,text,true,,451,365,1,1,https://localhost:8243/token,9,0,0
+1572370107289,8,Generate token,200,OK,Generate token list 2-1,text,true,,451,371,1,1,https://localhost:8243/token,8,0,0
+1572370107301,9,Generate token,200,OK,Generate token list 2-1,text,true,,451,369,1,1,https://localhost:8243/token,9,0,0
+1572370107314,8,Generate token,200,OK,Generate token list 2-1,text,true,,451,365,1,1,https://localhost:8243/token,8,0,0
+1572370107325,9,Generate token,200,OK,Generate token list 2-1,text,true,,451,369,1,1,https://localhost:8243/token,9,0,0
+1572370107338,8,Generate token,200,OK,Generate token list 2-1,text,true,,451,363,1,1,https://localhost:8243/token,8,0,0
+1572370107350,10,Generate token,200,OK,Generate token list 2-1,text,true,,451,373,1,1,https://localhost:8243/token,10,0,0
+1572370107363,9,Generate token,200,OK,Generate token list 2-1,text,true,,451,361,1,1,https://localhost:8243/token,9,0,0
+1572370107375,7,Generate token,200,OK,Generate token list 2-1,text,true,,451,371,1,1,https://localhost:8243/token,6,0,0
+1572370107385,7,Generate token,200,OK,Generate token list 2-1,text,true,,451,365,1,1,https://localhost:8243/token,7,0,0
+1572370107396,7,Generate token,200,OK,Generate token list 2-1,text,true,,451,365,1,1,https://localhost:8243/token,7,0,0
+1572370107406,8,Generate token,200,OK,Generate token list 2-1,text,true,,451,371,1,1,https://localhost:8243/token,8,0,0
+1572370107417,9,Generate token,200,OK,Generate token list 2-1,text,true,,451,369,1,1,https://localhost:8243/token,9,0,0
+1572370107431,9,Generate token,200,OK,Generate token list 2-1,text,true,,451,365,1,1,https://localhost:8243/token,9,0,0
+1572370107443,8,Generate token,200,OK,Generate token list 2-1,text,true,,451,369,1,1,https://localhost:8243/token,7,0,0
+1572370107453,10,Generate token,200,OK,Generate token list 2-1,text,true,,451,363,1,1,https://localhost:8243/token,10,0,0
+1572370107467,8,Generate token,200,OK,Generate token list 2-1,text,true,,451,369,1,1,https://localhost:8243/token,8,0,0
+1572370107478,9,Generate token,200,OK,Generate token list 2-1,text,true,,451,361,1,1,https://localhost:8243/token,9,0,0
+1572370107490,8,Generate token,200,OK,Generate token list 2-1,text,true,,451,365,1,1,https://localhost:8243/token,8,0,0
+1572370107502,7,Generate token,200,OK,Generate token list 2-1,text,true,,451,371,1,1,https://localhost:8243/token,7,0,0
+1572370107518,10,Generate token,200,OK,Generate token list 2-1,text,true,,451,365,1,1,https://localhost:8243/token,9,0,0
+1572370107530,7,Generate token,200,OK,Generate token list 2-1,text,true,,451,369,1,1,https://localhost:8243/token,7,0,0
+1572370107540,8,Generate token,200,OK,Generate token list 2-1,text,true,,451,361,1,1,https://localhost:8243/token,8,0,0
+1572370107551,9,Generate token,200,OK,Generate token list 2-1,text,true,,451,365,1,1,https://localhost:8243/token,9,0,0
+1572370107564,6,Generate token,200,OK,Generate token list 2-1,text,true,,451,371,1,1,https://localhost:8243/token,6,0,0
+1572370107573,8,Generate token,200,OK,Generate token list 2-1,text,true,,451,365,1,1,https://localhost:8243/token,8,0,0
+1572370107585,8,Generate token,200,OK,Generate token list 2-1,text,true,,451,375,1,1,https://localhost:8243/token,8,0,0
+1572370107597,8,Generate token,200,OK,Generate token list 2-1,text,true,,451,369,1,1,https://localhost:8243/token,8,0,0
+1572370107609,9,Generate token,200,OK,Generate token list 2-1,text,true,,451,369,1,1,https://localhost:8243/token,9,0,0
+1572370107621,10,Generate token,200,OK,Generate token list 2-1,text,true,,451,367,1,1,https://localhost:8243/token,10,0,0
+1572370107634,9,Generate token,200,OK,Generate token list 2-1,text,true,,451,371,1,1,https://localhost:8243/token,9,0,0
+1572370107646,8,Generate token,200,OK,Generate token list 2-1,text,true,,451,365,1,1,https://localhost:8243/token,8,0,0
+1572370107658,7,Generate token,200,OK,Generate token list 2-1,text,true,,451,365,1,1,https://localhost:8243/token,7,0,0
+1572370107669,7,Generate token,200,OK,Generate token list 2-1,text,true,,451,367,1,1,https://localhost:8243/token,6,0,0
+1572370107679,7,Generate token,200,OK,Generate token list 2-1,text,true,,451,367,1,1,https://localhost:8243/token,7,0,0
+1572370107690,8,Generate token,200,OK,Generate token list 2-1,text,true,,451,377,1,1,https://localhost:8243/token,8,0,0
+1572370107702,9,Generate token,200,OK,Generate token list 2-1,text,true,,451,367,1,1,https://localhost:8243/token,9,0,0
+1572370107714,7,Generate token,200,OK,Generate token list 2-1,text,true,,451,367,1,1,https://localhost:8243/token,7,0,0
+1572370107724,8,Generate token,200,OK,Generate token list 2-1,text,true,,451,363,1,1,https://localhost:8243/token,8,0,0
+1572370107735,7,Generate token,200,OK,Generate token list 2-1,text,true,,451,369,1,1,https://localhost:8243/token,7,0,0
+1572370107745,9,Generate token,200,OK,Generate token list 2-1,text,true,,451,365,1,1,https://localhost:8243/token,9,0,0
+1572370107758,8,Generate token,200,OK,Generate token list 2-1,text,true,,451,375,1,1,https://localhost:8243/token,8,0,0
+1572370107770,10,Generate token,200,OK,Generate token list 2-1,text,true,,451,369,1,1,https://localhost:8243/token,10,0,0
+1572370107784,9,Generate token,200,OK,Generate token list 2-1,text,true,,451,369,1,1,https://localhost:8243/token,9,0,0
+1572370107797,8,Generate token,200,OK,Generate token list 2-1,text,true,,451,367,1,1,https://localhost:8243/token,8,0,0
+1572370107808,7,Generate token,200,OK,Generate token list 2-1,text,true,,451,371,1,1,https://localhost:8243/token,7,0,0
+1572370107818,8,Generate token,200,OK,Generate token list 2-1,text,true,,451,365,1,1,https://localhost:8243/token,8,0,0
+1572370107830,8,Generate token,200,OK,Generate token list 2-1,text,true,,451,365,1,1,https://localhost:8243/token,8,0,0
+1572370107841,8,Generate token,200,OK,Generate token list 2-1,text,true,,451,367,1,1,https://localhost:8243/token,8,0,0
+1572370107852,8,Generate token,200,OK,Generate token list 2-1,text,true,,451,367,1,1,https://localhost:8243/token,8,0,0
+1572370107863,7,Generate token,200,OK,Generate token list 2-1,text,true,,451,377,1,1,https://localhost:8243/token,7,0,0
+1572370107874,7,Generate token,200,OK,Generate token list 2-1,text,true,,451,367,1,1,https://localhost:8243/token,7,0,0
+1572370107884,7,Generate token,200,OK,Generate token list 2-1,text,true,,451,367,1,1,https://localhost:8243/token,6,0,0
+1572370107895,8,Generate token,200,OK,Generate token list 2-1,text,true,,451,363,1,1,https://localhost:8243/token,7,0,0
+1572370107906,7,Generate token,200,OK,Generate token list 2-1,text,true,,451,369,1,1,https://localhost:8243/token,7,0,0
+1572370107917,6,Generate token,200,OK,Generate token list 2-1,text,true,,451,365,1,1,https://localhost:8243/token,6,0,0
+1572370107927,8,Generate token,200,OK,Generate token list 2-1,text,true,,451,369,1,1,https://localhost:8243/token,8,0,0
+1572370107938,7,Generate token,200,OK,Generate token list 2-1,text,true,,451,365,1,1,https://localhost:8243/token,7,0,0
+1572370107948,7,Generate token,200,OK,Generate token list 2-1,text,true,,451,371,1,1,https://localhost:8243/token,7,0,0
+1572370107960,10,Generate token,200,OK,Generate token list 2-1,text,true,,451,367,1,1,https://localhost:8243/token,10,0,0
+1572370107973,8,Generate token,200,OK,Generate token list 2-1,text,true,,451,369,1,1,https://localhost:8243/token,8,0,0
+1572370107984,8,Generate token,200,OK,Generate token list 2-1,text,true,,451,377,1,1,https://localhost:8243/token,8,0,0
+1572370107995,8,Generate token,200,OK,Generate token list 2-1,text,true,,451,365,1,1,https://localhost:8243/token,8,0,0
+1572370108007,9,Generate token,200,OK,Generate token list 2-1,text,true,,451,365,1,1,https://localhost:8243/token,9,0,0
+1572370108020,13,Generate token,200,OK,Generate token list 2-1,text,true,,451,367,1,1,https://localhost:8243/token,13,0,0
+1572370108037,12,Generate token,200,OK,Generate token list 2-1,text,true,,451,369,1,1,https://localhost:8243/token,11,0,0
+1572370108052,9,Generate token,200,OK,Generate token list 2-1,text,true,,451,369,1,1,https://localhost:8243/token,9,0,0
+1572370108066,12,Generate token,200,OK,Generate token list 2-1,text,true,,451,365,1,1,https://localhost:8243/token,12,0,0
+1572370108083,13,Generate token,200,OK,Generate token list 2-1,text,true,,451,371,1,1,https://localhost:8243/token,13,0,0
+1572370108100,13,Generate token,200,OK,Generate token list 2-1,text,true,,451,367,1,1,https://localhost:8243/token,13,0,0
+1572370108117,8,Generate token,200,OK,Generate token list 2-1,text,true,,451,369,1,1,https://localhost:8243/token,8,0,0
+1572370108129,8,Generate token,200,OK,Generate token list 2-1,text,true,,451,377,1,1,https://localhost:8243/token,8,0,0
+1572370108140,7,Generate token,200,OK,Generate token list 2-1,text,true,,451,365,1,1,https://localhost:8243/token,7,0,0
+1572370108150,7,Generate token,200,OK,Generate token list 2-1,text,true,,451,365,1,1,https://localhost:8243/token,7,0,0
+1572370108160,7,Generate token,200,OK,Generate token list 2-1,text,true,,451,367,1,1,https://localhost:8243/token,7,0,0
+1572370108170,8,Generate token,200,OK,Generate token list 2-1,text,true,,451,369,1,1,https://localhost:8243/token,8,0,0
+1572370108181,9,Generate token,200,OK,Generate token list 2-1,text,true,,451,369,1,1,https://localhost:8243/token,9,0,0
+1572370108194,9,Generate token,200,OK,Generate token list 2-1,text,true,,451,365,1,1,https://localhost:8243/token,9,0,0
+1572370108206,9,Generate token,200,OK,Generate token list 2-1,text,true,,451,371,1,1,https://localhost:8243/token,9,0,0
+1572370108219,8,Generate token,200,OK,Generate token list 2-1,text,true,,451,367,1,1,https://localhost:8243/token,8,0,0
+1572370108230,8,Generate token,200,OK,Generate token list 2-1,text,true,,451,369,1,1,https://localhost:8243/token,8,0,0
+1572370108242,8,Generate token,200,OK,Generate token list 2-1,text,true,,451,377,1,1,https://localhost:8243/token,8,0,0
+1572370108253,8,Generate token,200,OK,Generate token list 2-1,text,true,,451,365,1,1,https://localhost:8243/token,8,0,0
+1572370108264,7,Generate token,200,OK,Generate token list 2-1,text,true,,451,365,1,1,https://localhost:8243/token,7,0,0
+1572370108274,8,Generate token,200,OK,Generate token list 2-1,text,true,,451,367,1,1,https://localhost:8243/token,8,0,0
+1572370108286,9,Generate token,200,OK,Generate token list 2-1,text,true,,451,369,1,1,https://localhost:8243/token,9,0,0

@@ -1,108 +1,84 @@
-[INFO] 2019-10-29 15:23:03.668389: Scenario thread thread_0 started!
-[INFO] 2019-10-29 15:23:03.669184: Scenario thread thread_1 started!
-[INFO] 2019-10-29 15:23:03.669721: Scenario thread thread_2 started!
-[INFO] 2019-10-29 15:23:03.670530: Scenario thread thread_4 started!
-[INFO] 2019-10-29 15:23:03.671616: Scenario thread thread_3 started!
-[INFO] 2019-10-29 15:23:03.671836: Scenario thread thread_5 started!
-[INFO] 2019-10-29 15:23:03.676874: Scenario thread thread_6 started!
-[INFO] 2019-10-29 15:23:03.693595: Scenario thread thread_7 started!
-[INFO] 2019-10-29 15:23:03.693815: Scenario thread thread_8 started!
-[INFO] 2019-10-29 15:23:03.695027: Scenario thread thread_9 started!
-[INFO] 2019-10-29 15:23:03.698714: Scenario thread thread_10 started!
-[INFO] 2019-10-29 15:23:03.699708: Scenario thread thread_12 started!
-[INFO] 2019-10-29 15:23:03.706823: Scenario thread thread_11 started!
-[INFO] 2019-10-29 15:23:03.713772: Scenario thread thread_13 started!
-[INFO] 2019-10-29 15:23:03.717841: Scenario thread thread_14 started!
-[INFO] 2019-10-29 15:23:03.737969: Scenario thread thread_15 started!
-[INFO] 2019-10-29 15:23:03.740474: Scenario thread thread_17 started!
-[INFO] 2019-10-29 15:23:03.741013: Scenario thread thread_16 started!
-[INFO] 2019-10-29 15:23:03.749846: Scenario thread thread_18 started!
-[INFO] 2019-10-29 15:23:03.760540: Scenario thread thread_19 started!
-[INFO] 2019-10-29 15:23:03.763022: Scenario loaded successfully. Wait 7.0 minutes before closing the terminal!
-[INFO] 2019-10-29 15:26:50.956821: thread_2 stopped. Execution finished!
-[INFO] 2019-10-29 15:30:04.116570: Script terminated successfully. uptime:420 s
-[INFO] 2019-10-29 15:32:18.799886: Scenario thread thread_0 started!
-[INFO] 2019-10-29 15:32:18.801123: Scenario thread thread_1 started!
-[INFO] 2019-10-29 15:32:18.802037: Scenario thread thread_2 started!
-[INFO] 2019-10-29 15:32:18.802286: Scenario thread thread_3 started!
-[INFO] 2019-10-29 15:32:18.806502: Scenario thread thread_4 started!
-[INFO] 2019-10-29 15:32:18.809839: Scenario thread thread_5 started!
-[INFO] 2019-10-29 15:32:18.810250: Scenario thread thread_6 started!
-[INFO] 2019-10-29 15:32:18.815271: Scenario thread thread_7 started!
-[INFO] 2019-10-29 15:32:18.815352: Scenario thread thread_8 started!
-[INFO] 2019-10-29 15:32:18.822516: Scenario thread thread_9 started!
-[INFO] 2019-10-29 15:32:18.825350: Scenario thread thread_10 started!
-[INFO] 2019-10-29 15:32:18.828244: Scenario thread thread_11 started!
-[INFO] 2019-10-29 15:32:18.832400: Scenario thread thread_12 started!
-[INFO] 2019-10-29 15:32:18.841039: Scenario thread thread_14 started!
-[INFO] 2019-10-29 15:32:18.841113: Scenario thread thread_13 started!
-[INFO] 2019-10-29 15:32:18.861305: Scenario thread thread_15 started!
-[INFO] 2019-10-29 15:32:18.880528: Scenario thread thread_16 started!
-[INFO] 2019-10-29 15:32:18.880976: Scenario thread thread_17 started!
-[INFO] 2019-10-29 15:32:18.900559: Scenario thread thread_18 started!
-[INFO] 2019-10-29 15:32:18.929729: Scenario thread thread_19 started!
-[INFO] 2019-10-29 15:32:18.961655: Scenario loaded successfully. Wait 1.0 minutes before closing the terminal!
-[INFO] 2019-10-29 15:33:13.215354: thread_13 stopped. Execution finished!
-[INFO] 2019-10-29 15:33:20.684681: thread_6 stopped. Execution finished!
-[INFO] 2019-10-29 15:33:28.613160: thread_11 stopped. Execution finished!
-[INFO] 2019-10-29 15:33:29.606524: thread_10 stopped. Execution finished!
-[INFO] 2019-10-29 15:35:03.214382: Scenario thread thread_0 started!
-[INFO] 2019-10-29 15:35:03.215035: Scenario thread thread_1 started!
-[INFO] 2019-10-29 15:35:03.216022: Scenario thread thread_2 started!
-[INFO] 2019-10-29 15:35:03.216536: Scenario thread thread_3 started!
-[INFO] 2019-10-29 15:35:03.221125: Scenario thread thread_4 started!
-[INFO] 2019-10-29 15:35:03.224135: Scenario thread thread_5 started!
-[INFO] 2019-10-29 15:35:03.224189: Scenario thread thread_6 started!
-[INFO] 2019-10-29 15:35:03.226030: Scenario thread thread_7 started!
-[INFO] 2019-10-29 15:35:03.233310: Scenario thread thread_9 started!
-[INFO] 2019-10-29 15:35:03.237762: Scenario thread thread_10 started!
-[INFO] 2019-10-29 15:35:03.238381: Scenario thread thread_8 started!
-[INFO] 2019-10-29 15:35:03.244824: Scenario thread thread_11 started!
-[INFO] 2019-10-29 15:35:03.244978: Scenario thread thread_13 started!
-[INFO] 2019-10-29 15:35:03.248766: Scenario thread thread_14 started!
-[INFO] 2019-10-29 15:35:03.253878: Scenario thread thread_15 started!
-[INFO] 2019-10-29 15:35:03.257500: Scenario thread thread_12 started!
-[INFO] 2019-10-29 15:35:03.259284: Scenario thread thread_16 started!
-[INFO] 2019-10-29 15:35:03.285047: Scenario thread thread_17 started!
-[INFO] 2019-10-29 15:35:03.291983: Scenario thread thread_18 started!
-[INFO] 2019-10-29 15:35:03.293591: Scenario thread thread_19 started!
-[INFO] 2019-10-29 15:35:03.306928: Scenario loaded successfully. Wait 1.0 minutes before closing the terminal!
-[INFO] 2019-10-29 15:35:20.401217: thread_0 stopped. Execution finished!
-[INFO] 2019-10-29 15:35:30.861747: thread_18 stopped. Execution finished!
-[INFO] 2019-10-29 15:35:33.976416: thread_1 stopped. Execution finished!
-[INFO] 2019-10-29 15:36:03.377868: Script terminated successfully. uptime:1.0 s
-[INFO] 2019-10-29 15:37:03.362258: thread_2 stopped. Execution finished!
-[INFO] 2019-10-29 15:37:17.782249: thread_11 stopped. Execution finished!
-[INFO] 2019-10-29 15:37:22.767174: thread_8 stopped. Execution finished!
-[INFO] 2019-10-29 15:37:29.099685: thread_1 stopped. Execution finished!
-[INFO] 2019-10-29 15:37:30.918604: thread_9 stopped. Execution finished!
-[INFO] 2019-10-29 15:39:16.973008: thread_12 stopped. Execution finished!
-[INFO] 2019-10-29 15:39:23.174909: thread_12 stopped. Execution finished!
-[INFO] 2019-10-29 15:39:27.820197: thread_7 stopped. Execution finished!
-[INFO] 2019-10-29 15:39:42.114822: thread_2 stopped. Execution finished!
-[INFO] 2019-10-29 15:39:58.066927: thread_5 stopped. Execution finished!
-[INFO] 2019-10-29 15:43:23.504122: thread_16 stopped. Execution finished!
-[INFO] 2019-10-29 15:45:11.852132: thread_4 stopped. Execution finished!
-[INFO] 2019-10-29 15:45:17.871957: thread_8 stopped. Execution finished!
-[INFO] 2019-10-29 15:45:26.726553: thread_14 stopped. Execution finished!
-[INFO] 2019-10-29 15:45:27.110481: thread_19 stopped. Execution finished!
-[INFO] 2019-10-29 15:45:27.839404: thread_9 stopped. Execution finished!
-[INFO] 2019-10-29 15:45:55.622270: thread_14 stopped. Execution finished!
-[INFO] 2019-10-29 15:46:41.794702: thread_9 stopped. Execution finished!
-[INFO] 2019-10-29 15:46:43.204749: Script terminated successfully. uptime:3027 s
-[INFO] 2019-10-29 15:47:17.050551: thread_10 stopped. Execution finished!
-[INFO] 2019-10-29 15:47:18.166234: thread_18 stopped. Execution finished!
-[INFO] 2019-10-29 15:47:39.776482: thread_17 stopped. Execution finished!
-[INFO] 2019-10-29 15:47:50.488999: thread_0 stopped. Execution finished!
-[INFO] 2019-10-29 15:48:11.632353: thread_17 stopped. Execution finished!
-[INFO] 2019-10-29 15:49:31.773223: thread_15 stopped. Execution finished!
-[INFO] 2019-10-29 15:53:23.846441: thread_19 stopped. Execution finished!
-[INFO] 2019-10-29 15:53:34.068770: thread_4 stopped. Execution finished!
-[INFO] 2019-10-29 15:55:32.849485: thread_7 stopped. Execution finished!
-[INFO] 2019-10-29 15:55:55.338220: thread_3 stopped. Execution finished!
-[INFO] 2019-10-29 15:57:29.227229: thread_15 stopped. Execution finished!
-[INFO] 2019-10-29 15:59:24.297906: thread_6 stopped. Execution finished!
-[INFO] 2019-10-29 16:05:19.168339: thread_16 stopped. Execution finished!
-[INFO] 2019-10-29 16:05:19.327762: thread_13 stopped. Execution finished!
-[INFO] 2019-10-29 16:05:35.983984: thread_3 stopped. Execution finished!
-[INFO] 2019-10-29 16:07:48.289397: thread_5 stopped. Execution finished!
+[INFO] 2019-10-29 23:42:44.193392: Scenario thread thread_0 started!
+[INFO] 2019-10-29 23:42:44.194703: Scenario thread thread_1 started!
+[INFO] 2019-10-29 23:42:44.194848: Scenario thread thread_3 started!
+[INFO] 2019-10-29 23:42:44.194927: Scenario thread thread_2 started!
+[INFO] 2019-10-29 23:42:44.195031: Scenario thread thread_5 started!
+[INFO] 2019-10-29 23:42:44.195101: Scenario thread thread_4 started!
+[INFO] 2019-10-29 23:42:44.196454: Scenario thread thread_6 started!
+[INFO] 2019-10-29 23:42:44.204191: Scenario thread thread_7 started!
+[INFO] 2019-10-29 23:42:44.212679: Scenario thread thread_8 started!
+[INFO] 2019-10-29 23:42:44.212745: Scenario thread thread_9 started!
+[INFO] 2019-10-29 23:42:44.213526: Scenario thread thread_12 started!
+[INFO] 2019-10-29 23:42:44.214601: Scenario thread thread_14 started!
+[INFO] 2019-10-29 23:42:44.214660: Scenario thread thread_10 started!
+[INFO] 2019-10-29 23:42:44.217621: Scenario thread thread_13 started!
+[INFO] 2019-10-29 23:42:44.221167: Scenario thread thread_11 started!
+[INFO] 2019-10-29 23:42:44.222670: Scenario thread thread_15 started!
+[INFO] 2019-10-29 23:42:44.222851: Scenario thread thread_16 started!
+[INFO] 2019-10-29 23:42:44.232597: Scenario thread thread_17 started!
+[INFO] 2019-10-29 23:42:44.233146: Scenario thread thread_18 started!
+[INFO] 2019-10-29 23:42:44.233407: Scenario loaded successfully. Wait 3.0 minutes before closing the terminal!
+[INFO] 2019-10-29 23:42:44.233591: Scenario thread thread_19 started!
+[ERROR] 2019-10-29 23:44:53.738008: HTTPSConnectionPool(host='10.100.4.187', port=8243): Max retries exceeded with url: /places/1/getplace (Caused by NewConnectionError('<urllib3.connection.VerifiedHTTPSConnection object at 0x7f12b4211b00>: Failed to establish a new connection: [Errno 110] Connection timed out',))
+[ERROR] 2019-10-29 23:44:53.738583: HTTPSConnectionPool(host='10.100.4.187', port=8243): Max retries exceeded with url: /news/1/getnews (Caused by NewConnectionError('<urllib3.connection.VerifiedHTTPSConnection object at 0x7f12b6a7bf98>: Failed to establish a new connection: [Errno 110] Connection timed out',))
+[ERROR] 2019-10-29 23:44:53.739103: HTTPSConnectionPool(host='10.100.4.187', port=8243): Max retries exceeded with url: /news/1/getnews (Caused by NewConnectionError('<urllib3.connection.VerifiedHTTPSConnection object at 0x7f12b9b9fd30>: Failed to establish a new connection: [Errno 110] Connection timed out',))
+[ERROR] 2019-10-29 23:44:53.739230: HTTPSConnectionPool(host='10.100.4.187', port=8243): Max retries exceeded with url: /news/1/getnews (Caused by NewConnectionError('<urllib3.connection.VerifiedHTTPSConnection object at 0x7f12b421dc88>: Failed to establish a new connection: [Errno 110] Connection timed out',))
+[ERROR] 2019-10-29 23:44:53.739441: HTTPSConnectionPool(host='10.100.4.187', port=8243): Max retries exceeded with url: /news/1/getnews (Caused by NewConnectionError('<urllib3.connection.VerifiedHTTPSConnection object at 0x7f12b4235978>: Failed to establish a new connection: [Errno 110] Connection timed out',))
+[ERROR] 2019-10-29 23:44:53.739789: HTTPSConnectionPool(host='10.100.4.187', port=8243): Max retries exceeded with url: /news/1/getnews (Caused by NewConnectionError('<urllib3.connection.VerifiedHTTPSConnection object at 0x7f12b422bbe0>: Failed to establish a new connection: [Errno 110] Connection timed out',))
+[ERROR] 2019-10-29 23:44:53.741314: HTTPSConnectionPool(host='10.100.4.187', port=8243): Max retries exceeded with url: /news/1/getnews (Caused by NewConnectionError('<urllib3.connection.VerifiedHTTPSConnection object at 0x7f12b9b9f438>: Failed to establish a new connection: [Errno 110] Connection timed out',))
+[ERROR] 2019-10-29 23:44:53.743541: HTTPSConnectionPool(host='10.100.4.187', port=8243): Max retries exceeded with url: /news/1/getnews (Caused by NewConnectionError('<urllib3.connection.VerifiedHTTPSConnection object at 0x7f12b41c2438>: Failed to establish a new connection: [Errno 110] Connection timed out',))
+[ERROR] 2019-10-29 23:44:53.743975: HTTPSConnectionPool(host='10.100.4.187', port=8243): Max retries exceeded with url: /news/1/getnews (Caused by NewConnectionError('<urllib3.connection.VerifiedHTTPSConnection object at 0x7f12b6a7b358>: Failed to establish a new connection: [Errno 110] Connection timed out',))
+[ERROR] 2019-10-29 23:44:53.744611: HTTPSConnectionPool(host='10.100.4.187', port=8243): Max retries exceeded with url: /news/1/getnews (Caused by NewConnectionError('<urllib3.connection.VerifiedHTTPSConnection object at 0x7f12b41cfc88>: Failed to establish a new connection: [Errno 110] Connection timed out',))
+[ERROR] 2019-10-29 23:44:53.744694: HTTPSConnectionPool(host='10.100.4.187', port=8243): Max retries exceeded with url: /news/1/getnews (Caused by NewConnectionError('<urllib3.connection.VerifiedHTTPSConnection object at 0x7f12b4235cc0>: Failed to establish a new connection: [Errno 110] Connection timed out',))
+[ERROR] 2019-10-29 23:44:53.744746: HTTPSConnectionPool(host='10.100.4.187', port=8243): Max retries exceeded with url: /news/1/getnews (Caused by NewConnectionError('<urllib3.connection.VerifiedHTTPSConnection object at 0x7f12b6a7b908>: Failed to establish a new connection: [Errno 110] Connection timed out',))
+[ERROR] 2019-10-29 23:44:53.744810: HTTPSConnectionPool(host='10.100.4.187', port=8243): Max retries exceeded with url: /places/1/getplace (Caused by NewConnectionError('<urllib3.connection.VerifiedHTTPSConnection object at 0x7f12b4203710>: Failed to establish a new connection: [Errno 110] Connection timed out',))
+[ERROR] 2019-10-29 23:44:53.745061: HTTPSConnectionPool(host='10.100.4.187', port=8243): Max retries exceeded with url: /places/1/getplace (Caused by NewConnectionError('<urllib3.connection.VerifiedHTTPSConnection object at 0x7f12b6a7bc88>: Failed to establish a new connection: [Errno 110] Connection timed out',))
+[ERROR] 2019-10-29 23:44:53.745154: HTTPSConnectionPool(host='10.100.4.187', port=8243): Max retries exceeded with url: /places/1/getplace (Caused by NewConnectionError('<urllib3.connection.VerifiedHTTPSConnection object at 0x7f12b9b9fbe0>: Failed to establish a new connection: [Errno 110] Connection timed out',))
+[ERROR] 2019-10-29 23:44:53.747736: HTTPSConnectionPool(host='10.100.4.187', port=8243): Max retries exceeded with url: /places/1/getplace (Caused by NewConnectionError('<urllib3.connection.VerifiedHTTPSConnection object at 0x7f12b421d5f8>: Failed to establish a new connection: [Errno 110] Connection timed out',))
+[ERROR] 2019-10-29 23:44:53.747841: HTTPSConnectionPool(host='10.100.4.187', port=8243): Max retries exceeded with url: /news/1/getnews (Caused by NewConnectionError('<urllib3.connection.VerifiedHTTPSConnection object at 0x7f12b422bf60>: Failed to establish a new connection: [Errno 110] Connection timed out',))
+[ERROR] 2019-10-29 23:44:53.752456: HTTPSConnectionPool(host='10.100.4.187', port=8243): Max retries exceeded with url: /news/1/getnews (Caused by NewConnectionError('<urllib3.connection.VerifiedHTTPSConnection object at 0x7f12b41cf5f8>: Failed to establish a new connection: [Errno 110] Connection timed out',))
+[ERROR] 2019-10-29 23:44:53.756096: HTTPSConnectionPool(host='10.100.4.187', port=8243): Max retries exceeded with url: /news/1/getnews (Caused by NewConnectionError('<urllib3.connection.VerifiedHTTPSConnection object at 0x7f12b421d0f0>: Failed to establish a new connection: [Errno 110] Connection timed out',))
+[ERROR] 2019-10-29 23:44:53.756447: HTTPSConnectionPool(host='10.100.4.187', port=8243): Max retries exceeded with url: /news/1/getnews (Caused by NewConnectionError('<urllib3.connection.VerifiedHTTPSConnection object at 0x7f12b41cf940>: Failed to establish a new connection: [Errno 110] Connection timed out',))
+[INFO] 2019-10-29 23:45:44.384759: Script terminated successfully. uptime: 3.0 minutes
+[INFO] 2019-10-29 23:54:08.249513: Scenario thread thread_0 started!
+[INFO] 2019-10-29 23:54:08.250160: Scenario thread thread_1 started!
+[INFO] 2019-10-29 23:54:08.250949: Scenario thread thread_3 started!
+[INFO] 2019-10-29 23:54:08.251273: Scenario thread thread_2 started!
+[INFO] 2019-10-29 23:54:08.251417: Scenario thread thread_4 started!
+[INFO] 2019-10-29 23:54:08.251506: Scenario thread thread_5 started!
+[INFO] 2019-10-29 23:54:08.253618: Scenario thread thread_6 started!
+[INFO] 2019-10-29 23:54:08.253951: Scenario thread thread_7 started!
+[INFO] 2019-10-29 23:54:08.255183: Scenario thread thread_8 started!
+[INFO] 2019-10-29 23:54:08.255591: Scenario thread thread_9 started!
+[INFO] 2019-10-29 23:54:08.271114: Scenario thread thread_10 started!
+[INFO] 2019-10-29 23:54:08.277410: Scenario thread thread_12 started!
+[INFO] 2019-10-29 23:54:08.277686: Scenario thread thread_11 started!
+[INFO] 2019-10-29 23:54:08.278152: Scenario thread thread_13 started!
+[INFO] 2019-10-29 23:54:08.288062: Scenario thread thread_14 started!
+[INFO] 2019-10-29 23:54:08.291017: Scenario thread thread_15 started!
+[INFO] 2019-10-29 23:54:08.292725: Scenario thread thread_16 started!
+[INFO] 2019-10-29 23:54:08.292871: Scenario thread thread_17 started!
+[INFO] 2019-10-29 23:54:08.299848: Scenario thread thread_18 started!
+[INFO] 2019-10-29 23:54:08.299907: Scenario loaded successfully. Wait 3.0 minutes before closing the terminal!
+[INFO] 2019-10-29 23:54:08.307452: Scenario thread thread_19 started!
+[INFO] 2019-10-30 09:12:31.492187: Scenario thread thread_0 started!
+[INFO] 2019-10-30 09:12:31.494202: Scenario thread thread_1 started!
+[INFO] 2019-10-30 09:12:31.494561: Scenario thread thread_2 started!
+[INFO] 2019-10-30 09:12:31.500300: Scenario thread thread_3 started!
+[INFO] 2019-10-30 09:12:31.500498: Scenario thread thread_4 started!
+[INFO] 2019-10-30 09:12:31.501521: Scenario thread thread_5 started!
+[INFO] 2019-10-30 09:12:31.503813: Scenario thread thread_6 started!
+[INFO] 2019-10-30 09:12:31.503883: Scenario thread thread_7 started!
+[INFO] 2019-10-30 09:12:31.506297: Scenario thread thread_8 started!
+[INFO] 2019-10-30 09:12:31.508076: Scenario thread thread_9 started!
+[INFO] 2019-10-30 09:12:31.512607: Scenario thread thread_10 started!
+[INFO] 2019-10-30 09:12:31.524758: Scenario thread thread_12 started!
+[INFO] 2019-10-30 09:12:31.525821: Scenario thread thread_11 started!
+[INFO] 2019-10-30 09:12:31.533897: Scenario thread thread_13 started!
+[INFO] 2019-10-30 09:12:31.551697: Scenario thread thread_14 started!
+[INFO] 2019-10-30 09:12:31.557655: Scenario thread thread_15 started!
+[INFO] 2019-10-30 09:12:31.562821: Scenario thread thread_16 started!
+[INFO] 2019-10-30 09:12:31.564190: Scenario thread thread_17 started!
+[INFO] 2019-10-30 09:12:31.573746: Scenario thread thread_19 started!
+[INFO] 2019-10-30 09:12:31.574484: Scenario loaded successfully. Wait 5.0 minutes before closing the terminal!
+[INFO] 2019-10-30 09:12:31.575518: Scenario thread thread_18 started!
