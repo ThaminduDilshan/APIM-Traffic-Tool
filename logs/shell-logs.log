@@ -1,154 +1,214 @@
-Traffic Tool Stopped Successfully
-Enter filename (without file extension): 
-Enter script execution time in minutes: 
-Enter filename (without file extension): 
-Enter script execution time in minutes: 
-[INFO] Scenario loaded successfully. Wait 7.0 minutes before closing the terminal!
-[INFO] Script terminated successfully. uptime:420 s
-Enter filename (without file extension): 
-Enter script execution time in minutes: 
-[INFO] Scenario loaded successfully. Wait 1.0 minutes before closing the terminal!
-Traffic Tool Stopped Successfully
-Enter filename (without file extension): 
-Enter script execution time in minutes: 
-[INFO] Scenario loaded successfully. Wait 1.0 minutes before closing the terminal!
-[INFO] Script terminated successfully. uptime:1.0 s
-[INFO] Scenario loaded successfully. Wait 1.0 minutes before closing the terminal!
-[INFO] Script terminated successfully. uptime:3027 s
-Enter filename (without file extension): 
-Enter script execution time in minutes: 
-Traffic Tool Stopped Successfully
-Enter filename (without file extension): 
-Enter script execution time in minutes: 
-[INFO] Scenario loaded successfully. Wait 1.0 minutes before closing the terminal!
-[INFO] Script terminated successfully. uptime: 1.0 minutes
-Traffic Tool Stopped Successfully
-Enter filename (without file extension): 
-Enter script execution time in minutes: 
-[INFO] Scenario loaded successfully. Wait 1.0 minutes before closing the terminal!
-[INFO] Script terminated successfully. uptime: 1.0 minutes
-Enter filename (without file extension): 
-Enter script execution time in minutes: 
-[INFO] Scenario loaded successfully. Wait 1.0 minutes before closing the terminal!
-[INFO] Script terminated successfully. uptime: 1.0 minutes
-Enter your jmeter path (Ex:- /home/user/Documents/apache-jmeter-5.1.1/bin)
-Creating summariser <summary>
-Created the tree successfully using Generate token list.jmx
-Starting the test @ Tue Oct 29 22:17:54 IST 2019 (1572367674674)
-Waiting for possible Shutdown/StopTestNow/HeapDump/ThreadDump message on port 4445
-summary =    160 in 00:00:04 =   37.3/s Avg:    19 Min:     5 Max:   609 Err:   153 (95.62%)
-Tidying up ...    @ Tue Oct 29 22:17:59 IST 2019 (1572367679360)
-... end of run
-Enter your jmeter path (Ex:- /home/user/Documents/apache-jmeter-5.1.1/bin)
-Enter your jmeter path (Ex:- /home/user/Documents/apache-jmeter-5.1.1/bin)
-Creating summariser <summary>
-Created the tree successfully using Generate token list.jmx
-Starting the test @ Tue Oct 29 22:22:01 IST 2019 (1572367921943)
-Waiting for possible Shutdown/StopTestNow/HeapDump/ThreadDump message on port 4445
-summary +      1 in 00:00:01 =    1.3/s Avg:   353 Min:   353 Max:   353 Err:     0 (0.00%) Active: 1 Started: 1 Finished: 0
-summary +    159 in 00:00:02 =   85.5/s Avg:     7 Min:     4 Max:    63 Err:   153 (96.23%) Active: 0 Started: 2 Finished: 2
-summary =    160 in 00:00:03 =   61.2/s Avg:     9 Min:     4 Max:   353 Err:   153 (95.62%)
-Tidying up ...    @ Tue Oct 29 22:22:04 IST 2019 (1572367924947)
-... end of run
-Enter filename (without file extension): 
-Enter script execution time in minutes: 
-[INFO] Scenario loaded successfully. Wait 2.0 minutes before closing the terminal!
-[INFO] Script terminated successfully. uptime: 2.0 minutes
-Traffic Tool Already Stopped
-Enter filename (without file extension): 
-Enter script execution time in minutes: 
-[INFO] Scenario loaded successfully. Wait 2.0 minutes before closing the terminal!
-[INFO] Script terminated successfully. uptime: 2.0 minutes
-Traffic Tool Stopped Successfully
-Enter filename (without file extension): 
-Enter script execution time in minutes: 
-[INFO] Scenario loaded successfully. Wait 2.0 minutes before closing the terminal!
-[INFO] Script terminated successfully. uptime: 2.0 minutes
-/usr/bin/python3
-User generation successful!
-/usr/bin/python3
-User generation successful!
-User app pattern generation successful!
 Enter your jmeter path (Ex:- /home/user/Documents/apache-jmeter-5.1.1/bin)
 Creating summariser <summary>
 Created the tree successfully using API Scenario - multiple end users.jmx
-Starting the test @ Tue Oct 29 22:56:15 IST 2019 (1572369975513)
+Starting the test @ Wed Oct 30 14:15:03 IST 2019 (1572425103799)
 Waiting for possible Shutdown/StopTestNow/HeapDump/ThreadDump message on port 4445
-summary +     29 in 00:00:16 =    1.8/s Avg:   244 Min:     9 Max:  1058 Err:     0 (0.00%) Active: 1 Started: 3 Finished: 2
-summary +     14 in 00:00:28 =    0.5/s Avg:    27 Min:    13 Max:    43 Err:     0 (0.00%) Active: 1 Started: 3 Finished: 2
-summary =     43 in 00:00:44 =    1.0/s Avg:   173 Min:     9 Max:  1058 Err:     0 (0.00%)
-summary +     52 in 00:00:30 =    1.7/s Avg:   152 Min:     9 Max:   522 Err:     0 (0.00%) Active: 1 Started: 4 Finished: 3
-summary =     95 in 00:01:14 =    1.3/s Avg:   162 Min:     9 Max:  1058 Err:     0 (0.00%)
-summary +     59 in 00:00:09 =    6.7/s Avg:   148 Min:   114 Max:   230 Err:     0 (0.00%) Active: 0 Started: 4 Finished: 4
-summary =    154 in 00:01:23 =    1.9/s Avg:   156 Min:     9 Max:  1058 Err:     0 (0.00%)
-Tidying up ...    @ Tue Oct 29 22:57:38 IST 2019 (1572370058912)
+summary +      1 in 00:00:01 =    1.0/s Avg:   778 Min:   778 Max:   778 Err:     0 (0.00%) Active: 1 Started: 1 Finished: 0
+summary +     33 in 00:00:25 =    1.3/s Avg:   207 Min:    12 Max:  1157 Err:     0 (0.00%) Active: 1 Started: 3 Finished: 2
+summary =     34 in 00:00:26 =    1.3/s Avg:   224 Min:    12 Max:  1157 Err:     0 (0.00%)
+summary +     15 in 00:00:30 =    0.5/s Avg:    19 Min:    11 Max:    29 Err:     0 (0.00%) Active: 1 Started: 3 Finished: 2
+summary =     49 in 00:00:57 =    0.9/s Avg:   161 Min:    11 Max:  1157 Err:     0 (0.00%)
+summary +    105 in 00:00:27 =    3.9/s Avg:   161 Min:    12 Max:   417 Err:     0 (0.00%) Active: 0 Started: 4 Finished: 4
+summary =    154 in 00:01:24 =    1.8/s Avg:   161 Min:    11 Max:  1157 Err:     0 (0.00%)
+Tidying up ...    @ Wed Oct 30 14:16:27 IST 2019 (1572425187933)
 ... end of run
 Enter your jmeter path (Ex:- /home/user/Documents/apache-jmeter-5.1.1/bin)
 Creating summariser <summary>
 Created the tree successfully using Generate token list.jmx
-Starting the test @ Tue Oct 29 22:58:24 IST 2019 (1572370104675)
+Starting the test @ Wed Oct 30 14:16:49 IST 2019 (1572425209838)
 Waiting for possible Shutdown/StopTestNow/HeapDump/ThreadDump message on port 4445
-summary =    160 in 00:00:03 =   49.8/s Avg:    13 Min:     5 Max:   310 Err:     0 (0.00%)
-Tidying up ...    @ Tue Oct 29 22:58:28 IST 2019 (1572370108301)
+summary =    160 in 00:00:03 =   47.9/s Avg:    13 Min:     5 Max:   277 Err:     0 (0.00%)
+Tidying up ...    @ Wed Oct 30 14:16:53 IST 2019 (1572425213582)
 ... end of run
 Enter filename (without file extension): 
 Enter script execution time in minutes: 
-[INFO] Scenario loaded successfully. Wait 3.0 minutes before closing the terminal!
-[INFO] Script terminated successfully. uptime: 3.0 minutes
 Traffic Tool Stopped Successfully
 Enter filename (without file extension): 
 Enter script execution time in minutes: 
-[INFO] Scenario loaded successfully. Wait 3.0 minutes before closing the terminal!
-Traffic Tool Stopped Successfully
+[INFO] Scenario loaded successfully. Wait 10.0 minutes before closing the terminal!
+[INFO] Script terminated successfully. uptime: 10.0 minutes
 Enter filename (without file extension): 
 Enter script execution time in minutes: 
-[INFO] Scenario loaded successfully. Wait 5.0 minutes before closing the terminal!
-Traffic Tool Stopped Successfully
-Enter filename (without file extension): 
-Enter script execution time in minutes: 
-Traffic Tool Stopped Successfully
-Enter filename (without file extension): 
-Enter script execution time in minutes: 
-Traffic Tool Stopped Successfully
-Enter filename (without file extension): 
-Enter script execution time in minutes: 
-Traffic Tool Stopped Successfully
-Enter filename (without file extension): 
-Enter script execution time in minutes: 
-Traffic Tool Stopped Successfully
-Enter filename (without file extension): 
-Enter script execution time in minutes: 
-[INFO] Scenario loaded successfully. Wait 1.0 minutes before closing the terminal!
-[INFO] Script terminated successfully. uptime: 1.0 minutes
-Enter filename (without file extension): 
-Traffic Tool Stopped Successfully
-Enter filename (without file extension): 
-Enter script execution time in minutes: 
+Process Process-3:
 Traceback (most recent call last):
-  File "invoke_API.py", line 39, in <module>
-    fake_generator = Factory.create()
-NameError: name 'Factory' is not defined
-Traffic Tool Already Stopped
-Enter filename (without file extension): 
-Enter script execution time in minutes: 
-[INFO] Scenario loaded successfully. Wait 3.0 minutes before closing the terminal!
-[INFO] Script terminated successfully. uptime: 3.0 minutes
+  File "/usr/lib/python3.6/multiprocessing/process.py", line 258, in _bootstrap
+    self.run()
+  File "/usr/lib/python3.6/multiprocessing/process.py", line 93, in run
+    self._target(*self._args, **self._kwargs)
+  File "invoke_API.py", line 211, in runInvoker
+    no_of_requests = scenario_row[0] - random.randint(0, no_of_requests)
+UnboundLocalError: local variable 'no_of_requests' referenced before assignment
+Process Process-1:
+Traceback (most recent call last):
+  File "/usr/lib/python3.6/multiprocessing/process.py", line 258, in _bootstrap
+    self.run()
+  File "/usr/lib/python3.6/multiprocessing/process.py", line 93, in run
+    self._target(*self._args, **self._kwargs)
+  File "invoke_API.py", line 211, in runInvoker
+    no_of_requests = scenario_row[0] - random.randint(0, no_of_requests)
+UnboundLocalError: local variable 'no_of_requests' referenced before assignment
+Process Process-5:
+Traceback (most recent call last):
+  File "/usr/lib/python3.6/multiprocessing/process.py", line 258, in _bootstrap
+    self.run()
+  File "/usr/lib/python3.6/multiprocessing/process.py", line 93, in run
+    self._target(*self._args, **self._kwargs)
+  File "invoke_API.py", line 211, in runInvoker
+    no_of_requests = scenario_row[0] - random.randint(0, no_of_requests)
+UnboundLocalError: local variable 'no_of_requests' referenced before assignment
+Process Process-4:
+Traceback (most recent call last):
+  File "/usr/lib/python3.6/multiprocessing/process.py", line 258, in _bootstrap
+    self.run()
+  File "/usr/lib/python3.6/multiprocessing/process.py", line 93, in run
+    self._target(*self._args, **self._kwargs)
+  File "invoke_API.py", line 211, in runInvoker
+    no_of_requests = scenario_row[0] - random.randint(0, no_of_requests)
+UnboundLocalError: local variable 'no_of_requests' referenced before assignment
+Process Process-6:
+Traceback (most recent call last):
+  File "/usr/lib/python3.6/multiprocessing/process.py", line 258, in _bootstrap
+    self.run()
+  File "/usr/lib/python3.6/multiprocessing/process.py", line 93, in run
+    self._target(*self._args, **self._kwargs)
+  File "invoke_API.py", line 211, in runInvoker
+    no_of_requests = scenario_row[0] - random.randint(0, no_of_requests)
+UnboundLocalError: local variable 'no_of_requests' referenced before assignment
+Process Process-2:
+Traceback (most recent call last):
+  File "/usr/lib/python3.6/multiprocessing/process.py", line 258, in _bootstrap
+    self.run()
+  File "/usr/lib/python3.6/multiprocessing/process.py", line 93, in run
+    self._target(*self._args, **self._kwargs)
+  File "invoke_API.py", line 211, in runInvoker
+    no_of_requests = scenario_row[0] - random.randint(0, no_of_requests)
+UnboundLocalError: local variable 'no_of_requests' referenced before assignment
+Process Process-10:
+Traceback (most recent call last):
+  File "/usr/lib/python3.6/multiprocessing/process.py", line 258, in _bootstrap
+    self.run()
+  File "/usr/lib/python3.6/multiprocessing/process.py", line 93, in run
+    self._target(*self._args, **self._kwargs)
+  File "invoke_API.py", line 211, in runInvoker
+    no_of_requests = scenario_row[0] - random.randint(0, no_of_requests)
+UnboundLocalError: local variable 'no_of_requests' referenced before assignment
+Process Process-7:
+Traceback (most recent call last):
+  File "/usr/lib/python3.6/multiprocessing/process.py", line 258, in _bootstrap
+    self.run()
+  File "/usr/lib/python3.6/multiprocessing/process.py", line 93, in run
+    self._target(*self._args, **self._kwargs)
+  File "invoke_API.py", line 211, in runInvoker
+    no_of_requests = scenario_row[0] - random.randint(0, no_of_requests)
+UnboundLocalError: local variable 'no_of_requests' referenced before assignment
+Process Process-12:
+Traceback (most recent call last):
+  File "/usr/lib/python3.6/multiprocessing/process.py", line 258, in _bootstrap
+    self.run()
+  File "/usr/lib/python3.6/multiprocessing/process.py", line 93, in run
+    self._target(*self._args, **self._kwargs)
+  File "invoke_API.py", line 211, in runInvoker
+    no_of_requests = scenario_row[0] - random.randint(0, no_of_requests)
+UnboundLocalError: local variable 'no_of_requests' referenced before assignment
+Process Process-11:
+Traceback (most recent call last):
+  File "/usr/lib/python3.6/multiprocessing/process.py", line 258, in _bootstrap
+    self.run()
+  File "/usr/lib/python3.6/multiprocessing/process.py", line 93, in run
+    self._target(*self._args, **self._kwargs)
+  File "invoke_API.py", line 211, in runInvoker
+    no_of_requests = scenario_row[0] - random.randint(0, no_of_requests)
+UnboundLocalError: local variable 'no_of_requests' referenced before assignment
+Process Process-16:
+Traceback (most recent call last):
+  File "/usr/lib/python3.6/multiprocessing/process.py", line 258, in _bootstrap
+    self.run()
+  File "/usr/lib/python3.6/multiprocessing/process.py", line 93, in run
+    self._target(*self._args, **self._kwargs)
+  File "invoke_API.py", line 211, in runInvoker
+    no_of_requests = scenario_row[0] - random.randint(0, no_of_requests)
+UnboundLocalError: local variable 'no_of_requests' referenced before assignment
+Process Process-9:
+Traceback (most recent call last):
+  File "/usr/lib/python3.6/multiprocessing/process.py", line 258, in _bootstrap
+    self.run()
+  File "/usr/lib/python3.6/multiprocessing/process.py", line 93, in run
+    self._target(*self._args, **self._kwargs)
+  File "invoke_API.py", line 211, in runInvoker
+    no_of_requests = scenario_row[0] - random.randint(0, no_of_requests)
+UnboundLocalError: local variable 'no_of_requests' referenced before assignment
+Process Process-15:
+Traceback (most recent call last):
+  File "/usr/lib/python3.6/multiprocessing/process.py", line 258, in _bootstrap
+    self.run()
+  File "/usr/lib/python3.6/multiprocessing/process.py", line 93, in run
+    self._target(*self._args, **self._kwargs)
+  File "invoke_API.py", line 211, in runInvoker
+    no_of_requests = scenario_row[0] - random.randint(0, no_of_requests)
+UnboundLocalError: local variable 'no_of_requests' referenced before assignment
+Process Process-17:
+Traceback (most recent call last):
+  File "/usr/lib/python3.6/multiprocessing/process.py", line 258, in _bootstrap
+    self.run()
+  File "/usr/lib/python3.6/multiprocessing/process.py", line 93, in run
+    self._target(*self._args, **self._kwargs)
+  File "invoke_API.py", line 211, in runInvoker
+    no_of_requests = scenario_row[0] - random.randint(0, no_of_requests)
+UnboundLocalError: local variable 'no_of_requests' referenced before assignment
+Process Process-13:
+Traceback (most recent call last):
+  File "/usr/lib/python3.6/multiprocessing/process.py", line 258, in _bootstrap
+    self.run()
+  File "/usr/lib/python3.6/multiprocessing/process.py", line 93, in run
+    self._target(*self._args, **self._kwargs)
+  File "invoke_API.py", line 211, in runInvoker
+    no_of_requests = scenario_row[0] - random.randint(0, no_of_requests)
+UnboundLocalError: local variable 'no_of_requests' referenced before assignment
+Process Process-8:
+Traceback (most recent call last):
+  File "/usr/lib/python3.6/multiprocessing/process.py", line 258, in _bootstrap
+    self.run()
+  File "/usr/lib/python3.6/multiprocessing/process.py", line 93, in run
+    self._target(*self._args, **self._kwargs)
+  File "invoke_API.py", line 211, in runInvoker
+    no_of_requests = scenario_row[0] - random.randint(0, no_of_requests)
+UnboundLocalError: local variable 'no_of_requests' referenced before assignment
+Process Process-14:
+Traceback (most recent call last):
+  File "/usr/lib/python3.6/multiprocessing/process.py", line 258, in _bootstrap
+    self.run()
+  File "/usr/lib/python3.6/multiprocessing/process.py", line 93, in run
+    self._target(*self._args, **self._kwargs)
+  File "invoke_API.py", line 211, in runInvoker
+    no_of_requests = scenario_row[0] - random.randint(0, no_of_requests)
+UnboundLocalError: local variable 'no_of_requests' referenced before assignment
+Process Process-20:
+Traceback (most recent call last):
+  File "/usr/lib/python3.6/multiprocessing/process.py", line 258, in _bootstrap
+    self.run()
+  File "/usr/lib/python3.6/multiprocessing/process.py", line 93, in run
+    self._target(*self._args, **self._kwargs)
+  File "invoke_API.py", line 211, in runInvoker
+    no_of_requests = scenario_row[0] - random.randint(0, no_of_requests)
+UnboundLocalError: local variable 'no_of_requests' referenced before assignment
+Process Process-19:
+Traceback (most recent call last):
+  File "/usr/lib/python3.6/multiprocessing/process.py", line 258, in _bootstrap
+    self.run()
+  File "/usr/lib/python3.6/multiprocessing/process.py", line 93, in run
+    self._target(*self._args, **self._kwargs)
+  File "invoke_API.py", line 211, in runInvoker
+    no_of_requests = scenario_row[0] - random.randint(0, no_of_requests)
+UnboundLocalError: local variable 'no_of_requests' referenced before assignment
+Process Process-18:
+Traceback (most recent call last):
+  File "/usr/lib/python3.6/multiprocessing/process.py", line 258, in _bootstrap
+    self.run()
+  File "/usr/lib/python3.6/multiprocessing/process.py", line 93, in run
+    self._target(*self._args, **self._kwargs)
+  File "invoke_API.py", line 211, in runInvoker
+    no_of_requests = scenario_row[0] - random.randint(0, no_of_requests)
+UnboundLocalError: local variable 'no_of_requests' referenced before assignment
 Enter filename (without file extension): 
 Enter script execution time in minutes: 
 Traffic Tool Stopped Successfully
-Enter filename (without file extension): 
-Enter script execution time in minutes: 
-Traceback (most recent call last):
-  File "invoke_API.py", line 318, in <module>
-    write_str += row_data + ','
-TypeError: unsupported operand type(s) for +: 'int' and 'str'
-Enter filename (without file extension): 
-Enter script execution time in minutes: 
-Enter filename (without file extension): 
-Enter script execution time in minutes: 
-Enter filename (without file extension): 
-Enter script execution time in minutes: 
-Enter filename (without file extension): 
-Enter script execution time in minutes: 
-Enter filename (without file extension): 
-Enter script execution time in minutes: 

@@ -5,7 +5,7 @@ import requests
 import time
 from datetime import datetime
 from faker import Factory
-import threading
+# import threading
 import multiprocessing
 import sys
 import argparse
@@ -23,8 +23,8 @@ script_runtime = args.runtime * 60       # in seconds
 
 # Configurations
 # script_runtime = 10 * 60       # in seconds
-no_of_threads = 20
-active_threads = 0
+no_of_processes = 20
+active_processes = 0
 max_connection_refuse_count = 50
 
 # Variables
@@ -162,16 +162,15 @@ def sendRequest(url_ip, url_port, api_name, api_version, path, access_token, met
 
     # write data to files
     write_string = ""               # api_name,access_token,ip,cookie,path,method
-    write_response = ""
+    # write_response = ""
 
-    write_string = api_name + "," + access_token + "," + user_ip + "," + cookie + "," + api_name+"/"+api_version+"/"+path + "," + method + "\n"
-    write_response = str(code) + "," + res_txt + "," + app_name + "," + api_name + "," + username + "," + access_token + "\n"
-
+    write_string = str(datetime.now()) + "," + api_name + "," + access_token + "," + user_ip + "," + cookie + "," + api_name+"/"+api_version+"/"+path + "," + method + "," + str(code) + "\n"
+    # write_response = str(code) + "," + res_txt + "," + app_name + "," + api_name + "," + username + "," + access_token + "\n"
     with open('dataset/{}'.format(filename), 'a+') as file:
         file.write(write_string)
 
-    with open('response/res_{}'.format(filename), 'a+') as file:
-        file.write(write_response)
+    # with open('response/res_{}'.format(filename), 'a+') as file:
+    #     file.write(write_response)
 
     return code,res_txt
 
@@ -181,63 +180,65 @@ def sendRequest(url_ip, url_port, api_name, api_version, path, access_token, met
     Highly biased for returning zero.
 '''
 def randomSleepTime():
-    int_list = [0,0,0,0,0,0,1,0,2,3,60*2,0,0,4,5,0,0,0,5,2,0,60*10,0,0,0,1,0,0,0,0,0]
-    return int_list[random.randint(0,30)]
+    # int_list = [0,0,0,0,0,0,1,0,0,2,0,3,60*2,0,0,4,0,5,0,0,0,5,0,2,0,60*10,0,0,0,0,1,0,0,0,0,0]
+    int_list = [0,0,0,0,0,0,1,0,0,2,0,3,2,0,0,4,0,5,0,0,0,5,0,2,0,10,0,0,0,0,1,0,0,0,0,0]
+    return int_list[random.randint(0, len(int_list))]
 
 
 '''
-    This thread will take an available scenario from the pool and execute it
+    This method will take an available scenario from the pool and execute it.
+    Supposed to be executed from a process.
 '''
-class ScenarioExecutor(threading.Thread):
-    def __init__(self, threadID, name, lock):
-        global pool_lock
-        threading.Thread.__init__(self)
-        self.threadID = threadID
-        self.name = name
-        self.starttime = datetime.now()
-        pool_lock = lock
+# class ScenarioExecutor(threading.Thread):
+#     def __init__(self, threadID, name, lock):
+#         global pool_lock
+#         threading.Thread.__init__(self)
+#         self.threadID = threadID
+#         self.name = name
+#         self.starttime = datetime.now()
+#         pool_lock = lock
 
-    def run(self):
-        global scenario_pool, connection_refuse_count, script_starttime, script_runtime, active_threads
+def runInvoker(process_name, pool_lock):
+    global scenario_pool, connection_refuse_count, script_starttime, script_runtime, active_processes
 
-        log("INFO", "Scenario thread {} started!".format(self.name))
-        while True:
-            pool_lock.acquire()
-            scenario_row = scenario_pool.pop(0)
-            pool_lock.release()
+    log("INFO", "Scenario process {} started!".format(process_name))
+    while True:
+        pool_lock.acquire()
+        scenario_row = scenario_pool.pop(0)
+        pool_lock.release()
 
-            no_of_requests = scenario_row[0]
-            api_name = scenario_row[1]
-            api_version = scenario_row[2]
-            path = scenario_row[3]
-            access_token = scenario_row[4]
-            method = scenario_row[5]
-            user_ip = scenario_row[6]
-            cookie = scenario_row[7]
-            app_name = scenario_row[8]
-            username = scenario_row[9]
+        no_of_requests = scenario_row[0] - random.randint(0, scenario_row[0])
+        api_name = scenario_row[1]
+        api_version = scenario_row[2]
+        path = scenario_row[3]
+        access_token = scenario_row[4]
+        method = scenario_row[5]
+        user_ip = scenario_row[6]
+        cookie = scenario_row[7]
+        app_name = scenario_row[8]
+        username = scenario_row[9]
 
-            for i in range(no_of_requests):
-                try:
-                    res_code, res_txt = sendRequest("10.100.4.187", "8243", api_name, api_version, path, access_token, method, user_ip, cookie, app_name, username)
-                    time.sleep(randomSleepTime())
-                except:
-                    connection_refuse_count += 1
-                    if connection_refuse_count > max_connection_refuse_count:
-                        log("ERROR", "Terminating the thread due to maximum no of connection refuses!")
-                        active_threads -= 1
-                        sys.exit()
+        for i in range(no_of_requests):
+            try:
+                res_code, res_txt = sendRequest("10.100.4.187", "8243", api_name, api_version, path, access_token, method, user_ip, cookie, app_name, username)
+                # time.sleep(randomSleepTime())
+            except:
+                connection_refuse_count += 1
+                if connection_refuse_count > max_connection_refuse_count:
+                    log("ERROR", "Terminating the process({}) due to maximum no of connection refuses!".format(process_name))
+                    active_processes -= 1
+                    sys.exit()
 
-            pool_lock.acquire()
-            scenario_pool.append(scenario_row)
-            pool_lock.release()
+        pool_lock.acquire()
+        scenario_pool.append(scenario_row)
+        pool_lock.release()
 
-            # break
-            up_time = datetime.now() - script_starttime
-            if up_time.seconds >= script_runtime:
-                log("INFO", "{} stopped. Execution finished!".format(self.name))
-                active_threads -= 1
-                break
+        # break
+        up_time = datetime.now() - script_starttime
+        if up_time.seconds >= script_runtime:
+            log("INFO", "{} stopped. Execution finished!".format(process_name))
+            active_processes -= 1
+            break
 
 
 '''
@@ -281,7 +282,7 @@ with open('APIM_scenario/api_invoke_tokens.csv') as file:
         (users_apps[app_name]).append([username,token,ip,cookie])
 
 with open('dataset/{}'.format(filename), 'w') as file:
-    file.write("timestamp,api,access_token,ip_address,cookie,invoke_path,http_method\n")
+    file.write("timestamp,api,access_token,ip_address,cookie,invoke_path,http_method,response_code\n")
 
 # generate scenario data according to the script and append to the pool
 with open('APIM_scenario/data/api_invoke_scenario.csv') as file:
@@ -321,15 +322,21 @@ for row in scenario_pool:
 with open('data/user_scenario_distribution_{}'.format(filename), 'w') as file:
     file.write(write_str)
 
+# shuffle the pool
+random.shuffle(scenario_pool)
+
 # record script starttime
 script_starttime = datetime.now()
 
-# create and start threads
-for i in range(no_of_threads):
-    thread = ScenarioExecutor(i, 'thread_{}'.format(i), pool_lock)
-    thread.daemon = True
-    thread.start()
-    active_threads += 1
+# create and start processes
+for i in range(no_of_processes):
+    # thread = ScenarioExecutor(i, 'thread_{}'.format(i), pool_lock)
+    # thread.daemon = True
+    # thread.start()
+    # active_processes += 1
+    process = multiprocessing.Process(target=runInvoker, args=("process_{}".format(i), pool_lock, ))
+    process.start()
+    active_processes += 1
 
 print("[INFO] Scenario loaded successfully. Wait {} minutes before closing the terminal!".format(str(script_runtime/60)))
 log("INFO", "Scenario loaded successfully. Wait {} minutes before closing the terminal!".format(str(script_runtime/60)))
@@ -340,7 +347,7 @@ while True:
         print("[INFO] Script terminated successfully. uptime: {} minutes".format(uptime.seconds/60.0))
         log("INFO", "Script terminated successfully. uptime: {} minutes".format(uptime.seconds/60.0))
         break
-    if active_threads != 0:
+    if active_processes != 0:
         time.sleep(5)
     else:
         if connection_refuse_count < max_connection_refuse_count:

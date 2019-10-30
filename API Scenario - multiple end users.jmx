@@ -206,7 +206,7 @@ vars.put(&quot;b64encryptedValue&quot;,new String(b64encrypted));
    &quot;maxTps&quot;: null,&#xd;
    &quot;visibility&quot;: &quot;PUBLIC&quot;,&#xd;
    &quot;visibleRoles&quot;: [],&#xd;
-   &quot;endpointConfig&quot;: &quot;{\&quot;production_endpoints\&quot;:{\&quot;url\&quot;:\&quot;http://www.mocky.io/v2/5d5235882e0000580081d839/\&quot;,\&quot;config\&quot;:null},\&quot;sandbox_endpoints\&quot;:{\&quot;url\&quot;:\&quot;http://www.mocky.io/v2/5d5235882e0000580081d839/\&quot;,\&quot;config\&quot;:null},\&quot;endpoint_type\&quot;:\&quot;http\&quot;}&quot;,&#xd;
+   &quot;endpointConfig&quot;: &quot;{\&quot;production_endpoints\&quot;:{\&quot;url\&quot;:\&quot;https://localhost:9443/am/sample/pizzashack/v1/api/\&quot;,\&quot;config\&quot;:null},\&quot;sandbox_endpoints\&quot;:{\&quot;url\&quot;:\&quot;https://localhost:9443/am/sample/pizzashack/v1/api/\&quot;,\&quot;config\&quot;:null},\&quot;endpoint_type\&quot;:\&quot;http\&quot;}&quot;,&#xd;
    &quot;endpointSecurity&quot;:    {&#xd;
       &quot;username&quot;: &quot;user&quot;,&#xd;
       &quot;type&quot;: &quot;basic&quot;,&#xd;
