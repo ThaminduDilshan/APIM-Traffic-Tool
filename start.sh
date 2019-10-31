@@ -34,6 +34,7 @@ func_gen_example_scenario() {
 func_create_scenario() {
   if [ -e "$(pwd)"/APIM_scenario/data/api_creation.csv -a -e "$(pwd)"/APIM_scenario/data/api_creation_swagger.csv -a -e "$(pwd)"/APIM_scenario/data/app_creation.csv -a -e "$(pwd)"/APIM_scenario/data/app_api_subscription_admin.csv -a -e "$(pwd)"/APIM_scenario/data/user_generation.csv ];
   then
+    rm -f APIM_scenario/api_invoke_keySecret-multipleEndUsers.csv
     echo "Enter your jmeter path (Ex:- /home/user/Documents/apache-jmeter-5.1.1/bin)"
     read JMPATH
     $JMPATH/jmeter -n -t 'API Scenario - multiple end users.jmx' -l logs/jmeter-results.log -j logs/jmeter.log
@@ -46,7 +47,6 @@ func_create_scenario() {
 func_gen_tokens() {
   if [ -e "$(pwd)"/APIM_scenario/data/app_creation.csv -a -e "$(pwd)"/APIM_scenario/data/user_app_pattern.csv ];
   then
-    rm -f APIM_scenario/api_invoke_keySecret-multipleEndUsers.csv
     rm -f APIM_scenario/api_invoke_tokens.csv
     echo "Enter your jmeter path (Ex:- /home/user/Documents/apache-jmeter-5.1.1/bin)"
     read JMPATH

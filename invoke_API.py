@@ -5,11 +5,10 @@ import requests
 import time
 from datetime import datetime
 from faker import Factory
-# import threading
-import multiprocessing
 import sys
 import argparse
 import urllib3
+from multiprocessing.dummy import Pool as ThreadPool
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -22,10 +21,11 @@ script_runtime = args.runtime * 60       # in seconds
 
 
 # Configurations
-# script_runtime = 10 * 60       # in seconds
 no_of_processes = 20
-active_processes = 0
 max_connection_refuse_count = 50
+# host_ip = "10.100.4.187"
+host_ip = "172.18.0.1"
+host_port = "8243"
 
 # Variables
 script_starttime = None
@@ -33,15 +33,23 @@ user_ip = {}
 user_cookie = {}
 users_apps = {}
 scenario_pool = []
-pool_lock = multiprocessing.Lock()
 connection_refuse_count = 0
+active_processes = 0
 process_pool = []
 
 fake_generator = Factory.create()
 
 
 '''
-    This function will write the given log output to the log.txt file
+    This method will load and set the configuration data
+'''
+def loadConfig():
+    global no_of_processes, max_connection_refuse_count, host_ip, host_port
+    ##
+
+
+'''
+    This method will write the given log output to the log.txt file
 '''
 def log(tag, write_string):
     with open('logs/log.txt', 'a+') as file:
@@ -163,15 +171,10 @@ def sendRequest(url_ip, url_port, api_name, api_version, path, access_token, met
 
     # write data to files
     write_string = ""               # api_name,access_token,ip,cookie,path,method
-    # write_response = ""
 
     write_string = str(datetime.now()) + "," + api_name + "," + access_token + "," + user_ip + "," + cookie + "," + api_name+"/"+api_version+"/"+path + "," + method + "," + str(code) + "\n"
-    # write_response = str(code) + "," + res_txt + "," + app_name + "," + api_name + "," + username + "," + access_token + "\n"
     with open('dataset/{}'.format(filename), 'a+') as file:
         file.write(write_string)
-
-    # with open('response/res_{}'.format(filename), 'a+') as file:
-    #     file.write(write_response)
 
     return code,res_txt
 
@@ -190,45 +193,35 @@ def randomSleepTime():
     This method will take an available scenario from the pool and execute it.
     Supposed to be executed from a process.
 '''
-def runInvoker(process_name, pool_lock):
-    global scenario_pool, connection_refuse_count, script_starttime, script_runtime, active_processes
+def runInvoker(scenario_row):
+    # global scenario_pool, connection_refuse_count, script_starttime, script_runtime, active_processes
+    global connection_refuse_count, script_starttime, script_runtime, active_processes
 
-    log("INFO", "Scenario process {} started!".format(process_name))
-    while True:
-        pool_lock.acquire()
-        scenario_row = scenario_pool.pop(0)
-        pool_lock.release()
+    no_of_requests = scenario_row[0] - random.randint(0, scenario_row[0])
+    api_name = scenario_row[1]
+    api_version = scenario_row[2]
+    path = scenario_row[3]
+    access_token = scenario_row[4]
+    method = scenario_row[5]
+    user_ip = scenario_row[6]
+    cookie = scenario_row[7]
+    app_name = scenario_row[8]
+    username = scenario_row[9]
 
-        no_of_requests = scenario_row[0] - random.randint(0, scenario_row[0])
-        api_name = scenario_row[1]
-        api_version = scenario_row[2]
-        path = scenario_row[3]
-        access_token = scenario_row[4]
-        method = scenario_row[5]
-        user_ip = scenario_row[6]
-        cookie = scenario_row[7]
-        app_name = scenario_row[8]
-        username = scenario_row[9]
+    for i in range(no_of_requests):
+        try:
+            res_code, res_txt = sendRequest(host_ip, host_port, api_name, api_version, path, access_token, method, user_ip, cookie, app_name, username)
+            time.sleep(randomSleepTime())
+        except:
+            connection_refuse_count += 1
+            if connection_refuse_count > max_connection_refuse_count:
+                log("ERROR", "Terminating the process({}) due to maximum no of connection refuses!".format(process_name))
+                active_processes -= 1
+                sys.exit()
 
-        for i in range(no_of_requests):
-            try:
-                res_code, res_txt = sendRequest("10.100.4.187", "8243", api_name, api_version, path, access_token, method, user_ip, cookie, app_name, username)
-                time.sleep(randomSleepTime())
-            except:
-                connection_refuse_count += 1
-                if connection_refuse_count > max_connection_refuse_count:
-                    log("ERROR", "Terminating the process({}) due to maximum no of connection refuses!".format(process_name))
-                    active_processes -= 1
-                    sys.exit()
-
-        pool_lock.acquire()
-        scenario_pool.append(scenario_row)
-        pool_lock.release()
-
-        # break
         up_time = datetime.now() - script_starttime
         if up_time.seconds >= script_runtime:
-            log("INFO", "{} stopped. Execution finished!".format(process_name))
+            log("INFO", "Process stopped. Execution finished!")
             active_processes -= 1
             break
 
@@ -320,35 +313,19 @@ random.shuffle(scenario_pool)
 # record script starttime
 script_starttime = datetime.now()
 
-# create and start processes
-for i in range(no_of_processes):
-    process = multiprocessing.Process(target=runInvoker, args=("process_{}".format(i), pool_lock, ))
-    process.daemon = True
-    process_pool.append(process)
-    active_processes += 1
+pool = ThreadPool(no_of_processes)
 
 print("[INFO] Scenario loaded successfully. Wait {} minutes before closing the terminal!".format(str(script_runtime/60)))
 log("INFO", "Scenario loaded successfully. Wait {} minutes before closing the terminal!".format(str(script_runtime/60)))
-
-for pr in process_pool:
-    pr.start()
 
 while True:
     uptime = datetime.now() - script_starttime
     if uptime.seconds >= script_runtime:
         print("[INFO] Script terminated successfully. uptime: {} minutes".format(uptime.seconds/60.0))
         log("INFO", "Script terminated successfully. uptime: {} minutes".format(uptime.seconds/60.0))
-        for pr in process_pool:
-            pr.terminate()
         break
-    if active_processes != 0:
-        time.sleep(5)
     else:
-        if connection_refuse_count < max_connection_refuse_count:
-            print("[INFO] Script completed successfully!")
-            log("INFO", "Script completed successfully!")
-        else:
-            print("[ERROR] Program terminated!")
-        for pr in process_pool:
-            pr.terminate()
-        break
+        pool.map(runInvoker, scenario_pool)
+
+pool.close()
+pool.join()
