@@ -35,6 +35,7 @@ users_apps = {}
 scenario_pool = []
 pool_lock = multiprocessing.Lock()
 connection_refuse_count = 0
+process_pool = []
 
 fake_generator = Factory.create()
 
@@ -182,22 +183,13 @@ def sendRequest(url_ip, url_port, api_name, api_version, path, access_token, met
 def randomSleepTime():
     # int_list = [0,0,0,0,0,0,1,0,0,2,0,3,60*2,0,0,4,0,5,0,0,0,5,0,2,0,60*10,0,0,0,0,1,0,0,0,0,0]
     int_list = [0,0,0,0,0,0,1,0,0,2,0,3,2,0,0,4,0,5,0,0,0,5,0,2,0,10,0,0,0,0,1,0,0,0,0,0]
-    return int_list[random.randint(0, len(int_list))]
+    return int_list[random.randint(0, len(int_list)-1)]
 
 
 '''
     This method will take an available scenario from the pool and execute it.
     Supposed to be executed from a process.
 '''
-# class ScenarioExecutor(threading.Thread):
-#     def __init__(self, threadID, name, lock):
-#         global pool_lock
-#         threading.Thread.__init__(self)
-#         self.threadID = threadID
-#         self.name = name
-#         self.starttime = datetime.now()
-#         pool_lock = lock
-
 def runInvoker(process_name, pool_lock):
     global scenario_pool, connection_refuse_count, script_starttime, script_runtime, active_processes
 
@@ -221,7 +213,7 @@ def runInvoker(process_name, pool_lock):
         for i in range(no_of_requests):
             try:
                 res_code, res_txt = sendRequest("10.100.4.187", "8243", api_name, api_version, path, access_token, method, user_ip, cookie, app_name, username)
-                # time.sleep(randomSleepTime())
+                time.sleep(randomSleepTime())
             except:
                 connection_refuse_count += 1
                 if connection_refuse_count > max_connection_refuse_count:
@@ -330,22 +322,24 @@ script_starttime = datetime.now()
 
 # create and start processes
 for i in range(no_of_processes):
-    # thread = ScenarioExecutor(i, 'thread_{}'.format(i), pool_lock)
-    # thread.daemon = True
-    # thread.start()
-    # active_processes += 1
     process = multiprocessing.Process(target=runInvoker, args=("process_{}".format(i), pool_lock, ))
-    process.start()
+    process.daemon = True
+    process_pool.append(process)
     active_processes += 1
 
 print("[INFO] Scenario loaded successfully. Wait {} minutes before closing the terminal!".format(str(script_runtime/60)))
 log("INFO", "Scenario loaded successfully. Wait {} minutes before closing the terminal!".format(str(script_runtime/60)))
+
+for pr in process_pool:
+    pr.start()
 
 while True:
     uptime = datetime.now() - script_starttime
     if uptime.seconds >= script_runtime:
         print("[INFO] Script terminated successfully. uptime: {} minutes".format(uptime.seconds/60.0))
         log("INFO", "Script terminated successfully. uptime: {} minutes".format(uptime.seconds/60.0))
+        for pr in process_pool:
+            pr.terminate()
         break
     if active_processes != 0:
         time.sleep(5)
@@ -355,4 +349,6 @@ while True:
             log("INFO", "Script completed successfully!")
         else:
             print("[ERROR] Program terminated!")
+        for pr in process_pool:
+            pr.terminate()
         break
