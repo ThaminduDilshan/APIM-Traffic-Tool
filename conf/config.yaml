@@ -1,0 +1,22 @@
+gateway-url:
+  protocol: https
+  host: 172.17.0.1
+  port: 8243
+
+apis:
+  - name: news
+    context: news
+    version: 1
+    resources:
+      - method: GET
+        path: menu
+
+
+
+  - name: payment
+    context: places
+    version: 1
+    resources:
+      - method: GET
+        path: menu
+
