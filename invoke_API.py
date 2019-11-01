@@ -24,7 +24,7 @@ script_runtime = args.runtime * 60       # in seconds
 no_of_processes = 20
 max_connection_refuse_count = 50
 # host_ip = "10.100.4.187"
-host_ip = "172.18.0.1"
+host_ip = "172.17.0.1"
 host_port = "8243"
 
 # Variables
@@ -215,7 +215,7 @@ def runInvoker(scenario_row):
         except:
             connection_refuse_count += 1
             if connection_refuse_count > max_connection_refuse_count:
-                log("ERROR", "Terminating the process({}) due to maximum no of connection refuses!".format(process_name))
+                log("ERROR", "Terminating the process due to maximum no of connection refuses!")
                 active_processes -= 1
                 sys.exit()
 
