@@ -215,7 +215,7 @@ def runInvoker(scenario_row):
         except:
             connection_refuse_count += 1
             if connection_refuse_count > max_connection_refuse_count:
-                log("ERROR", "Terminating the process({}) due to maximum no of connection refuses!".format(process_name))
+                log("ERROR", "Terminating the process due to maximum no of connection refuses!")
                 active_processes -= 1
                 sys.exit()
 

@@ -16,3 +16,12 @@ Tidying up ...    @ Thu Oct 31 22:16:27 IST 2019 (1572540387340)
 Enter filename (without file extension): 
 Enter script execution time in minutes: 
 Traffic Tool Stopped Successfully
+Enter your jmeter path (Ex:- /home/user/Documents/apache-jmeter-5.1.1/bin)
+Enter your jmeter path (Ex:- /home/user/Documents/apache-jmeter-5.1.1/bin)
+Creating summariser <summary>
+Created the tree successfully using Generate token list.jmx
+Starting the test @ Fri Nov 01 10:02:52 IST 2019 (1572582772233)
+Waiting for possible Shutdown/StopTestNow/HeapDump/ThreadDump message on port 4445
+summary =    150 in 00:00:04 =   41.5/s Avg:    15 Min:     5 Max:   316 Err:   150 (100.00%)
+Tidying up ...    @ Fri Nov 01 10:02:56 IST 2019 (1572582776256)
+... end of run
