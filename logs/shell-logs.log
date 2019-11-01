@@ -1,0 +1,18 @@
+Enter filename (without file extension): 
+Enter script execution time in minutes: 
+Enter filename (without file extension): 
+Enter script execution time in minutes: 
+Enter filename (without file extension): 
+Enter script execution time in minutes: 
+Traffic Tool Stopped Successfully
+Enter your jmeter path (Ex:- /home/user/Documents/apache-jmeter-5.1.1/bin)
+Creating summariser <summary>
+Created the tree successfully using Generate token list.jmx
+Starting the test @ Thu Oct 31 22:16:23 IST 2019 (1572540383411)
+Waiting for possible Shutdown/StopTestNow/HeapDump/ThreadDump message on port 4445
+summary =    150 in 00:00:03 =   42.9/s Avg:    15 Min:     7 Max:   576 Err:     0 (0.00%)
+Tidying up ...    @ Thu Oct 31 22:16:27 IST 2019 (1572540387340)
+... end of run
+Enter filename (without file extension): 
+Enter script execution time in minutes: 
+Traffic Tool Stopped Successfully
