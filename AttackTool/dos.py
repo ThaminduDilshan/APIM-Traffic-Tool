@@ -57,7 +57,7 @@ class DOSAttackData:
         """
         returns a list of user agents read from the user agent.txt
         """
-        path = os.path.abspath(os.path.join(__file__, "../../conf/user agents.txt"))
+        path = os.path.abspath(os.path.join(__file__, "../../data/user agents.txt"))
         with open(path, "r") as file:
             self.headers_user_agents = list(map(str.strip, file.readlines()))
         return self.headers_user_agents
@@ -258,7 +258,6 @@ def attack():
     counter = multiprocessing.Value('i', 0)
     flag = multiprocessing.Value('i', 0)
     fault = multiprocessing.Value('i', 0)
-    #number_of_requests = multiprocessing.Value('i', 100000)
     global number_of_requests_per_api
     p = Pool(processes=20, initializer=init, initargs=(counter, flag, fault, start_time))
     while datetime.now().timestamp() <= start_time.value + 2 * 60:
