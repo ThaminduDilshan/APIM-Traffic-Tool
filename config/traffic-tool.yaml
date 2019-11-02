@@ -1,0 +1,4 @@
+api-endpoints:
+  production: https://localhost:9443/am/sample/pizzashack/v1/api/
+  sandbox: https://localhost:9443/am/sample/pizzashack/v1/api/
+

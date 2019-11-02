@@ -4,15 +4,15 @@
     <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="API Scenario - multiple end users" enabled="true">
       <stringProp name="TestPlan.comments"></stringProp>
       <boolProp name="TestPlan.functional_mode">false</boolProp>
-      <boolProp name="TestPlan.tearDown_on_shutdown">true</boolProp>
       <boolProp name="TestPlan.serialize_threadgroups">true</boolProp>
       <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
         <collectionProp name="Arguments.arguments"/>
       </elementProp>
       <stringProp name="TestPlan.user_define_classpath"></stringProp>
+      <boolProp name="TestPlan.tearDown_on_shutdown">true</boolProp>
     </TestPlan>
     <hashTree>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Create &amp; publish all API&apos;s" enabled="true">
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Setup Properties" enabled="false">
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
           <boolProp name="LoopController.continue_forever">false</boolProp>
@@ -25,6 +25,116 @@
         <stringProp name="ThreadGroup.delay"></stringProp>
       </ThreadGroup>
       <hashTree>
+        <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Load and set APIM properties" enabled="true">
+          <stringProp name="scriptLanguage">groovy</stringProp>
+          <stringProp name="parameters"></stringProp>
+          <stringProp name="filename"></stringProp>
+          <stringProp name="cacheKey">true</stringProp>
+          <stringProp name="script">SampleResult.setIgnore();</stringProp>
+        </JSR223Sampler>
+        <hashTree>
+          <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="JSR223 PreProcessor" enabled="true">
+            <stringProp name="scriptLanguage">groovy</stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="cacheKey">false</stringProp>
+            <stringProp name="script">@Grab(&apos;org.yaml:snakeyaml:1.17&apos;)
+
+import org.yaml.snakeyaml.Yaml;
+import org.apache.jmeter.services.FileServer;
+
+String baseDir = FileServer.getFileServer().getBaseDir()
+
+Yaml ymlparser = new Yaml()
+
+Map config = ymlparser.load((baseDir+&quot;/../../../../config/apim.yaml&quot; as File).text)
+
+Map managementConsole = config.find{it.key==&quot;management-console&quot;}?.value
+String gatewayProtocol = managementConsole.find{it.key==&quot;protocol&quot;}?.value
+String gatewayHost = managementConsole.find{it.key==&quot;host&quot;}?.value
+String gatewayServeletPort = managementConsole.find{it.key==&quot;servlet-transport-port&quot;}?.value
+
+Map apiManager = config.find{it.key==&quot;api-manager&quot;}?.value
+String nioPtTransportPort = apiManager.find{it.key==&quot;nio-pt-transport-port&quot;}?.value
+
+Map trafficConfig = ymlparser.load((baseDir+&quot;/../../../../config/traffic-tool.yaml&quot; as File).text)
+
+Map apiendpoints = trafficConfig.find{it.key==&quot;api-endpoints&quot;}?.value
+String production_endpoint = apiendpoints.find{it.key==&quot;production&quot;}?.value
+String sandbox_endpoint = apiendpoints.find{it.key==&quot;sandbox&quot;}?.value
+String scenario_base_path = baseDir + &quot;/../../data/scenario/&quot; + trafficConfig.find{it.key==&quot;scenario-name&quot;}?.value
+
+
+vars.put(&quot;gatewayHost&quot;, gatewayHost)
+
+//log.info(&quot;---------------------------------------------------------&quot;)
+//log.info(&quot;${gatewayHost}&quot;)
+</stringProp>
+          </JSR223PreProcessor>
+          <hashTree/>
+        </hashTree>
+      </hashTree>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Create &amp; publish all API&apos;s" enabled="false">
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+          <stringProp name="LoopController.loops">1</stringProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">1</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
+        <boolProp name="ThreadGroup.scheduler">false</boolProp>
+        <stringProp name="ThreadGroup.duration"></stringProp>
+        <stringProp name="ThreadGroup.delay"></stringProp>
+      </ThreadGroup>
+      <hashTree>
+        <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Load APIM properties and set global variables" enabled="true">
+          <stringProp name="scriptLanguage">groovy</stringProp>
+          <stringProp name="parameters"></stringProp>
+          <stringProp name="filename"></stringProp>
+          <stringProp name="cacheKey">true</stringProp>
+          <stringProp name="script">SampleResult.setIgnore();</stringProp>
+        </JSR223Sampler>
+        <hashTree>
+          <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="JSR223 PreProcessor" enabled="true">
+            <stringProp name="scriptLanguage">groovy</stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="cacheKey">false</stringProp>
+            <stringProp name="script">@Grab(&apos;org.yaml:snakeyaml:1.17&apos;)
+
+import org.yaml.snakeyaml.Yaml;
+import org.apache.jmeter.services.FileServer;
+
+String baseDir = FileServer.getFileServer().getBaseDir()
+
+Yaml ymlparser = new Yaml()
+
+Map config = ymlparser.load((baseDir+&quot;/../../../../config/apim.yaml&quot; as File).text)
+
+Map managementConsole = config.find{it.key==&quot;management-console&quot;}?.value
+String gatewayProtocol = managementConsole.find{it.key==&quot;protocol&quot;}?.value
+String gatewayHost = managementConsole.find{it.key==&quot;host&quot;}?.value
+String gatewayServeletPort = managementConsole.find{it.key==&quot;servlet-transport-port&quot;}?.value
+
+Map apiManager = config.find{it.key==&quot;api-manager&quot;}?.value
+String nioPtTransportPort = apiManager.find{it.key==&quot;nio-pt-transport-port&quot;}?.value
+
+Map trafficConfig = ymlparser.load((baseDir+&quot;/../../../../config/traffic-tool.yaml&quot; as File).text)
+
+Map apiendpoints = trafficConfig.find{it.key==&quot;api-endpoints&quot;}?.value
+String production_endpoint = apiendpoints.find{it.key==&quot;production&quot;}?.value
+String sandbox_endpoint = apiendpoints.find{it.key==&quot;sandbox&quot;}?.value
+
+vars.put(&quot;gatewayProtocol&quot;, gatewayProtocol);
+vars.put(&quot;gatewayHost&quot;, gatewayHost);
+vars.put(&quot;gatewayServeletPort&quot;, gatewayServeletPort);
+vars.put(&quot;nioPtTransportPort&quot;, nioPtTransportPort);
+vars.put(&quot;production_endpoint&quot;, production_endpoint);
+vars.put(&quot;sandbox_endpoint&quot;, sandbox_endpoint);
+</stringProp>
+          </JSR223PreProcessor>
+          <hashTree/>
+        </hashTree>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Get Id and Secret" enabled="true">
           <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
@@ -42,9 +152,9 @@
               </elementProp>
             </collectionProp>
           </elementProp>
-          <stringProp name="HTTPSampler.domain">localhost</stringProp>
-          <stringProp name="HTTPSampler.port">9443</stringProp>
-          <stringProp name="HTTPSampler.protocol">https</stringProp>
+          <stringProp name="HTTPSampler.domain">${gatewayHost}</stringProp>
+          <stringProp name="HTTPSampler.port">${gatewayServeletPort}</stringProp>
+          <stringProp name="HTTPSampler.protocol">${gatewayProtocol}</stringProp>
           <stringProp name="HTTPSampler.contentEncoding"></stringProp>
           <stringProp name="HTTPSampler.path">/client-registration/v0.14/register</stringProp>
           <stringProp name="HTTPSampler.method">POST</stringProp>
@@ -99,9 +209,9 @@
               </elementProp>
             </collectionProp>
           </elementProp>
-          <stringProp name="HTTPSampler.domain">localhost</stringProp>
-          <stringProp name="HTTPSampler.port">8243</stringProp>
-          <stringProp name="HTTPSampler.protocol">https</stringProp>
+          <stringProp name="HTTPSampler.domain">${gatewayHost}</stringProp>
+          <stringProp name="HTTPSampler.port">${nioPtTransportPort}</stringProp>
+          <stringProp name="HTTPSampler.protocol">${gatewayProtocol}</stringProp>
           <stringProp name="HTTPSampler.contentEncoding"></stringProp>
           <stringProp name="HTTPSampler.path">/token</stringProp>
           <stringProp name="HTTPSampler.method">POST</stringProp>
@@ -206,7 +316,7 @@ vars.put(&quot;b64encryptedValue&quot;,new String(b64encrypted));
    &quot;maxTps&quot;: null,&#xd;
    &quot;visibility&quot;: &quot;PUBLIC&quot;,&#xd;
    &quot;visibleRoles&quot;: [],&#xd;
-   &quot;endpointConfig&quot;: &quot;{\&quot;production_endpoints\&quot;:{\&quot;url\&quot;:\&quot;https://localhost:9443/am/sample/pizzashack/v1/api/\&quot;,\&quot;config\&quot;:null},\&quot;sandbox_endpoints\&quot;:{\&quot;url\&quot;:\&quot;https://localhost:9443/am/sample/pizzashack/v1/api/\&quot;,\&quot;config\&quot;:null},\&quot;endpoint_type\&quot;:\&quot;http\&quot;}&quot;,&#xd;
+   &quot;endpointConfig&quot;: &quot;{\&quot;production_endpoints\&quot;:{\&quot;url\&quot;:\&quot;${production_endpoint}\&quot;,\&quot;config\&quot;:null},\&quot;sandbox_endpoints\&quot;:{\&quot;url\&quot;:\&quot;${sandbox_endpoint}\&quot;,\&quot;config\&quot;:null},\&quot;endpoint_type\&quot;:\&quot;http\&quot;}&quot;,&#xd;
    &quot;endpointSecurity&quot;:    {&#xd;
       &quot;username&quot;: &quot;user&quot;,&#xd;
       &quot;type&quot;: &quot;basic&quot;,&#xd;
@@ -248,9 +358,9 @@ vars.put(&quot;b64encryptedValue&quot;,new String(b64encrypted));
                   </elementProp>
                 </collectionProp>
               </elementProp>
-              <stringProp name="HTTPSampler.domain">localhost</stringProp>
-              <stringProp name="HTTPSampler.port">9443</stringProp>
-              <stringProp name="HTTPSampler.protocol">https</stringProp>
+              <stringProp name="HTTPSampler.domain">${gatewayHost}</stringProp>
+              <stringProp name="HTTPSampler.port">${gatewayServeletPort}</stringProp>
+              <stringProp name="HTTPSampler.protocol">${gatewayProtocol}</stringProp>
               <stringProp name="HTTPSampler.contentEncoding"></stringProp>
               <stringProp name="HTTPSampler.path">/api/am/publisher/v0.14/apis</stringProp>
               <stringProp name="HTTPSampler.method">POST</stringProp>
@@ -304,7 +414,7 @@ vars.put(&quot;b64encryptedValue&quot;,new String(b64encrypted));
               </ResponseAssertion>
               <hashTree/>
               <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="CSV Data Set Config" enabled="true">
-                <stringProp name="filename">${__BeanShell(import org.apache.jmeter.services.FileServer; FileServer.getFileServer().getBaseDir();)}${__BeanShell(File.separator,)}APIM_scenario/data/api_creation.csv</stringProp>
+                <stringProp name="filename">${__BeanShell(import org.apache.jmeter.services.FileServer; FileServer.getFileServer().getBaseDir();)}${__BeanShell(File.separator,)}../../data/scenario/data/api_creation.csv</stringProp>
                 <stringProp name="fileEncoding">UTF-8</stringProp>
                 <stringProp name="variableNames">apiName,apiDescription,apiPath,apiTags</stringProp>
                 <boolProp name="ignoreFirstLine">false</boolProp>
@@ -316,7 +426,7 @@ vars.put(&quot;b64encryptedValue&quot;,new String(b64encrypted));
               </CSVDataSet>
               <hashTree/>
               <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="CSV Data Set Config" enabled="true">
-                <stringProp name="filename">${__BeanShell(import org.apache.jmeter.services.FileServer; FileServer.getFileServer().getBaseDir();)}${__BeanShell(File.separator,)}APIM_scenario/data/api_creation_swagger.csv</stringProp>
+                <stringProp name="filename">${__BeanShell(import org.apache.jmeter.services.FileServer; FileServer.getFileServer().getBaseDir();)}${__BeanShell(File.separator,)}../../data/scenario/data/api_creation_swagger.csv</stringProp>
                 <stringProp name="fileEncoding">UTF-8</stringProp>
                 <stringProp name="variableNames">swagger</stringProp>
                 <boolProp name="ignoreFirstLine">false</boolProp>
@@ -339,9 +449,9 @@ vars.put(&quot;b64encryptedValue&quot;,new String(b64encrypted));
                   </elementProp>
                 </collectionProp>
               </elementProp>
-              <stringProp name="HTTPSampler.domain">localhost</stringProp>
-              <stringProp name="HTTPSampler.port">8243</stringProp>
-              <stringProp name="HTTPSampler.protocol">https</stringProp>
+              <stringProp name="HTTPSampler.domain">${gatewayHost}</stringProp>
+              <stringProp name="HTTPSampler.port">${nioPtTransportPort}</stringProp>
+              <stringProp name="HTTPSampler.protocol">${gatewayProtocol}</stringProp>
               <stringProp name="HTTPSampler.contentEncoding"></stringProp>
               <stringProp name="HTTPSampler.path">/token</stringProp>
               <stringProp name="HTTPSampler.method">POST</stringProp>
@@ -422,9 +532,9 @@ vars.put(&quot;b64encryptedValue&quot;,new String(b64encrypted));
                   </elementProp>
                 </collectionProp>
               </elementProp>
-              <stringProp name="HTTPSampler.domain">localhost</stringProp>
-              <stringProp name="HTTPSampler.port">9443</stringProp>
-              <stringProp name="HTTPSampler.protocol">https</stringProp>
+              <stringProp name="HTTPSampler.domain">${gatewayHost}</stringProp>
+              <stringProp name="HTTPSampler.port">${gatewayServeletPort}</stringProp>
+              <stringProp name="HTTPSampler.protocol">${gatewayProtocol}</stringProp>
               <stringProp name="HTTPSampler.contentEncoding"></stringProp>
               <stringProp name="HTTPSampler.path">/api/am/publisher/v0.14/apis/change-lifecycle?apiId=${created_API_Id}&amp;action=Publish</stringProp>
               <stringProp name="HTTPSampler.method">POST</stringProp>
@@ -501,7 +611,7 @@ vars.put(&quot;b64encryptedValue&quot;,new String(b64encrypted));
         </ResultCollector>
         <hashTree/>
       </hashTree>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Create Applications" enabled="true">
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Create Applications" enabled="false">
         <stringProp name="TestPlan.comments">NOT REQUIRED FOR THE SCENARIO</stringProp>
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
@@ -517,6 +627,46 @@ vars.put(&quot;b64encryptedValue&quot;,new String(b64encrypted));
       <hashTree>
         <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Create all applications" enabled="true"/>
         <hashTree>
+          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Load APIM properties and set global variables" enabled="true">
+            <stringProp name="scriptLanguage">groovy</stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="cacheKey">true</stringProp>
+            <stringProp name="script">SampleResult.setIgnore();</stringProp>
+          </JSR223Sampler>
+          <hashTree>
+            <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="JSR223 PreProcessor" enabled="true">
+              <stringProp name="scriptLanguage">groovy</stringProp>
+              <stringProp name="parameters"></stringProp>
+              <stringProp name="filename"></stringProp>
+              <stringProp name="cacheKey">false</stringProp>
+              <stringProp name="script">@Grab(&apos;org.yaml:snakeyaml:1.17&apos;)
+
+import org.yaml.snakeyaml.Yaml;
+import org.apache.jmeter.services.FileServer;
+
+String baseDir = FileServer.getFileServer().getBaseDir()
+
+Yaml ymlparser = new Yaml()
+
+Map config = ymlparser.load((baseDir+&quot;/../../../../config/apim.yaml&quot; as File).text)
+
+Map managementConsole = config.find{it.key==&quot;management-console&quot;}?.value
+String gatewayProtocol = managementConsole.find{it.key==&quot;protocol&quot;}?.value
+String gatewayHost = managementConsole.find{it.key==&quot;host&quot;}?.value
+String gatewayServeletPort = managementConsole.find{it.key==&quot;servlet-transport-port&quot;}?.value
+
+Map apiManager = config.find{it.key==&quot;api-manager&quot;}?.value
+String nioPtTransportPort = apiManager.find{it.key==&quot;nio-pt-transport-port&quot;}?.value
+
+vars.put(&quot;gatewayProtocol&quot;, gatewayProtocol);
+vars.put(&quot;gatewayHost&quot;, gatewayHost);
+vars.put(&quot;gatewayServeletPort&quot;, gatewayServeletPort);
+vars.put(&quot;nioPtTransportPort&quot;, nioPtTransportPort);
+</stringProp>
+            </JSR223PreProcessor>
+            <hashTree/>
+          </hashTree>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Get Id and secret" enabled="true">
             <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
@@ -536,9 +686,9 @@ vars.put(&quot;b64encryptedValue&quot;,new String(b64encrypted));
                 </elementProp>
               </collectionProp>
             </elementProp>
-            <stringProp name="HTTPSampler.domain">localhost</stringProp>
-            <stringProp name="HTTPSampler.port">9443</stringProp>
-            <stringProp name="HTTPSampler.protocol">https</stringProp>
+            <stringProp name="HTTPSampler.domain">${gatewayHost}</stringProp>
+            <stringProp name="HTTPSampler.port">${gatewayServeletPort}</stringProp>
+            <stringProp name="HTTPSampler.protocol">${gatewayProtocol}</stringProp>
             <stringProp name="HTTPSampler.contentEncoding"></stringProp>
             <stringProp name="HTTPSampler.path">/client-registration/v0.14/register</stringProp>
             <stringProp name="HTTPSampler.method">POST</stringProp>
@@ -593,9 +743,9 @@ vars.put(&quot;b64encryptedValue&quot;,new String(b64encrypted));
                 </elementProp>
               </collectionProp>
             </elementProp>
-            <stringProp name="HTTPSampler.domain">localhost</stringProp>
-            <stringProp name="HTTPSampler.port">8243</stringProp>
-            <stringProp name="HTTPSampler.protocol">https</stringProp>
+            <stringProp name="HTTPSampler.domain">${gatewayHost}</stringProp>
+            <stringProp name="HTTPSampler.port">${nioPtTransportPort}</stringProp>
+            <stringProp name="HTTPSampler.protocol">${gatewayProtocol}</stringProp>
             <stringProp name="HTTPSampler.contentEncoding"></stringProp>
             <stringProp name="HTTPSampler.path">/token</stringProp>
             <stringProp name="HTTPSampler.method">POST</stringProp>
@@ -633,7 +783,7 @@ String clientSecret = vars.get(&quot;clientSecret&quot;);
 String concatValue = clientId + &quot;:&quot; + clientSecret;
 
 byte[] b64encrypted = Base64.encodeBase64(concatValue.getBytes());
-      vars.put(&quot;b64encryptedValue&quot;,new String(b64encrypted));
+vars.put(&quot;b64encryptedValue&quot;,new String(b64encrypted));
 </stringProp>
             </JSR223PreProcessor>
             <hashTree/>
@@ -693,9 +843,9 @@ byte[] b64encrypted = Base64.encodeBase64(concatValue.getBytes());
                   </elementProp>
                 </collectionProp>
               </elementProp>
-              <stringProp name="HTTPSampler.domain">localhost</stringProp>
-              <stringProp name="HTTPSampler.port">9443</stringProp>
-              <stringProp name="HTTPSampler.protocol">https</stringProp>
+              <stringProp name="HTTPSampler.domain">${gatewayHost}</stringProp>
+              <stringProp name="HTTPSampler.port">${gatewayServeletPort}</stringProp>
+              <stringProp name="HTTPSampler.protocol">${gatewayProtocol}</stringProp>
               <stringProp name="HTTPSampler.contentEncoding"></stringProp>
               <stringProp name="HTTPSampler.path">api/am/store/v0.14/applications</stringProp>
               <stringProp name="HTTPSampler.method">POST</stringProp>
@@ -747,7 +897,7 @@ byte[] b64encrypted = Base64.encodeBase64(concatValue.getBytes());
               </ResponseAssertion>
               <hashTree/>
               <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="CSV Data Set Config" enabled="true">
-                <stringProp name="filename">${__BeanShell(import org.apache.jmeter.services.FileServer; FileServer.getFileServer().getBaseDir();)}${__BeanShell(File.separator,)}APIM_scenario/data/app_creation.csv</stringProp>
+                <stringProp name="filename">${__BeanShell(import org.apache.jmeter.services.FileServer; FileServer.getFileServer().getBaseDir();)}${__BeanShell(File.separator,)}../../data/scenario/data/app_creation.csv</stringProp>
                 <stringProp name="fileEncoding">UTF-8</stringProp>
                 <stringProp name="variableNames">app_name,app_description</stringProp>
                 <boolProp name="ignoreFirstLine">false</boolProp>
@@ -812,6 +962,46 @@ byte[] b64encrypted = Base64.encodeBase64(concatValue.getBytes());
         <stringProp name="ThreadGroup.delay">1.5</stringProp>
       </ThreadGroup>
       <hashTree>
+        <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Load APIM properties and set global variables" enabled="true">
+          <stringProp name="scriptLanguage">groovy</stringProp>
+          <stringProp name="parameters"></stringProp>
+          <stringProp name="filename"></stringProp>
+          <stringProp name="cacheKey">true</stringProp>
+          <stringProp name="script">SampleResult.setIgnore();</stringProp>
+        </JSR223Sampler>
+        <hashTree>
+          <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="JSR223 PreProcessor" enabled="true">
+            <stringProp name="scriptLanguage">groovy</stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="cacheKey">false</stringProp>
+            <stringProp name="script">@Grab(&apos;org.yaml:snakeyaml:1.17&apos;)
+
+import org.yaml.snakeyaml.Yaml;
+import org.apache.jmeter.services.FileServer;
+
+String baseDir = FileServer.getFileServer().getBaseDir()
+
+Yaml ymlparser = new Yaml()
+
+Map config = ymlparser.load((baseDir+&quot;/../../../../config/apim.yaml&quot; as File).text)
+
+Map managementConsole = config.find{it.key==&quot;management-console&quot;}?.value
+String gatewayProtocol = managementConsole.find{it.key==&quot;protocol&quot;}?.value
+String gatewayHost = managementConsole.find{it.key==&quot;host&quot;}?.value
+String gatewayServeletPort = managementConsole.find{it.key==&quot;servlet-transport-port&quot;}?.value
+
+Map apiManager = config.find{it.key==&quot;api-manager&quot;}?.value
+String nioPtTransportPort = apiManager.find{it.key==&quot;nio-pt-transport-port&quot;}?.value
+
+vars.put(&quot;gatewayProtocol&quot;, gatewayProtocol);
+vars.put(&quot;gatewayHost&quot;, gatewayHost);
+vars.put(&quot;gatewayServeletPort&quot;, gatewayServeletPort);
+vars.put(&quot;nioPtTransportPort&quot;, nioPtTransportPort);
+</stringProp>
+          </JSR223PreProcessor>
+          <hashTree/>
+        </hashTree>
         <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Subscribe to applications" enabled="true"/>
         <hashTree>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Get Id and secret" enabled="true">
@@ -833,9 +1023,9 @@ byte[] b64encrypted = Base64.encodeBase64(concatValue.getBytes());
                 </elementProp>
               </collectionProp>
             </elementProp>
-            <stringProp name="HTTPSampler.domain">localhost</stringProp>
-            <stringProp name="HTTPSampler.port">9443</stringProp>
-            <stringProp name="HTTPSampler.protocol">https</stringProp>
+            <stringProp name="HTTPSampler.domain">${gatewayHost}</stringProp>
+            <stringProp name="HTTPSampler.port">${gatewayServeletPort}</stringProp>
+            <stringProp name="HTTPSampler.protocol">${gatewayProtocol}</stringProp>
             <stringProp name="HTTPSampler.contentEncoding"></stringProp>
             <stringProp name="HTTPSampler.path">/client-registration/v0.14/register</stringProp>
             <stringProp name="HTTPSampler.method">POST</stringProp>
@@ -890,9 +1080,9 @@ byte[] b64encrypted = Base64.encodeBase64(concatValue.getBytes());
                 </elementProp>
               </collectionProp>
             </elementProp>
-            <stringProp name="HTTPSampler.domain">localhost</stringProp>
-            <stringProp name="HTTPSampler.port">8243</stringProp>
-            <stringProp name="HTTPSampler.protocol">https</stringProp>
+            <stringProp name="HTTPSampler.domain">${gatewayHost}</stringProp>
+            <stringProp name="HTTPSampler.port">${nioPtTransportPort}</stringProp>
+            <stringProp name="HTTPSampler.protocol">${gatewayProtocol}</stringProp>
             <stringProp name="HTTPSampler.contentEncoding"></stringProp>
             <stringProp name="HTTPSampler.path">/token</stringProp>
             <stringProp name="HTTPSampler.method">POST</stringProp>
@@ -930,7 +1120,7 @@ String clientSecret = vars.get(&quot;clientSecret&quot;);
 String concatValue = clientId + &quot;:&quot; + clientSecret;
 
 byte[] b64encrypted = Base64.encodeBase64(concatValue.getBytes());
-      vars.put(&quot;b64encryptedValue&quot;,new String(b64encrypted));
+vars.put(&quot;b64encryptedValue&quot;,new String(b64encrypted));
 </stringProp>
             </JSR223PreProcessor>
             <hashTree/>
@@ -975,7 +1165,7 @@ byte[] b64encrypted = Base64.encodeBase64(concatValue.getBytes());
           </WhileController>
           <hashTree>
             <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="CSV Data Set Config" enabled="true">
-              <stringProp name="filename">${__BeanShell(import org.apache.jmeter.services.FileServer; FileServer.getFileServer().getBaseDir();)}${__BeanShell(File.separator,)}APIM_scenario/data/app_api_subscription_admin.csv</stringProp>
+              <stringProp name="filename">${__BeanShell(import org.apache.jmeter.services.FileServer; FileServer.getFileServer().getBaseDir();)}${__BeanShell(File.separator,)}../../data/scenario/data/app_api_subscription_admin.csv</stringProp>
               <stringProp name="fileEncoding">UTF-8</stringProp>
               <stringProp name="variableNames">App_name,API_name</stringProp>
               <boolProp name="ignoreFirstLine">false</boolProp>
@@ -990,9 +1180,9 @@ byte[] b64encrypted = Base64.encodeBase64(concatValue.getBytes());
               <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
                 <collectionProp name="Arguments.arguments"/>
               </elementProp>
-              <stringProp name="HTTPSampler.domain">localhost</stringProp>
-              <stringProp name="HTTPSampler.port">9443</stringProp>
-              <stringProp name="HTTPSampler.protocol">https</stringProp>
+              <stringProp name="HTTPSampler.domain">${gatewayHost}</stringProp>
+              <stringProp name="HTTPSampler.port">${gatewayServeletPort}</stringProp>
+              <stringProp name="HTTPSampler.protocol">${gatewayProtocol}</stringProp>
               <stringProp name="HTTPSampler.contentEncoding"></stringProp>
               <stringProp name="HTTPSampler.path">/api/am/store/v0.14/apis?limit=200</stringProp>
               <stringProp name="HTTPSampler.method">GET</stringProp>
@@ -1047,9 +1237,9 @@ vars.put(&quot;API_name&quot;,new String(api_name));
               <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
                 <collectionProp name="Arguments.arguments"/>
               </elementProp>
-              <stringProp name="HTTPSampler.domain">localhost</stringProp>
-              <stringProp name="HTTPSampler.port">9443</stringProp>
-              <stringProp name="HTTPSampler.protocol">https</stringProp>
+              <stringProp name="HTTPSampler.domain">${gatewayHost}</stringProp>
+              <stringProp name="HTTPSampler.port">${gatewayServeletPort}</stringProp>
+              <stringProp name="HTTPSampler.protocol">${gatewayProtocol}</stringProp>
               <stringProp name="HTTPSampler.contentEncoding"></stringProp>
               <stringProp name="HTTPSampler.path">/api/am/store/v0.14/applications?limit=200</stringProp>
               <stringProp name="HTTPSampler.method">GET</stringProp>
@@ -1115,9 +1305,9 @@ vars.put(&quot;App_name&quot;,new String(app_name));
                   </elementProp>
                 </collectionProp>
               </elementProp>
-              <stringProp name="HTTPSampler.domain">localhost</stringProp>
-              <stringProp name="HTTPSampler.port">9443</stringProp>
-              <stringProp name="HTTPSampler.protocol">https</stringProp>
+              <stringProp name="HTTPSampler.domain">${gatewayHost}</stringProp>
+              <stringProp name="HTTPSampler.port">${gatewayServeletPort}</stringProp>
+              <stringProp name="HTTPSampler.protocol">${gatewayProtocol}</stringProp>
               <stringProp name="HTTPSampler.contentEncoding"></stringProp>
               <stringProp name="HTTPSampler.path">/api/am/store/v0.14/subscriptions</stringProp>
               <stringProp name="HTTPSampler.method">POST</stringProp>
@@ -1171,11 +1361,8 @@ String api_name = vars.get(&quot;API_name&quot;);
 String api_id = vars.get(&quot;API_id&quot;);
 
 log.info(&quot;&quot;);
-log.info(&quot;Application name: &quot; + app_name);
-log.info(&quot;Application id: &quot; + app_id);
-log.info(&quot;API name: &quot; + api_name);
-log.info(&quot;API id: &quot; + api_id);
-log.info(&quot;&quot;);
+log.info(&quot;Application name: &quot; + app_name + &quot;Application id: &quot; + app_id);
+log.info(&quot;API name: &quot; + api_name + &quot;API id: &quot; + api_id);
 </stringProp>
               <stringProp name="BeanShellAssertion.filename"></stringProp>
               <stringProp name="BeanShellAssertion.parameters"></stringProp>
@@ -1202,6 +1389,42 @@ log.info(&quot;&quot;);
         <stringProp name="ThreadGroup.delay"></stringProp>
       </ThreadGroup>
       <hashTree>
+        <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Load APIM properties and set global variables" enabled="true">
+          <stringProp name="scriptLanguage">groovy</stringProp>
+          <stringProp name="parameters"></stringProp>
+          <stringProp name="filename"></stringProp>
+          <stringProp name="cacheKey">true</stringProp>
+          <stringProp name="script">SampleResult.setIgnore();</stringProp>
+        </JSR223Sampler>
+        <hashTree>
+          <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="JSR223 PreProcessor" enabled="true">
+            <stringProp name="scriptLanguage">groovy</stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="cacheKey">false</stringProp>
+            <stringProp name="script">@Grab(&apos;org.yaml:snakeyaml:1.17&apos;)
+
+import org.yaml.snakeyaml.Yaml;
+import org.apache.jmeter.services.FileServer;
+
+String baseDir = FileServer.getFileServer().getBaseDir()
+
+Yaml ymlparser = new Yaml()
+
+Map config = ymlparser.load((baseDir+&quot;/../../../../config/apim.yaml&quot; as File).text)
+
+Map managementConsole = config.find{it.key==&quot;management-console&quot;}?.value
+String gatewayProtocol = managementConsole.find{it.key==&quot;protocol&quot;}?.value
+String gatewayHost = managementConsole.find{it.key==&quot;host&quot;}?.value
+String gatewayServeletPortHTTP = managementConsole.find{it.key==&quot;servelet-transport-port-http&quot;}?.value
+
+vars.put(&quot;gatewayProtocol&quot;, gatewayProtocol);
+vars.put(&quot;gatewayHost&quot;, gatewayHost);
+vars.put(&quot;gatewayServeletPortHTTP&quot;, gatewayServeletPortHTTP);
+</stringProp>
+          </JSR223PreProcessor>
+          <hashTree/>
+        </hashTree>
         <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Create users" enabled="true"/>
         <hashTree>
           <WhileController guiclass="WhileControllerGui" testclass="WhileController" testname="While Controller" enabled="true">
@@ -1241,9 +1464,9 @@ log.info(&quot;&quot;);
                   </elementProp>
                 </collectionProp>
               </elementProp>
-              <stringProp name="HTTPSampler.domain">localhost</stringProp>
-              <stringProp name="HTTPSampler.port">9763</stringProp>
-              <stringProp name="HTTPSampler.protocol">http</stringProp>
+              <stringProp name="HTTPSampler.domain">${gatewayHost}</stringProp>
+              <stringProp name="HTTPSampler.port">${gatewayServeletPortHTTP}</stringProp>
+              <stringProp name="HTTPSampler.protocol">${gatewayProtocol}</stringProp>
               <stringProp name="HTTPSampler.contentEncoding"></stringProp>
               <stringProp name="HTTPSampler.path">store/site/blocks/user/sign-up/ajax/user-add.jag</stringProp>
               <stringProp name="HTTPSampler.method">POST</stringProp>
@@ -1278,7 +1501,7 @@ vars.put(&quot;fields&quot;, new String(fields));
               </JSR223PreProcessor>
               <hashTree/>
               <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="CSV Data Set Config" enabled="true">
-                <stringProp name="filename">${__BeanShell(import org.apache.jmeter.services.FileServer; FileServer.getFileServer().getBaseDir();)}${__BeanShell(File.separator,)}APIM_scenario/data/user_generation.csv</stringProp>
+                <stringProp name="filename">${__BeanShell(import org.apache.jmeter.services.FileServer; FileServer.getFileServer().getBaseDir();)}${__BeanShell(File.separator,)}../../data/scenario/data/user_generation.csv</stringProp>
                 <stringProp name="fileEncoding">UTF-8</stringProp>
                 <stringProp name="variableNames">username,password,firstname,lastname,organization,country,email,land,mobile,IM,url</stringProp>
                 <boolProp name="ignoreFirstLine">false</boolProp>
@@ -1353,7 +1576,7 @@ vars.put(&quot;fields&quot;, new String(fields));
         <stringProp name="ThreadGroup.delay"></stringProp>
       </ThreadGroup>
       <hashTree>
-        <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Maintain variables" enabled="true">
+        <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Load APIM properties and set global variables" enabled="true">
           <stringProp name="scriptLanguage">groovy</stringProp>
           <stringProp name="parameters"></stringProp>
           <stringProp name="filename"></stringProp>
@@ -1365,8 +1588,32 @@ vars.put(&quot;fields&quot;, new String(fields));
             <stringProp name="scriptLanguage">groovy</stringProp>
             <stringProp name="parameters"></stringProp>
             <stringProp name="filename"></stringProp>
-            <stringProp name="cacheKey">true</stringProp>
-            <stringProp name="script">String final_string = &quot;&quot;;
+            <stringProp name="cacheKey">false</stringProp>
+            <stringProp name="script">@Grab(&apos;org.yaml:snakeyaml:1.17&apos;)
+
+import org.yaml.snakeyaml.Yaml;
+import org.apache.jmeter.services.FileServer;
+
+String final_string = &quot;&quot;;
+
+String baseDir = FileServer.getFileServer().getBaseDir()
+
+Yaml ymlparser = new Yaml()
+
+Map config = ymlparser.load((baseDir+&quot;/../../../../config/apim.yaml&quot; as File).text)
+
+Map managementConsole = config.find{it.key==&quot;management-console&quot;}?.value
+String gatewayProtocol = managementConsole.find{it.key==&quot;protocol&quot;}?.value
+String gatewayHost = managementConsole.find{it.key==&quot;host&quot;}?.value
+String gatewayServeletPort = managementConsole.find{it.key==&quot;servlet-transport-port&quot;}?.value
+
+Map apiManager = config.find{it.key==&quot;api-manager&quot;}?.value
+String nioPtTransportPort = apiManager.find{it.key==&quot;nio-pt-transport-port&quot;}?.value
+
+vars.put(&quot;gatewayProtocol&quot;, gatewayProtocol);
+vars.put(&quot;gatewayHost&quot;, gatewayHost);
+vars.put(&quot;gatewayServeletPort&quot;, gatewayServeletPort);
+vars.put(&quot;nioPtTransportPort&quot;, nioPtTransportPort);
 
 vars.put(&quot;final_string&quot;, final_string);
 </stringProp>
@@ -1392,9 +1639,9 @@ vars.put(&quot;final_string&quot;, final_string);
               </elementProp>
             </collectionProp>
           </elementProp>
-          <stringProp name="HTTPSampler.domain">localhost</stringProp>
-          <stringProp name="HTTPSampler.port">9443</stringProp>
-          <stringProp name="HTTPSampler.protocol">https</stringProp>
+          <stringProp name="HTTPSampler.domain">${gatewayHost}</stringProp>
+          <stringProp name="HTTPSampler.port">${gatewayServeletPort}</stringProp>
+          <stringProp name="HTTPSampler.protocol">${gatewayProtocol}</stringProp>
           <stringProp name="HTTPSampler.contentEncoding"></stringProp>
           <stringProp name="HTTPSampler.path">/client-registration/v0.14/register</stringProp>
           <stringProp name="HTTPSampler.method">POST</stringProp>
@@ -1443,7 +1690,7 @@ vars.put(&quot;final_string&quot;, final_string);
         </WhileController>
         <hashTree>
           <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="CSV Data Set Config" enabled="true">
-            <stringProp name="filename">${__BeanShell(import org.apache.jmeter.services.FileServer; FileServer.getFileServer().getBaseDir();)}${__BeanShell(File.separator,)}APIM_scenario/data/app_creation.csv</stringProp>
+            <stringProp name="filename">${__BeanShell(import org.apache.jmeter.services.FileServer; FileServer.getFileServer().getBaseDir();)}${__BeanShell(File.separator,)}../../data/scenario/data/app_creation.csv</stringProp>
             <stringProp name="fileEncoding">UTF-8</stringProp>
             <stringProp name="variableNames">app_name,app_description</stringProp>
             <boolProp name="ignoreFirstLine">false</boolProp>
@@ -1465,9 +1712,9 @@ vars.put(&quot;final_string&quot;, final_string);
                 </elementProp>
               </collectionProp>
             </elementProp>
-            <stringProp name="HTTPSampler.domain">localhost</stringProp>
-            <stringProp name="HTTPSampler.port">8243</stringProp>
-            <stringProp name="HTTPSampler.protocol">https</stringProp>
+            <stringProp name="HTTPSampler.domain">${gatewayHost}</stringProp>
+            <stringProp name="HTTPSampler.port">${nioPtTransportPort}</stringProp>
+            <stringProp name="HTTPSampler.protocol">${gatewayProtocol}</stringProp>
             <stringProp name="HTTPSampler.contentEncoding"></stringProp>
             <stringProp name="HTTPSampler.path">/token</stringProp>
             <stringProp name="HTTPSampler.method">POST</stringProp>
@@ -1505,7 +1752,7 @@ String clientSecret = vars.get(&quot;clientSecret&quot;);
 String concatValue = clientId + &quot;:&quot; + clientSecret;
 
 byte[] b64encrypted = Base64.encodeBase64(concatValue.getBytes());
-      vars.put(&quot;b64encryptedValue&quot;,new String(b64encrypted));
+vars.put(&quot;b64encryptedValue&quot;,new String(b64encrypted));
 </stringProp>
             </JSR223PreProcessor>
             <hashTree/>
@@ -1549,9 +1796,9 @@ byte[] b64encrypted = Base64.encodeBase64(concatValue.getBytes());
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
               <collectionProp name="Arguments.arguments"/>
             </elementProp>
-            <stringProp name="HTTPSampler.domain">localhost</stringProp>
-            <stringProp name="HTTPSampler.port">9443</stringProp>
-            <stringProp name="HTTPSampler.protocol">https</stringProp>
+            <stringProp name="HTTPSampler.domain">${gatewayHost}</stringProp>
+            <stringProp name="HTTPSampler.port">${gatewayServeletPort}</stringProp>
+            <stringProp name="HTTPSampler.protocol">${gatewayProtocol}</stringProp>
             <stringProp name="HTTPSampler.contentEncoding"></stringProp>
             <stringProp name="HTTPSampler.path">/api/am/store/v0.14/applications</stringProp>
             <stringProp name="HTTPSampler.method">GET</stringProp>
@@ -1608,9 +1855,9 @@ byte[] b64encrypted = Base64.encodeBase64(concatValue.getBytes());
                 </elementProp>
               </collectionProp>
             </elementProp>
-            <stringProp name="HTTPSampler.domain">localhost</stringProp>
-            <stringProp name="HTTPSampler.port">9443</stringProp>
-            <stringProp name="HTTPSampler.protocol">https</stringProp>
+            <stringProp name="HTTPSampler.domain">${gatewayHost}</stringProp>
+            <stringProp name="HTTPSampler.port">${gatewayServeletPort}</stringProp>
+            <stringProp name="HTTPSampler.protocol">${gatewayProtocol}</stringProp>
             <stringProp name="HTTPSampler.contentEncoding"></stringProp>
             <stringProp name="HTTPSampler.path">api/am/store/v0.14/applications/generate-keys?applicationId=${application_id}</stringProp>
             <stringProp name="HTTPSampler.method">POST</stringProp>
@@ -1678,7 +1925,7 @@ final_string += current_line;
 vars.put(&quot;final_string&quot;, final_string);
 
 // write each token to the file [PLEASE DELETE THE FILE BEFORE RUNNING THIS, IF FILE ALREADY EXISTS]
-FileWriter fstream = new FileWriter(baseDir+&quot;/APIM_scenario/api_invoke_keySecret-multipleEndUsers.csv&quot;, true);
+FileWriter fstream = new FileWriter(baseDir+&quot;/../../data/scenario/api_invoke_key_secret.csv&quot;, true);
 BufferedWriter out = new BufferedWriter(fstream);
 out.write(current_line);
 out.close();

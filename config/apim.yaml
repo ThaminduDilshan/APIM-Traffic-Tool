@@ -1,7 +1,11 @@
-gateway-url:
+management-console:
   protocol: https
   host: 172.17.0.1
-  port: 8243
+  servlet-transport-port: 9443
+  servelet-transport-port-http: 9763
+
+api-manager:
+  nio-pt-transport-port: 8243
 
 apis:
   - name: news
