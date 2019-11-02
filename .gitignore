@@ -1,0 +1,5 @@
+/dataset
+/logs
+/lib/traffic-tool/data/scenario/scenario_example/api_invoke_key_secret.csv
+/lib/traffic-tool/data/scenario/scenario_example/api_invoke_tokens.csv
+/lib/traffic-tool/data/scenario/scenario_example user_scenario_distribution.csv

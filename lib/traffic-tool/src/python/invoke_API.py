@@ -23,8 +23,12 @@ script_runtime = args.runtime * 60       # in seconds
 # Configurations
 no_of_processes = 20
 max_connection_refuse_count = 50
+<<<<<<< HEAD:lib/traffic-tool/src/python/invoke_API.py
+host_ip = "172.18.0.1"
+=======
 # host_ip = "10.100.4.187"
 host_ip = "172.17.0.1"
+>>>>>>> 4a2738170d4b1d2a7a06688b7c62d32defb81f13:invoke_API.py
 host_port = "8243"
 
 # Variables
@@ -73,7 +77,6 @@ def varySlightly(median, no_of_users):
     This method will return a randomly generated ipv4 address
 '''
 def ipGen():
-    # return "{}.{}.{}.{}".format(random.randint(1,255), random.randint(0,255), random.randint(0,255), random.randint(0,255))
     return fake_generator.ipv4()
 
 
@@ -103,13 +106,6 @@ def genUniqueIPList(count:int):
         for i in range(diff):
             unique_list.append(ipGen())
         unique_list = list(set(unique_list))
-
-    # writing list of ips to a file
-    ip_all_str = "ip_address\n"
-    for ip in unique_list:
-        ip_all_str += ip + "\n"
-    with open('data/ip_list_{}'.format(filename), 'w') as file:
-        file.write(ip_all_str)
 
     return unique_list
 
@@ -170,7 +166,7 @@ def sendRequest(url_ip, url_port, api_name, api_version, path, access_token, met
         code = '404'
 
     # write data to files
-    write_string = ""               # api_name,access_token,ip,cookie,path,method
+    write_string = ""
 
     write_string = str(datetime.now()) + "," + api_name + "," + access_token + "," + user_ip + "," + cookie + "," + api_name+"/"+api_version+"/"+path + "," + method + "," + str(code) + "\n"
     with open('dataset/{}'.format(filename), 'a+') as file:
@@ -184,7 +180,6 @@ def sendRequest(url_ip, url_port, api_name, api_version, path, access_token, met
     Highly biased for returning zero.
 '''
 def randomSleepTime():
-    # int_list = [0,0,0,0,0,0,1,0,0,2,0,3,60*2,0,0,4,0,5,0,0,0,5,0,2,0,60*10,0,0,0,0,1,0,0,0,0,0]
     int_list = [0,0,0,0,0,0,1,0,0,2,0,3,2,0,0,4,0,5,0,0,0,5,0,2,0,10,0,0,0,0,1,0,0,0,0,0]
     return int_list[random.randint(0, len(int_list)-1)]
 
@@ -194,7 +189,6 @@ def randomSleepTime():
     Supposed to be executed from a process.
 '''
 def runInvoker(scenario_row):
-    # global scenario_pool, connection_refuse_count, script_starttime, script_runtime, active_processes
     global connection_refuse_count, script_starttime, script_runtime, active_processes
 
     no_of_requests = scenario_row[0] - random.randint(0, scenario_row[0])
@@ -304,7 +298,7 @@ for row in scenario_pool:
         write_str += str(row_data) + ','
     write_str = write_str[:-1] + "\n"
 
-with open('data/user_scenario_distribution_{}'.format(filename), 'w') as file:
+with open('data/user_scenario_distribution.csv', 'w') as file:
     file.write(write_str)
 
 # shuffle the pool

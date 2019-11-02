@@ -1,7 +1,5 @@
 #!/bin/sh
 
-#JMPATH="/home/thamindu/Documents/Applications/apache-jmeter-5.1.1/bin"
-
 func_help() {
   echo "Traffic Tool Options"
   echo "1: To generate user details"
@@ -11,6 +9,7 @@ func_help() {
   echo "5: To generate traffic data (without invoking)"
   echo "6: To simulate a traffic"
   echo "7: To stop the traffic tool"
+  echo "all: To setup the scenario and simulate a traffic"
 }
 
 func_gen_user_details() {
@@ -45,14 +44,14 @@ func_create_scenario() {
 }
 
 func_gen_tokens() {
-  if [ -e "$(pwd)"/APIM_scenario/data/app_creation.csv -a -e "$(pwd)"/APIM_scenario/data/user_app_pattern.csv ];
+  if [ -e "$(pwd)"/APIM_scenario/data/app_creation.csv -a -e "$(pwd)"/APIM_scenario/data/user_app_pattern.csv -a -e "$(pwd)"/APIM_scenario/api_invoke_keySecret-multipleEndUsers.csv ];
   then
     rm -f APIM_scenario/api_invoke_tokens.csv
     echo "Enter your jmeter path (Ex:- /home/user/Documents/apache-jmeter-5.1.1/bin)"
     read JMPATH
     $JMPATH/jmeter -n -t 'Generate token list.jmx' -l logs/jmeter-results.log -j logs/jmeter.log
   else
-    echo "Missing one or more required files in the 'APIM_scenario/data' directory"
+    echo "Missing one or more required files in the 'APIM_scenario' directory"
     exit 1
   fi
 }
@@ -109,6 +108,44 @@ func_stop_traffic() {
   > data/invoke_API.pid
 }
 
+func_all() {
+  echo "Enter your jmeter path (Ex:- /home/user/Documents/apache-jmeter-5.1.1/bin)"
+  read JMPATH
+  echo "Enter filename (without file extension): "
+  read FILENAME
+  echo "Enter script execution time in minutes: "
+  read EXECTIME
+
+  if command -v python3 &>/dev/null; then
+    python3 apim_scenario_GEN_userdetails.py 1
+
+    if [ -e "$(pwd)"/APIM_scenario/data/api_creation.csv -a -e "$(pwd)"/APIM_scenario/data/api_creation_swagger.csv -a -e "$(pwd)"/APIM_scenario/data/app_creation.csv -a -e "$(pwd)"/APIM_scenario/data/app_api_subscription_admin.csv -a -e "$(pwd)"/APIM_scenario/data/user_generation.csv -a -e "$(pwd)"/APIM_scenario/data/user_app_pattern.csv -a -e "$(pwd)"/APIM_scenario/data/api_invoke_scenario.csv ];
+    then
+      rm -f APIM_scenario/api_invoke_keySecret-multipleEndUsers.csv
+      $JMPATH/jmeter -n -t 'API Scenario - multiple end users.jmx' -l logs/jmeter-results.log -j logs/jmeter.log
+
+      rm -f APIM_scenario/api_invoke_tokens.csv
+      $JMPATH/jmeter -n -t 'Generate token list.jmx' -l logs/jmeter-results.log -j logs/jmeter.log
+
+      if [ -e "$(pwd)"/APIM_scenario/api_invoke_tokens.csv ];
+      then
+        chmod +x invoke_API.py
+        nohup python3 invoke_API.py $FILENAME $EXECTIME >> logs/shell-logs.log &
+        echo $! > data/invoke_API.pid
+      else
+        echo "Missing token file in the 'APIM_scenario/data' directory"
+        exit 1
+      fi
+    else
+      echo "Missing one or more required files in the 'APIM_scenario/data' directory"
+      exit 1
+    fi
+  else
+    echo "Python 3 is required for the command!"
+    exit 1
+  fi
+}
+
 
 case "$1" in
   -h)
@@ -141,6 +178,10 @@ case "$1" in
   ;;
   7)
     func_stop_traffic | tee -a logs/shell-logs.log
+    exit 0
+  ;;
+  all)
+    func_all | tee -a logs/shell-logs.log
     exit 0
   ;;
   *)

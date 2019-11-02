@@ -50,7 +50,7 @@ Scenario is involved with following 6 different APIs and 3 different application
 
 100 users are distributed among those applications according to the following table and invoking happens as stated in the 5th column.
 
-![APIM Example Scenario](/images/APIM_scenario.png)
+![APIM Example Scenario](/resources/images/APIM_scenario.png)
 
 
 ## Adding Custom APIM Scenario
