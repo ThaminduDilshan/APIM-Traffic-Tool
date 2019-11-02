@@ -15,8 +15,6 @@ apis:
       - method: GET
         path: menu
 
-
-
   - name: payment
     context: places
     version: 1
