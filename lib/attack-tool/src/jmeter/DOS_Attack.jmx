@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jmeterTestPlan version="1.2" properties="5.0" jmeter="5.1.1 r1855137">
+  <hashTree>
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="DOS Attack" enabled="true">
+      <stringProp name="TestPlan.comments"></stringProp>
+      <boolProp name="TestPlan.functional_mode">false</boolProp>
+      <boolProp name="TestPlan.tearDown_on_shutdown">true</boolProp>
+      <boolProp name="TestPlan.serialize_threadgroups">true</boolProp>
+      <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+        <collectionProp name="Arguments.arguments"/>
+      </elementProp>
+      <stringProp name="TestPlan.user_define_classpath"></stringProp>
+    </TestPlan>
+    <hashTree>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Thread Group" enabled="true">
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+          <stringProp name="LoopController.loops">1</stringProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">1</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
+        <boolProp name="ThreadGroup.scheduler">false</boolProp>
+        <stringProp name="ThreadGroup.duration"></stringProp>
+        <stringProp name="ThreadGroup.delay"></stringProp>
+      </ThreadGroup>
+      <hashTree>
+        <OnceOnlyController guiclass="OnceOnlyControllerGui" testclass="OnceOnlyController" testname="Once Only Controller" enabled="true"/>
+        <hashTree>
+          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="JSR223 Sampler" enabled="true">
+            <stringProp name="cacheKey">true</stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="script">SampleResult.setIgnore();</stringProp>
+            <stringProp name="scriptLanguage">groovy</stringProp>
+          </JSR223Sampler>
+          <hashTree>
+            <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="JSR223 PreProcessor" enabled="true">
+              <stringProp name="cacheKey">true</stringProp>
+              <stringProp name="filename"></stringProp>
+              <stringProp name="parameters"></stringProp>
+              <stringProp name="script">@Grab(&apos;org.yaml:snakeyaml:1.17&apos;)
+
+import org.yaml.snakeyaml.Yaml;
+import org.apache.jmeter.services.FileServer;
+
+String baseDir = FileServer.getFileServer().getBaseDir()
+
+Yaml ymlparser = new Yaml()
+
+Map config = ymlparser.load((baseDir+&quot;/../../../../config/apim.yaml&quot; as File).text)
+
+Map managementConsole = config.find{it.key==&quot;management-console&quot;}?.value
+String gatewayProtocol = managementConsole.find{it.key==&quot;protocol&quot;}?.value
+String gatewayHost = managementConsole.find{it.key==&quot;host&quot;}?.value
+String gatewayServeletPort = managementConsole.find{it.key==&quot;servlet-transport-port&quot;}?.value
+
+Map apiManager = config.find{it.key==&quot;api-manager&quot;}?.value
+String nioPtTransportPort = apiManager.find{it.key==&quot;nio-pt-transport-port&quot;}?.value
+
+//Map attackConfig = ymlparser.load((baseDir+&quot;/../../../../config/attack-tool.yaml&quot; as File).text)
+
+List apis = config.find{it.key==&quot;apis&quot;}?.value
+
+
+//Map 
+//String production_endpoint = apiendpoints.find{it.key==&quot;production&quot;}?.value
+//String sandbox_endpoint = apiendpoints.find{it.key==&quot;sandbox&quot;}?.value
+
+vars.put(&quot;gatewayProtocol&quot;, gatewayProtocol);
+vars.put(&quot;gatewayHost&quot;, gatewayHost);
+vars.put(&quot;gatewayServeletPort&quot;, gatewayServeletPort);
+vars.put(&quot;nioPtTransportPort&quot;, nioPtTransportPort);
+//vars.put(&quot;production_endpoint&quot;, production_endpoint);
+//vars.put(&quot;sandbox_endpoint&quot;, sandbox_endpoint); 
+
+log.info(apis.toString());
+</stringProp>
+              <stringProp name="scriptLanguage">groovy</stringProp>
+            </JSR223PreProcessor>
+            <hashTree/>
+          </hashTree>
+        </hashTree>
+      </hashTree>
+    </hashTree>
+  </hashTree>
+</jmeterTestPlan>
