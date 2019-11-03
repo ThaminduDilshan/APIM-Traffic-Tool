@@ -43,6 +43,8 @@
 
 import org.yaml.snakeyaml.Yaml;
 import org.apache.jmeter.services.FileServer;
+import tools.User;
+import tools.API
 
 String baseDir = FileServer.getFileServer().getBaseDir()
 
@@ -58,26 +60,250 @@ String gatewayServeletPort = managementConsole.find{it.key==&quot;servlet-transp
 Map apiManager = config.find{it.key==&quot;api-manager&quot;}?.value
 String nioPtTransportPort = apiManager.find{it.key==&quot;nio-pt-transport-port&quot;}?.value
 
-//Map attackConfig = ymlparser.load((baseDir+&quot;/../../../../config/attack-tool.yaml&quot; as File).text)
-
 List apis = config.find{it.key==&quot;apis&quot;}?.value
+ArrayList apiList = new ArrayList()
+int i = 1;
+for(api in apis)
+{
+	API temp = new API()
+	temp.name = api[&quot;name&quot;]
+	temp.context = api[&quot;context&quot;]
+	temp.version = api[&quot;version&quot;]
+	temp.resources = api[&quot;resources&quot;]
+	vars.putObject(&quot;api_&quot; + i,temp)
+	i++;
+	apiList.add(temp)
+}
+
+File csvfile = new File(baseDir + &quot;/../../../traffic-tool/data/scenario/token_ip_cookie.csv&quot; )
+List lines =csvfile.readLines()
+/*lines.eachWithIndex {line, idx -&gt;
+    //vars.put(&apos;Id_value_&apos; + idx, line)
+    log.info(idx + line)
+}*/
+i =0;
+ArrayList userList = new ArrayList()
+for(line in lines)
+{
+	String[] userData = line.split(&quot;,&quot;)
+	
+	User tempUser = new User();
+	tempUser.token = userData[0];
+	tempUser.ip = userData[1];
+	tempUser.cookie = userData[2];
+	userList.add(tempUser);
+	vars.putObject(&quot;user_&quot; + i,tempUser)
+	i++;
+	
+}
 
 
-//Map 
-//String production_endpoint = apiendpoints.find{it.key==&quot;production&quot;}?.value
-//String sandbox_endpoint = apiendpoints.find{it.key==&quot;sandbox&quot;}?.value
 
 vars.put(&quot;gatewayProtocol&quot;, gatewayProtocol);
 vars.put(&quot;gatewayHost&quot;, gatewayHost);
 vars.put(&quot;gatewayServeletPort&quot;, gatewayServeletPort);
 vars.put(&quot;nioPtTransportPort&quot;, nioPtTransportPort);
-//vars.put(&quot;production_endpoint&quot;, production_endpoint);
-//vars.put(&quot;sandbox_endpoint&quot;, sandbox_endpoint); 
+vars.putObject(&quot;apiList&quot;,apiList)
+vars.putObject(&quot;userList&quot;,userList)
 
-log.info(apis.toString());
+
+
+
+//log.info( scenario_base_path );
 </stringProp>
               <stringProp name="scriptLanguage">groovy</stringProp>
             </JSR223PreProcessor>
+            <hashTree/>
+          </hashTree>
+        </hashTree>
+        <ForeachController guiclass="ForeachControlPanel" testclass="ForeachController" testname="ForEach Controller" enabled="true">
+          <stringProp name="ForeachController.inputVal">api</stringProp>
+          <stringProp name="ForeachController.returnVal">apiInstance</stringProp>
+          <boolProp name="ForeachController.useSeparator">true</boolProp>
+        </ForeachController>
+        <hashTree>
+          <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
+            <boolProp name="ResultCollector.error_logging">false</boolProp>
+            <objProp>
+              <name>saveConfig</name>
+              <value class="SampleSaveConfiguration">
+                <time>true</time>
+                <latency>true</latency>
+                <timestamp>true</timestamp>
+                <success>true</success>
+                <label>true</label>
+                <code>true</code>
+                <message>true</message>
+                <threadName>true</threadName>
+                <dataType>true</dataType>
+                <encoding>false</encoding>
+                <assertions>true</assertions>
+                <subresults>true</subresults>
+                <responseData>false</responseData>
+                <samplerData>false</samplerData>
+                <xml>false</xml>
+                <fieldNames>true</fieldNames>
+                <responseHeaders>false</responseHeaders>
+                <requestHeaders>false</requestHeaders>
+                <responseDataOnError>false</responseDataOnError>
+                <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+                <assertionsResultsToSave>0</assertionsResultsToSave>
+                <bytes>true</bytes>
+                <sentBytes>true</sentBytes>
+                <url>true</url>
+                <threadCounts>true</threadCounts>
+                <idleTime>true</idleTime>
+                <connectTime>true</connectTime>
+              </value>
+            </objProp>
+            <stringProp name="filename"></stringProp>
+          </ResultCollector>
+          <hashTree/>
+          <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="JSR223 PreProcessor" enabled="false">
+            <stringProp name="scriptLanguage">groovy</stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="cacheKey">true</stringProp>
+            <stringProp name="script">import tools.API
+import tools.User
+
+API currentAPI = vars.getObject(&quot;apiInstance&quot;)
+//log.info(&quot;Hi&quot;)
+Random rand = new Random();
+def randomResource = currentAPI.resources.get(rand.nextInt(currentAPI.resources.size()))
+vars.put(&quot;currentAPIName&quot;,currentAPI.name);
+vars.put(&quot;currentAPIContext&quot;,currentAPI.context);
+vars.put(&quot;currentAPIVersion&quot;,currentAPI.version);
+vars.put(&quot;currentAPIResourceMethod&quot;,randomResource.get(&quot;method&quot;).toString())
+vars.put(&quot;currentAPIResourcePath&quot;,randomResource.get(&quot;path&quot;).toString());
+log.info(vars.get(&quot;currentAPIResourceMethod&quot;));
+//log.info(vars.get(&quot;currentAPIResourceMethod&quot;).equals(&quot;GET&quot;).toString());</stringProp>
+          </JSR223PreProcessor>
+          <hashTree/>
+          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="JSR223 Sampler" enabled="true">
+            <stringProp name="scriptLanguage">groovy</stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="cacheKey">true</stringProp>
+            <stringProp name="script">import tools.API
+import tools.User
+
+API currentAPI = vars.getObject(&quot;apiInstance&quot;)
+
+Random rand = new Random();
+def randomResource = currentAPI.resources.get(rand.nextInt(currentAPI.resources.size()))
+vars.put(&quot;currentAPIName&quot;,currentAPI.name);
+vars.put(&quot;currentAPIContext&quot;,currentAPI.context);
+vars.put(&quot;currentAPIVersion&quot;,currentAPI.version);
+vars.put(&quot;currentAPIResourceMethod&quot;,randomResource.get(&quot;method&quot;).toString())
+vars.put(&quot;currentAPIResourcePath&quot;,randomResource.get(&quot;path&quot;).toString());
+//log.info(vars.get(&quot;currentAPIResourceMethod&quot;).equals(&quot;GET&quot;).toString());
+log.info(vars.get(&quot;currentAPIResourceMethod&quot;));</stringProp>
+          </JSR223Sampler>
+          <hashTree/>
+          <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If Controller" enabled="true">
+            <stringProp name="IfController.condition">//${__groovy(vars.get(&quot;currentAPIResourceMethod&quot;).equals(&quot;GET&quot;),)}
+//${currentAPIResourceMethod} == &quot;GET&quot;
+${__groovy(&quot;${currentAPIResourceMethod}&quot;==&quot;GET&quot;)}</stringProp>
+            <boolProp name="IfController.evaluateAll">false</boolProp>
+          </IfController>
+          <hashTree>
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="HTTP Request" enabled="true">
+              <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+              <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+                <collectionProp name="Arguments.arguments">
+                  <elementProp name="" elementType="HTTPArgument">
+                    <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                    <stringProp name="Argument.value">${currentAPIResource}</stringProp>
+                    <stringProp name="Argument.metadata">=</stringProp>
+                  </elementProp>
+                </collectionProp>
+              </elementProp>
+              <stringProp name="HTTPSampler.domain">${gatewayHost}</stringProp>
+              <stringProp name="HTTPSampler.port">${nioPtTransportPort}</stringProp>
+              <stringProp name="HTTPSampler.protocol">${gatewayProtocol}</stringProp>
+              <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+              <stringProp name="HTTPSampler.path">${currentAPIContext}/${currentAPIVersion}/${currentAPIResourcePath}</stringProp>
+              <stringProp name="HTTPSampler.method">GET</stringProp>
+              <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+              <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+              <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+              <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+              <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+              <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+              <stringProp name="HTTPSampler.response_timeout"></stringProp>
+            </HTTPSamplerProxy>
+            <hashTree/>
+            <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
+              <boolProp name="ResultCollector.error_logging">false</boolProp>
+              <objProp>
+                <name>saveConfig</name>
+                <value class="SampleSaveConfiguration">
+                  <time>true</time>
+                  <latency>true</latency>
+                  <timestamp>true</timestamp>
+                  <success>true</success>
+                  <label>true</label>
+                  <code>true</code>
+                  <message>true</message>
+                  <threadName>true</threadName>
+                  <dataType>true</dataType>
+                  <encoding>false</encoding>
+                  <assertions>true</assertions>
+                  <subresults>true</subresults>
+                  <responseData>false</responseData>
+                  <samplerData>false</samplerData>
+                  <xml>false</xml>
+                  <fieldNames>true</fieldNames>
+                  <responseHeaders>false</responseHeaders>
+                  <requestHeaders>false</requestHeaders>
+                  <responseDataOnError>false</responseDataOnError>
+                  <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+                  <assertionsResultsToSave>0</assertionsResultsToSave>
+                  <bytes>true</bytes>
+                  <sentBytes>true</sentBytes>
+                  <url>true</url>
+                  <threadCounts>true</threadCounts>
+                  <idleTime>true</idleTime>
+                  <connectTime>true</connectTime>
+                </value>
+              </objProp>
+              <stringProp name="filename"></stringProp>
+            </ResultCollector>
+            <hashTree/>
+          </hashTree>
+          <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If Controller" enabled="true">
+            <stringProp name="IfController.condition">//${__groovy(vars.get(&quot;currentAPIResourceMethod&quot;).equals(&quot;GET&quot;),)}
+//${currentAPIResourceMethod} == &quot;GET&quot;
+${__groovy(&quot;${currentAPIResourceMethod}&quot;==&quot;POST&quot;)}</stringProp>
+            <boolProp name="IfController.evaluateAll">false</boolProp>
+          </IfController>
+          <hashTree>
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="HTTP Request" enabled="true">
+              <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+              <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+                <collectionProp name="Arguments.arguments">
+                  <elementProp name="" elementType="HTTPArgument">
+                    <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                    <stringProp name="Argument.value">${currentAPIResource}</stringProp>
+                    <stringProp name="Argument.metadata">=</stringProp>
+                  </elementProp>
+                </collectionProp>
+              </elementProp>
+              <stringProp name="HTTPSampler.domain">${gatewayHost}</stringProp>
+              <stringProp name="HTTPSampler.port">${nioPtTransportPort}</stringProp>
+              <stringProp name="HTTPSampler.protocol">${gatewayProtocol}</stringProp>
+              <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+              <stringProp name="HTTPSampler.path">${currentAPIContext}/${currentAPIVersion}/${currentAPIResourcePath}</stringProp>
+              <stringProp name="HTTPSampler.method">POST</stringProp>
+              <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+              <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+              <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+              <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+              <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+              <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+              <stringProp name="HTTPSampler.response_timeout"></stringProp>
+            </HTTPSamplerProxy>
             <hashTree/>
           </hashTree>
         </hashTree>
