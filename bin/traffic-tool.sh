@@ -164,27 +164,55 @@ func_all() {
   read EXECTIME
 
   if command -v python3 &>/dev/null; then
-    python3 apim_scenario_GEN_userdetails.py 1
+    python3 ../lib/traffic-tool/src/python/gen_user_details.py 1
 
-    if [ -e "$(pwd)"/APIM_scenario/data/api_creation.csv -a -e "$(pwd)"/APIM_scenario/data/api_creation_swagger.csv -a -e "$(pwd)"/APIM_scenario/data/app_creation.csv -a -e "$(pwd)"/APIM_scenario/data/app_api_subscription_admin.csv -a -e "$(pwd)"/APIM_scenario/data/user_generation.csv -a -e "$(pwd)"/APIM_scenario/data/user_app_pattern.csv -a -e "$(pwd)"/APIM_scenario/data/api_invoke_scenario.csv ];
+    if [ -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/api_creation.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/api_creation_swagger.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/app_creation.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/app_api_subscription_admin.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/user_generation.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/user_app_pattern.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/api_invoke_scenario.csv ];
     then
-      rm -f APIM_scenario/api_invoke_keySecret-multipleEndUsers.csv
-      $JMPATH/jmeter -n -t 'API Scenario - multiple end users.jmx' -l logs/jmeter-results.log -j logs/jmeter.log
+      rm -f ../lib/traffic-tool/data/scenario/$SCENARIONAME/api_invoke_key_secret.csv
+      $JMPATH/jmeter -n -t '../lib/traffic-tool/src/jmeter/create_api_scenario.jmx' -l ../logs/jmeter-results.log -j ../logs/jmeter.log
 
-      rm -f APIM_scenario/api_invoke_tokens.csv
-      $JMPATH/jmeter -n -t 'Generate token list.jmx' -l logs/jmeter-results.log -j logs/jmeter.log
+      rm -f ../lib/traffic-tool/data/scenario/$SCENARIONAME/api_invoke_tokens.csv
+      $JMPATH/jmeter -n -t '../lib/traffic-tool/src/jmeter/generate_token_list.jmx' -l ../logs/jmeter-results.log -j ../logs/jmeter.log
 
-      if [ -e "$(pwd)"/APIM_scenario/api_invoke_tokens.csv ];
+      python3 ../lib/traffic-tool/src/python/gen_invoke_scenario.py
+
+      if [ -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/api_invoke_tokens.csv ];
       then
-        chmod +x invoke_API.py
-        nohup python3 invoke_API.py $FILENAME $EXECTIME >> logs/shell-logs.log &
-        echo $! > data/traffic_tool.pid
+        chmod +x ../lib/traffic-tool/src/python/invoke_API.py
+        nohup python3 ../lib/traffic-tool/src/python/invoke_API.py $FILENAME $EXECTIME >> ../logs/traffic-shell.log &
+        echo $! > ../data/traffic_tool.pid
       else
-        echo "Missing token file in the 'APIM_scenario/data' directory"
+        echo "Missing token file in the 'data/scenario/$SCENARIONAME/' directory"
         exit 1
       fi
     else
-      echo "Missing one or more required files in the 'APIM_scenario/data' directory"
+      echo "Missing one or more required files in the 'data/scenario/$SCENARIONAME/data/' directory"
+      exit 1
+    fi
+  elif command -v python &>/dev/null; then
+    python ../lib/traffic-tool/src/python/gen_user_details.py 1
+
+    if [ -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/api_creation.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/api_creation_swagger.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/app_creation.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/app_api_subscription_admin.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/user_generation.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/user_app_pattern.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/api_invoke_scenario.csv ];
+    then
+      rm -f ../lib/traffic-tool/data/scenario/$SCENARIONAME/api_invoke_key_secret.csv
+      $JMPATH/jmeter -n -t '../lib/traffic-tool/src/jmeter/create_api_scenario.jmx' -l ../logs/jmeter-results.log -j ../logs/jmeter.log
+
+      rm -f ../lib/traffic-tool/data/scenario/$SCENARIONAME/api_invoke_tokens.csv
+      $JMPATH/jmeter -n -t '../lib/traffic-tool/src/jmeter/generate_token_list.jmx' -l ../logs/jmeter-results.log -j ../logs/jmeter.log
+
+      python ../lib/traffic-tool/src/python/gen_invoke_scenario.py
+
+      if [ -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/api_invoke_tokens.csv ];
+      then
+        chmod +x ../lib/traffic-tool/src/python/invoke_API.py
+        nohup python ../lib/traffic-tool/src/python/invoke_API.py $FILENAME $EXECTIME >> ../logs/traffic-shell.log &
+        echo $! > ../data/traffic_tool.pid
+      else
+        echo "Missing token file in the 'data/scenario/$SCENARIONAME/' directory"
+        exit 1
+      fi
+    else
+      echo "Missing one or more required files in the 'data/scenario/$SCENARIONAME/data/' directory"
       exit 1
     fi
   else
