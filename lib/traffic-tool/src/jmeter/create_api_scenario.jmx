@@ -12,7 +12,7 @@
       <boolProp name="TestPlan.tearDown_on_shutdown">true</boolProp>
     </TestPlan>
     <hashTree>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Setup Properties" enabled="false">
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Setup Properties" enabled="true">
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
           <boolProp name="LoopController.continue_forever">false</boolProp>
@@ -25,7 +25,7 @@
         <stringProp name="ThreadGroup.delay"></stringProp>
       </ThreadGroup>
       <hashTree>
-        <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Load and set APIM properties" enabled="false">
+        <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Load and set APIM properties" enabled="true">
           <stringProp name="scriptLanguage">groovy</stringProp>
           <stringProp name="parameters"></stringProp>
           <stringProp name="filename"></stringProp>
@@ -49,40 +49,45 @@ Yaml ymlparser = new Yaml()
 
 Map config = ymlparser.load((baseDir+&quot;/../../../../config/apim.yaml&quot; as File).text)
 
-Map managementConsole = config.find{it.key==&quot;management-console&quot;}?.value
+Map managementConsole = config.find{it.key==&quot;management_console&quot;}?.value
 String gatewayProtocol = managementConsole.find{it.key==&quot;protocol&quot;}?.value
 String gatewayHost = managementConsole.find{it.key==&quot;host&quot;}?.value
-String gatewayServeletPort = managementConsole.find{it.key==&quot;servlet-transport-port&quot;}?.value
+String gatewayServeletPortHTTPS = managementConsole.find{it.key==&quot;servlet_transport_port_https&quot;}?.value
+String gatewayServeletPortHTTP = managementConsole.find{it.key==&quot;servlet_transport_port_http&quot;}?.value
 
-Map apiManager = config.find{it.key==&quot;api-manager&quot;}?.value
-String nioPtTransportPort = apiManager.find{it.key==&quot;nio-pt-transport-port&quot;}?.value
+Map apiManager = config.find{it.key==&quot;api_manager&quot;}?.value
+String nioPtTransportPort = apiManager.find{it.key==&quot;nio_pt_transport_port&quot;}?.value
 
 Map trafficConfig = ymlparser.load((baseDir+&quot;/../../../../config/traffic-tool.yaml&quot; as File).text)
 
-Map apiendpoints = trafficConfig.find{it.key==&quot;api-endpoints&quot;}?.value
-String production_endpoint = apiendpoints.find{it.key==&quot;production&quot;}?.value
-String sandbox_endpoint = apiendpoints.find{it.key==&quot;sandbox&quot;}?.value
+String scenario_base_path = baseDir + &quot;/../../data/scenario/&quot; + trafficConfig.find{it.key==&quot;scenario_name&quot;}?.value
 
-String scenario_base_path = baseDir + &quot;/../../data/scenario/&quot; + trafficConfig.find{it.key==&quot;scenario-name&quot;}?.value
-//String scenario_base_path = trafficConfig.find{it.key==&quot;scenario-name&quot;}?.value
+Map api = trafficConfig.find{it.key==&quot;api&quot;}?.value
+String production_endpoint = api.find{it.key==&quot;production_endpoint&quot;}?.value
+String sandbox_endpoint = api.find{it.key==&quot;sandbox_endpoint&quot;}?.value
 
-${__setProperty(gatewayProtocol, gatewayProtocol)};
-${__setProperty(gatewayHost, gatewayHost)};
-${__setProperty(gatewayServeletPort, gatewayServeletPort)};
-${__setProperty(nioPtTransportPort, nioPtTransportPort)};
+String apiThrottlingTier = api.find{it.key==&quot;throttling_tier&quot;}?.value
+String apiVisibility = api.find{it.key==&quot;visibility&quot;}?.value
 
-//${__setProperty(scenarioBasePath, scenario_base_path)};
-${__setProperty(scenarioBasePath, scenario_base_path)};
+Map applicationconf = trafficConfig.find{it.key==&quot;application&quot;}?.value
+String appThrottlingTier = applicationconf.find{it.key==&quot;throttling_tier&quot;}?.value
+String tokenValidityPeriod = applicationconf.find{it.key==&quot;token_validity_period&quot;}?.value
 
-vars.put(&quot;gatewayProtocol&quot;, gatewayProtocol);
-vars.put(&quot;gatewayHost&quot;, gatewayHost);
-vars.put(&quot;gatewayServeletPort&quot;, gatewayServeletPort);
-vars.put(&quot;nioPtTransportPort&quot;, nioPtTransportPort);
+String subscriptionTier = trafficConfig.find{it.key==&quot;subscription_tier&quot;}?.value
 
-vars.put(&quot;production_endpoint&quot;, production_endpoint);
-vars.put(&quot;sandbox_endpoint&quot;, sandbox_endpoint);
-
-log.info( scenario_base_path );
+props.put(&quot;gatewayProtocol&quot;, gatewayProtocol);
+props.put(&quot;gatewayHost&quot;, gatewayHost);
+props.put(&quot;gatewayServeletPortHTTPS&quot;, gatewayServeletPortHTTPS);
+props.put(&quot;gatewayServeletPortHTTP&quot;, gatewayServeletPortHTTP);
+props.put(&quot;nioPtTransportPort&quot;, nioPtTransportPort);
+props.put(&quot;scenarioBasePath&quot;, scenario_base_path);
+props.put(&quot;production_endpoint&quot;, production_endpoint);
+props.put(&quot;sandbox_endpoint&quot;, sandbox_endpoint);
+props.put(&quot;apiThrottlingTier&quot;, apiThrottlingTier);
+props.put(&quot;apiVisibility&quot;, apiVisibility);
+props.put(&quot;appThrottlingTier&quot;, appThrottlingTier);
+props.put(&quot;tokenValidityPeriod&quot;, tokenValidityPeriod);
+props.put(&quot;subscriptionTier&quot;, subscriptionTier);
 </stringProp>
           </JSR223PreProcessor>
           <hashTree/>
@@ -114,41 +119,15 @@ log.info( scenario_base_path );
             <stringProp name="parameters"></stringProp>
             <stringProp name="filename"></stringProp>
             <stringProp name="cacheKey">false</stringProp>
-            <stringProp name="script">@Grab(&apos;org.yaml:snakeyaml:1.17&apos;)
-
-import org.yaml.snakeyaml.Yaml;
-import org.apache.jmeter.services.FileServer;
-
-String baseDir = FileServer.getFileServer().getBaseDir()
-
-Yaml ymlparser = new Yaml()
-
-Map config = ymlparser.load((baseDir+&quot;/../../../../config/apim.yaml&quot; as File).text)
-
-Map managementConsole = config.find{it.key==&quot;management-console&quot;}?.value
-String gatewayProtocol = managementConsole.find{it.key==&quot;protocol&quot;}?.value
-String gatewayHost = managementConsole.find{it.key==&quot;host&quot;}?.value
-String gatewayServeletPort = managementConsole.find{it.key==&quot;servlet-transport-port&quot;}?.value
-
-Map apiManager = config.find{it.key==&quot;api-manager&quot;}?.value
-String nioPtTransportPort = apiManager.find{it.key==&quot;nio-pt-transport-port&quot;}?.value
-
-Map trafficConfig = ymlparser.load((baseDir+&quot;/../../../../config/traffic-tool.yaml&quot; as File).text)
-
-Map apiconf = trafficConfig.find{it.key==&quot;api&quot;}?.value
-String throttlingTier = apiconf.find{it.key==&quot;throttling-tier&quot;}?.value
-String visibility = apiconf.find{it.key==&quot;visibility&quot;}?.value
-String production_endpoint = apiconf.find{it.key==&quot;production-endpoint&quot;}?.value
-String sandbox_endpoint = apiconf.find{it.key==&quot;sandbox-endpoint&quot;}?.value
-
-vars.put(&quot;gatewayProtocol&quot;, gatewayProtocol);
-vars.put(&quot;gatewayHost&quot;, gatewayHost);
-vars.put(&quot;gatewayServeletPort&quot;, gatewayServeletPort);
-vars.put(&quot;nioPtTransportPort&quot;, nioPtTransportPort);
-vars.put(&quot;production_endpoint&quot;, production_endpoint);
-vars.put(&quot;sandbox_endpoint&quot;, sandbox_endpoint);
-vars.put(&quot;throttlingTier&quot;, throttlingTier);
-vars.put(&quot;visibility&quot;, visibility);
+            <stringProp name="script">
+vars.put(&quot;gatewayProtocol&quot;, props.get(&quot;gatewayProtocol&quot;));
+vars.put(&quot;gatewayHost&quot;, props.get(&quot;gatewayHost&quot;));
+vars.put(&quot;gatewayServeletPort&quot;, props.get(&quot;gatewayServeletPortHTTPS&quot;));
+vars.put(&quot;nioPtTransportPort&quot;, props.get(&quot;nioPtTransportPort&quot;));
+vars.put(&quot;production_endpoint&quot;, props.get(&quot;production_endpoint&quot;));
+vars.put(&quot;sandbox_endpoint&quot;, props.get(&quot;sandbox_endpoint&quot;));
+vars.put(&quot;throttlingTier&quot;, props.get(&quot;apiThrottlingTier&quot;));
+vars.put(&quot;visibility&quot;, props.get(&quot;apiVisibility&quot;));
 </stringProp>
           </JSR223PreProcessor>
           <hashTree/>
@@ -432,7 +411,7 @@ vars.put(&quot;b64encryptedValue&quot;,new String(b64encrypted));
               </ResponseAssertion>
               <hashTree/>
               <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="CSV Data Set Config" enabled="true">
-                <stringProp name="filename">${__BeanShell(import org.apache.jmeter.services.FileServer; FileServer.getFileServer().getBaseDir();)}${__BeanShell(File.separator,)}../../data/scenario/data/api_creation.csv</stringProp>
+                <stringProp name="filename">${__BeanShell(props.get(&quot;scenarioBasePath&quot;))}/data/api_creation.csv</stringProp>
                 <stringProp name="fileEncoding">UTF-8</stringProp>
                 <stringProp name="variableNames">apiName,apiDescription,apiPath,apiTags</stringProp>
                 <boolProp name="ignoreFirstLine">false</boolProp>
@@ -444,7 +423,7 @@ vars.put(&quot;b64encryptedValue&quot;,new String(b64encrypted));
               </CSVDataSet>
               <hashTree/>
               <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="CSV Data Set Config" enabled="true">
-                <stringProp name="filename">${__BeanShell(import org.apache.jmeter.services.FileServer; FileServer.getFileServer().getBaseDir();)}${__BeanShell(File.separator,)}../../data/scenario/data/api_creation_swagger.csv</stringProp>
+                <stringProp name="filename">${__BeanShell(props.get(&quot;scenarioBasePath&quot;))}/data/api_creation_swagger.csv</stringProp>
                 <stringProp name="fileEncoding">UTF-8</stringProp>
                 <stringProp name="variableNames">swagger</stringProp>
                 <boolProp name="ignoreFirstLine">false</boolProp>
@@ -658,35 +637,12 @@ vars.put(&quot;b64encryptedValue&quot;,new String(b64encrypted));
               <stringProp name="parameters"></stringProp>
               <stringProp name="filename"></stringProp>
               <stringProp name="cacheKey">false</stringProp>
-              <stringProp name="script">@Grab(&apos;org.yaml:snakeyaml:1.17&apos;)
-
-import org.yaml.snakeyaml.Yaml;
-import org.apache.jmeter.services.FileServer;
-
-String baseDir = FileServer.getFileServer().getBaseDir()
-
-Yaml ymlparser = new Yaml()
-
-Map config = ymlparser.load((baseDir+&quot;/../../../../config/apim.yaml&quot; as File).text)
-
-Map managementConsole = config.find{it.key==&quot;management-console&quot;}?.value
-String gatewayProtocol = managementConsole.find{it.key==&quot;protocol&quot;}?.value
-String gatewayHost = managementConsole.find{it.key==&quot;host&quot;}?.value
-String gatewayServeletPort = managementConsole.find{it.key==&quot;servlet-transport-port&quot;}?.value
-
-Map apiManager = config.find{it.key==&quot;api-manager&quot;}?.value
-String nioPtTransportPort = apiManager.find{it.key==&quot;nio-pt-transport-port&quot;}?.value
-
-Map trafficConfig = ymlparser.load((baseDir+&quot;/../../../../config/traffic-tool.yaml&quot; as File).text)
-
-Map applicationconf = trafficConfig.find{it.key==&quot;application&quot;}?.value
-String throttlingTier = applicationconf.find{it.key==&quot;throttling-tier&quot;}?.value
-
-vars.put(&quot;gatewayProtocol&quot;, gatewayProtocol);
-vars.put(&quot;gatewayHost&quot;, gatewayHost);
-vars.put(&quot;gatewayServeletPort&quot;, gatewayServeletPort);
-vars.put(&quot;nioPtTransportPort&quot;, nioPtTransportPort);
-vars.put(&quot;throttlingTier&quot;, throttlingTier);
+              <stringProp name="script">
+vars.put(&quot;gatewayProtocol&quot;, props.get(&quot;gatewayProtocol&quot;));
+vars.put(&quot;gatewayHost&quot;, props.get(&quot;gatewayHost&quot;));
+vars.put(&quot;gatewayServeletPort&quot;, props.get(&quot;gatewayServeletPortHTTPS&quot;));
+vars.put(&quot;nioPtTransportPort&quot;, props.get(&quot;nioPtTransportPort&quot;));
+vars.put(&quot;throttlingTier&quot;, props.get(&quot;appThrottlingTier&quot;));
 </stringProp>
             </JSR223PreProcessor>
             <hashTree/>
@@ -921,7 +877,7 @@ vars.put(&quot;b64encryptedValue&quot;,new String(b64encrypted));
               </ResponseAssertion>
               <hashTree/>
               <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="CSV Data Set Config" enabled="true">
-                <stringProp name="filename">${__BeanShell(import org.apache.jmeter.services.FileServer; FileServer.getFileServer().getBaseDir();)}${__BeanShell(File.separator,)}../../data/scenario/data/app_creation.csv</stringProp>
+                <stringProp name="filename">${__BeanShell(props.get(&quot;scenarioBasePath&quot;))}/data/app_creation.csv</stringProp>
                 <stringProp name="fileEncoding">UTF-8</stringProp>
                 <stringProp name="variableNames">app_name,app_description</stringProp>
                 <boolProp name="ignoreFirstLine">false</boolProp>
@@ -999,33 +955,12 @@ vars.put(&quot;b64encryptedValue&quot;,new String(b64encrypted));
             <stringProp name="parameters"></stringProp>
             <stringProp name="filename"></stringProp>
             <stringProp name="cacheKey">false</stringProp>
-            <stringProp name="script">@Grab(&apos;org.yaml:snakeyaml:1.17&apos;)
-
-import org.yaml.snakeyaml.Yaml;
-import org.apache.jmeter.services.FileServer;
-
-String baseDir = FileServer.getFileServer().getBaseDir()
-
-Yaml ymlparser = new Yaml()
-
-Map config = ymlparser.load((baseDir+&quot;/../../../../config/apim.yaml&quot; as File).text)
-
-Map managementConsole = config.find{it.key==&quot;management-console&quot;}?.value
-String gatewayProtocol = managementConsole.find{it.key==&quot;protocol&quot;}?.value
-String gatewayHost = managementConsole.find{it.key==&quot;host&quot;}?.value
-String gatewayServeletPort = managementConsole.find{it.key==&quot;servlet-transport-port&quot;}?.value
-
-Map apiManager = config.find{it.key==&quot;api-manager&quot;}?.value
-String nioPtTransportPort = apiManager.find{it.key==&quot;nio-pt-transport-port&quot;}?.value
-
-Map trafficConfig = ymlparser.load((baseDir+&quot;/../../../../config/traffic-tool.yaml&quot; as File).text)
-String subscriptionTier = trafficConfig.find{it.key==&quot;subscription-tier&quot;}?.value
-
-vars.put(&quot;gatewayProtocol&quot;, gatewayProtocol);
-vars.put(&quot;gatewayHost&quot;, gatewayHost);
-vars.put(&quot;gatewayServeletPort&quot;, gatewayServeletPort);
-vars.put(&quot;nioPtTransportPort&quot;, nioPtTransportPort);
-vars.put(&quot;subscriptionTier&quot;, subscriptionTier);
+            <stringProp name="script">
+vars.put(&quot;gatewayProtocol&quot;, props.get(&quot;gatewayProtocol&quot;));
+vars.put(&quot;gatewayHost&quot;, props.get(&quot;gatewayHost&quot;));
+vars.put(&quot;gatewayServeletPort&quot;, props.get(&quot;gatewayServeletPortHTTPS&quot;));
+vars.put(&quot;nioPtTransportPort&quot;, props.get(&quot;nioPtTransportPort&quot;));
+vars.put(&quot;subscriptionTier&quot;, props.get(&quot;subscriptionTier&quot;));
 </stringProp>
           </JSR223PreProcessor>
           <hashTree/>
@@ -1193,7 +1128,7 @@ vars.put(&quot;b64encryptedValue&quot;,new String(b64encrypted));
           </WhileController>
           <hashTree>
             <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="CSV Data Set Config" enabled="true">
-              <stringProp name="filename">${__BeanShell(import org.apache.jmeter.services.FileServer; FileServer.getFileServer().getBaseDir();)}${__BeanShell(File.separator,)}../../data/scenario/data/app_api_subscription_admin.csv</stringProp>
+              <stringProp name="filename">${__BeanShell(props.get(&quot;scenarioBasePath&quot;))}/data/app_api_subscription_admin.csv</stringProp>
               <stringProp name="fileEncoding">UTF-8</stringProp>
               <stringProp name="variableNames">App_name,API_name</stringProp>
               <boolProp name="ignoreFirstLine">false</boolProp>
@@ -1388,7 +1323,7 @@ String app_id = vars.get(&quot;application_id&quot;);
 String api_name = vars.get(&quot;API_name&quot;);
 String api_id = vars.get(&quot;API_id&quot;);
 
-log.info(&quot;&quot;);
+log.info(&quot;Subscribe&quot;);
 log.info(&quot;Application name: &quot; + app_name + &quot;Application id: &quot; + app_id);
 log.info(&quot;API name: &quot; + api_name + &quot;API id: &quot; + api_id);
 </stringProp>
@@ -1430,23 +1365,10 @@ log.info(&quot;API name: &quot; + api_name + &quot;API id: &quot; + api_id);
             <stringProp name="parameters"></stringProp>
             <stringProp name="filename"></stringProp>
             <stringProp name="cacheKey">false</stringProp>
-            <stringProp name="script">@Grab(&apos;org.yaml:snakeyaml:1.17&apos;)
-
-import org.yaml.snakeyaml.Yaml;
-import org.apache.jmeter.services.FileServer;
-
-String baseDir = FileServer.getFileServer().getBaseDir()
-
-Yaml ymlparser = new Yaml()
-
-Map config = ymlparser.load((baseDir+&quot;/../../../../config/apim.yaml&quot; as File).text)
-
-Map managementConsole = config.find{it.key==&quot;management-console&quot;}?.value
-String gatewayHost = managementConsole.find{it.key==&quot;host&quot;}?.value
-String gatewayServeletPortHTTP = managementConsole.find{it.key==&quot;servelet-transport-port-http&quot;}?.value
-
-vars.put(&quot;gatewayHost&quot;, gatewayHost);
-vars.put(&quot;gatewayServeletPortHTTP&quot;, gatewayServeletPortHTTP);
+            <stringProp name="script">
+vars.put(&quot;gatewayProtocol&quot;, props.get(&quot;gatewayProtocol&quot;));
+vars.put(&quot;gatewayHost&quot;, props.get(&quot;gatewayHost&quot;));
+vars.put(&quot;gatewayServeletPortHTTP&quot;, props.get(&quot;gatewayServeletPortHTTP&quot;));
 </stringProp>
           </JSR223PreProcessor>
           <hashTree/>
@@ -1524,12 +1446,13 @@ String fields = firstname + &quot;|&quot; + lastname + &quot;|&quot; + organizat
 
 vars.put(&quot;fields&quot;, new String(fields));
 
-log.info(fields);
+log.info(&quot;Creating user: &quot;+firstname +&quot; &quot;+lastname)
+log.info(&quot;&quot;)
 </stringProp>
               </JSR223PreProcessor>
               <hashTree/>
               <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="CSV Data Set Config" enabled="true">
-                <stringProp name="filename">${__BeanShell(import org.apache.jmeter.services.FileServer; FileServer.getFileServer().getBaseDir();)}${__BeanShell(File.separator,)}../../data/scenario/data/user_generation.csv</stringProp>
+                <stringProp name="filename">${__BeanShell(props.get(&quot;scenarioBasePath&quot;))}/data/user_generation.csv</stringProp>
                 <stringProp name="fileEncoding">UTF-8</stringProp>
                 <stringProp name="variableNames">username,password,firstname,lastname,organization,country,email,land,mobile,IM,url</stringProp>
                 <boolProp name="ignoreFirstLine">false</boolProp>
@@ -1617,32 +1540,13 @@ log.info(fields);
             <stringProp name="parameters"></stringProp>
             <stringProp name="filename"></stringProp>
             <stringProp name="cacheKey">false</stringProp>
-            <stringProp name="script">@Grab(&apos;org.yaml:snakeyaml:1.17&apos;)
+            <stringProp name="script">String final_string = &quot;&quot;;
 
-import org.yaml.snakeyaml.Yaml;
-import org.apache.jmeter.services.FileServer;
-
-String final_string = &quot;&quot;;
-
-String baseDir = FileServer.getFileServer().getBaseDir()
-
-Yaml ymlparser = new Yaml()
-
-Map config = ymlparser.load((baseDir+&quot;/../../../../config/apim.yaml&quot; as File).text)
-
-Map managementConsole = config.find{it.key==&quot;management-console&quot;}?.value
-String gatewayProtocol = managementConsole.find{it.key==&quot;protocol&quot;}?.value
-String gatewayHost = managementConsole.find{it.key==&quot;host&quot;}?.value
-String gatewayServeletPort = managementConsole.find{it.key==&quot;servlet-transport-port&quot;}?.value
-
-Map apiManager = config.find{it.key==&quot;api-manager&quot;}?.value
-String nioPtTransportPort = apiManager.find{it.key==&quot;nio-pt-transport-port&quot;}?.value
-
-vars.put(&quot;gatewayProtocol&quot;, gatewayProtocol);
-vars.put(&quot;gatewayHost&quot;, gatewayHost);
-vars.put(&quot;gatewayServeletPort&quot;, gatewayServeletPort);
-vars.put(&quot;nioPtTransportPort&quot;, nioPtTransportPort);
-
+vars.put(&quot;gatewayProtocol&quot;, props.get(&quot;gatewayProtocol&quot;));
+vars.put(&quot;gatewayHost&quot;, props.get(&quot;gatewayHost&quot;));
+vars.put(&quot;gatewayServeletPort&quot;, props.get(&quot;gatewayServeletPortHTTPS&quot;));
+vars.put(&quot;nioPtTransportPort&quot;, props.get(&quot;nioPtTransportPort&quot;));
+vars.put(&quot;tokenValidityPeriod&quot;, props.get(&quot;tokenValidityPeriod&quot;));
 vars.put(&quot;final_string&quot;, final_string);
 </stringProp>
           </JSR223PreProcessor>
@@ -1718,7 +1622,7 @@ vars.put(&quot;final_string&quot;, final_string);
         </WhileController>
         <hashTree>
           <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="CSV Data Set Config" enabled="true">
-            <stringProp name="filename">${__BeanShell(import org.apache.jmeter.services.FileServer; FileServer.getFileServer().getBaseDir();)}${__BeanShell(File.separator,)}../../data/scenario/data/app_creation.csv</stringProp>
+            <stringProp name="filename">${__BeanShell(props.get(&quot;scenarioBasePath&quot;))}/data/app_creation.csv</stringProp>
             <stringProp name="fileEncoding">UTF-8</stringProp>
             <stringProp name="variableNames">app_name,app_description</stringProp>
             <boolProp name="ignoreFirstLine">false</boolProp>
@@ -1872,7 +1776,7 @@ vars.put(&quot;b64encryptedValue&quot;,new String(b64encrypted));
                 <elementProp name="" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.value">{&#xd;
-	&quot;validityTime&quot;: &quot;-1&quot;,&#xd;
+	&quot;validityTime&quot;: &quot;${tokenValidityPeriod}&quot;,&#xd;
 	&quot;keyType&quot;: &quot;PRODUCTION&quot;,&#xd;
 	&quot;accessAllowDomains&quot;: [ &quot;ALL&quot; ],&#xd;
 	&quot;scopes&quot;: [ &quot;am_application_scope&quot;, &quot;default&quot; ],&#xd;
@@ -1953,7 +1857,7 @@ final_string += current_line;
 vars.put(&quot;final_string&quot;, final_string);
 
 // write each token to the file [PLEASE DELETE THE FILE BEFORE RUNNING THIS, IF FILE ALREADY EXISTS]
-FileWriter fstream = new FileWriter(baseDir+&quot;/../../data/scenario/api_invoke_key_secret.csv&quot;, true);
+FileWriter fstream = new FileWriter(props.get(&quot;scenarioBasePath&quot;) + &quot;/api_invoke_key_secret.csv&quot;, true);
 BufferedWriter out = new BufferedWriter(fstream);
 out.write(current_line);
 out.close();

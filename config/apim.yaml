@@ -1,11 +1,11 @@
-management-console:
+management_console:
   protocol: https
   host: 172.17.0.1
-  servlet-transport-port: 9443
-  servelet-transport-port-http: 9763
+  servlet_transport_port_https: 9443
+  servlet_transport_port_http: 9763
 
-api-manager:
-  nio-pt-transport-port: 8243
+api_manager:
+  nio_pt_transport_port: 8243
 
 apis:
   - name: news
@@ -21,4 +21,3 @@ apis:
     resources:
       - method: GET
         path: menu
-
