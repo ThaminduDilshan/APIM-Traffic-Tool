@@ -7,6 +7,7 @@ from faker import Factory
 import argparse
 import pickle
 import yaml
+import os
 
 
 parser = argparse.ArgumentParser("generate traffic data")
@@ -15,31 +16,34 @@ args = parser.parse_args()
 filename = args.filename + ".csv"
 
 # Variables
+scenario_name = None
 no_of_data_points = None
 script_starttime = None
 scenario_pool = []
 current_data_points = 0
 
 fake_generator = Factory.create()
+abs_path = os.path.abspath(os.path.dirname(__file__))
 
 
 '''
     This method will load and set the configuration data
 '''
 def loadConfig():
-    global no_of_data_points
+    global no_of_data_points, scenario_name
 
-    with open('../../../../config/traffic-tool.yaml', 'r') as file:
+    with open(abs_path+'/../../../../config/traffic-tool.yaml', 'r') as file:
         traffic_config = yaml.load(file, Loader=yaml.FullLoader)
 
-    no_of_data_points = int(traffic_config['tool-config']['no-of-data-points'])
+    no_of_data_points = int(traffic_config['tool_config']['no_of_data_points'])
+    scenario_name = traffic_config['scenario_name']
 
 
 '''
     This method will write the given log output to the log.txt file
 '''
 def log(tag, write_string):
-    with open('../../../../logs/traffic-tool.log', 'a+') as file:
+    with open(abs_path+'/../../../../logs/traffic-tool.log', 'a+') as file:
         file.write("[{}] ".format(tag) + str(dt.now()) + ": " + write_string + "\n")
 
 
@@ -63,7 +67,7 @@ def writeInvokeData(timestamp, api_name, api_version, path, access_token, method
     code = '200'
     write_string = str(timestamp) + "," + api_name + "," + access_token + "," + user_ip + "," + cookie + "," + api_name+"/"+api_version+"/"+path + "," + method + "," + str(code) + "\n"
 
-    with open('../../../../dataset/generated-traffic/{}'.format(filename), 'a+') as file:
+    with open(abs_path+'/../../../../dataset/generated-traffic/{}'.format(filename), 'a+') as file:
         file.write(write_string)
 
 
@@ -112,10 +116,10 @@ def genInvokeData(starttime, scenario_row):
 
 loadConfig()
 
-with open('../../../../dataset/generated-traffic/{}'.format(filename), 'w') as file:
+with open(abs_path+'/../../../../dataset/generated-traffic/{}'.format(filename), 'w') as file:
     file.write("timestamp,api,access_token,ip_address,cookie,invoke_path,http_method,response_code\n")
 
-scenario_pool = pickle.load(open("../../data/pickle/user_scenario_pool.sav", "rb"))
+scenario_pool = pickle.load(open(abs_path+"/../../data/pickle/user_scenario_pool.sav", "rb"))
 script_starttime = dt.now()
 
 print("[INFO] Scenario loaded successfully. Wait until data generation complete!")

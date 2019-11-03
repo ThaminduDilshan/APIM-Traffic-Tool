@@ -14,7 +14,9 @@ func_help() {
 
 func_gen_user_details() {
   if command -v python3 &>/dev/null; then
-    python3 apim_scenario_GEN_userdetails.py 0
+    python3 ../lib/traffic-tool/src/python/gen_user_details.py 0
+  elif command -v python &>/dev/null; then
+    python ../lib/traffic-tool/src/python/gen_user_details.py 0
   else
     echo "Python 3 is required for the command!"
     exit 1
@@ -23,7 +25,9 @@ func_gen_user_details() {
 
 func_gen_example_scenario() {
   if command -v python3 &>/dev/null; then
-    python3 apim_scenario_GEN_userdetails.py 1
+    python3 ../lib/traffic-tool/src/python/gen_user_details.py 1
+  elif command -v python &>/dev/null; then
+    python ../lib/traffic-tool/src/python/gen_user_details.py 1
   else
     echo "Python 3 is required for the command!"
     exit 1
@@ -31,64 +35,101 @@ func_gen_example_scenario() {
 }
 
 func_create_scenario() {
-  if [ -e "$(pwd)"/APIM_scenario/data/api_creation.csv -a -e "$(pwd)"/APIM_scenario/data/api_creation_swagger.csv -a -e "$(pwd)"/APIM_scenario/data/app_creation.csv -a -e "$(pwd)"/APIM_scenario/data/app_api_subscription_admin.csv -a -e "$(pwd)"/APIM_scenario/data/user_generation.csv ];
+  echo "Enter the scenario name (press enter if default):"
+  read SCENARIONAME
+  if [ -z "$SCENARIONAME" ];
+    then
+      SCENARIONAME="scenario_example"
+  fi
+  if [ -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/api_creation.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/api_creation_swagger.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/app_creation.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/app_api_subscription_admin.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/user_generation.csv ];
   then
-    rm -f APIM_scenario/api_invoke_keySecret-multipleEndUsers.csv
+    rm -f ../lib/traffic-tool/data/scenario/$SCENARIONAME/api_invoke_key_secret.csv
     echo "Enter your jmeter path (Ex:- /home/user/Documents/apache-jmeter-5.1.1/bin)"
     read JMPATH
-    $JMPATH/jmeter -n -t 'API Scenario - multiple end users.jmx' -l logs/jmeter-results.log -j logs/jmeter.log
+    $JMPATH/jmeter -n -t '../lib/traffic-tool/src/jmeter/create_api_scenario.jmx' -l ../logs/jmeter-results.log -j ../logs/jmeter.log
   else
-    echo "Missing one or more required files in the 'APIM_scenario/data' directory"
+    echo "Missing one or more required files in the 'scenario/$SCENARIONAME/' directory"
     exit 1
   fi
 }
 
 func_gen_tokens() {
-  if [ -e "$(pwd)"/APIM_scenario/data/app_creation.csv -a -e "$(pwd)"/APIM_scenario/data/user_app_pattern.csv -a -e "$(pwd)"/APIM_scenario/api_invoke_keySecret-multipleEndUsers.csv ];
+  echo "Enter the scenario name (press enter if default):"
+  read SCENARIONAME
+  if [ -z "$SCENARIONAME" ];
+    then
+      SCENARIONAME="scenario_example"
+  fi
+  if [ -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/app_creation.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/user_app_pattern.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/api_invoke_key_secret.csv ];
   then
-    rm -f APIM_scenario/api_invoke_tokens.csv
+    rm -f ../lib/traffic-tool/data/scenario/$SCENARIONAME/api_invoke_tokens.csv
     echo "Enter your jmeter path (Ex:- /home/user/Documents/apache-jmeter-5.1.1/bin)"
     read JMPATH
-    $JMPATH/jmeter -n -t 'Generate token list.jmx' -l logs/jmeter-results.log -j logs/jmeter.log
+    $JMPATH/jmeter -n -t '../lib/traffic-tool/src/jmeter/generate_token_list.jmx' -l ../logs/jmeter-results.log -j ../logs/jmeter.log
   else
-    echo "Missing one or more required files in the 'APIM_scenario' directory"
+    echo "Missing one or more required files in the 'scenario/$SCENARIONAME/' directory"
+    exit 1
+  fi
+  if command -v python3 &>/dev/null; then
+    python3 ../lib/traffic-tool/src/python/gen_invoke_scenario.py
+  elif command -v python &>/dev/null; then
+    python ../lib/traffic-tool/src/python/gen_invoke_scenario.py
+  else
+    echo "Python 3 is required for the command!"
     exit 1
   fi
 }
 
 func_gen_invoke_data() {
-  if [ -e "$(pwd)"/APIM_scenario/data/user_generation.csv -a -e "$(pwd)"/APIM_scenario/data/app_creation.csv -a -e "$(pwd)"/APIM_scenario/api_invoke_tokens.csv -a -e "$(pwd)"/APIM_scenario/data/api_invoke_scenario.csv ];
+  if [ -e "$(pwd)"/../lib/traffic-tool/data/pickle/user_scenario_pool.sav ];
   then
     echo "Enter filename (without file extension):"
     read FILENAME
-    # python3 generate_invokeData.py $FILENAME
-    #chmod +x generate_invokeData.py
-    nohup python3 generate_invokeData.py $FILENAME >> logs/shell-logs.log &
+    chmod +x ../lib/traffic-tool/src/python/gen_invoke_data.py
+
+    if command -v python3 &>/dev/null; then
+      nohup python3 ../lib/traffic-tool/src/python/gen_invoke_data.py $FILENAME >> ../logs/traffic-shell.log &
+      echo $! > ../data/traffic_tool.pid
+    elif command -v python &>/dev/null; then
+      nohup python ../lib/traffic-tool/src/python/gen_invoke_data.py $FILENAME >> ../logs/traffic-shell.log &
+      echo $! > ../data/traffic_tool.pid
+    else
+      echo "Python 3 is required for the command!"
+      exit 1
+    fi
   else
-    echo "Missing one or more required files in the 'APIM_scenario/data' directory"
+    echo "Missing 'user_scenario_pool.sav' file"
     exit 1
   fi
 }
 
 func_traffic() {
-  if [ -e "$(pwd)"/APIM_scenario/data/user_generation.csv -a -e "$(pwd)"/APIM_scenario/data/app_creation.csv -a -e "$(pwd)"/APIM_scenario/api_invoke_tokens.csv -a -e "$(pwd)"/APIM_scenario/data/api_invoke_scenario.csv ];
+  if [ -e "$(pwd)"/../lib/traffic-tool/data/pickle/user_scenario_pool.sav ];
   then
     echo "Enter filename (without file extension): "
     read FILENAME
     echo "Enter script execution time in minutes: "
     read EXECTIME
-    # python3 invoke_API.py $FILENAME
-    chmod +x invoke_API.py
-    nohup python3 invoke_API.py $FILENAME $EXECTIME >> logs/shell-logs.log &
-    echo $! > data/invoke_API.pid
+    chmod +x ../lib/traffic-tool/src/python/invoke_API.py
+
+    if command -v python3 &>/dev/null; then
+      nohup python3 ../lib/traffic-tool/src/python/invoke_API.py $FILENAME $EXECTIME >> ../logs/traffic-shell.log &
+      echo $! > ../data/traffic_tool.pid
+    elif command -v python &>/dev/null; then
+      nohup python ../lib/traffic-tool/src/python/invoke_API.py $FILENAME $EXECTIME >> ../logs/traffic-shell.log &
+      echo $! > ../data/traffic_tool.pid
+    else
+      echo "Python 3 is required for the command!"
+      exit 1
+    fi
   else
-    echo "Missing one or more required files in the 'APIM_scenario/data' directory"
+    echo "Missing 'user_scenario_pool.sav' file"
     exit 1
   fi
 }
 
 func_stop_traffic() {
-  PID=`cat data/invoke_API.pid 2>/dev/null`
+  PID=`cat ../data/traffic_tool.pid 2>/dev/null`
   if [ -z $PID ]
   then
     echo "Traffic Tool is Not Running"
@@ -105,10 +146,16 @@ func_stop_traffic() {
       echo "Traffic Tool Already Stopped"
     fi
   fi
-  > data/invoke_API.pid
+  > ../data/traffic_tool.pid
 }
 
 func_all() {
+  echo "Enter the scenario name (press enter if default):"
+  read SCENARIONAME
+  if [ -z "$SCENARIONAME" ];
+    then
+      SCENARIONAME="scenario_example"
+  fi
   echo "Enter your jmeter path (Ex:- /home/user/Documents/apache-jmeter-5.1.1/bin)"
   read JMPATH
   echo "Enter filename (without file extension): "
@@ -131,7 +178,7 @@ func_all() {
       then
         chmod +x invoke_API.py
         nohup python3 invoke_API.py $FILENAME $EXECTIME >> logs/shell-logs.log &
-        echo $! > data/invoke_API.pid
+        echo $! > data/traffic_tool.pid
       else
         echo "Missing token file in the 'APIM_scenario/data' directory"
         exit 1
@@ -153,35 +200,35 @@ case "$1" in
     exit 0
   ;;
   1)
-    func_gen_user_details | tee -a logs/shell-logs.log
+    func_gen_user_details 2>&1 | tee -a ../logs/traffic-shell.log
     exit 0
   ;;
   2)
-    func_gen_example_scenario | tee -a logs/shell-logs.log
+    func_gen_example_scenario 2>&1 | tee -a ../logs/traffic-shell.log
     exit 0
   ;;
   3)
-    func_create_scenario | tee -a logs/shell-logs.log
+    func_create_scenario 2>&1 | tee -a ../logs/traffic-shell.log
     exit 0
   ;;
   4)
-    func_gen_tokens | tee -a logs/shell-logs.log
+    func_gen_tokens 2>&1 | tee -a ../logs/traffic-shell.log
     exit 0
   ;;
   5)
-    func_gen_invoke_data | tee -a logs/shell-logs.log
+    func_gen_invoke_data 2>&1 | tee -a ../logs/traffic-shell.log
     exit 0
   ;;
   6)
-    func_traffic | tee -a logs/shell-logs.log
+    func_traffic 2>&1 | tee -a ../logs/traffic-shell.log
     exit 0
   ;;
   7)
-    func_stop_traffic | tee -a logs/shell-logs.log
+    func_stop_traffic 2>&1 | tee -a ../logs/traffic-shell.log
     exit 0
   ;;
   all)
-    func_all | tee -a logs/shell-logs.log
+    func_all 2>&1 | tee -a ../logs/traffic-shell.log
     exit 0
   ;;
   *)

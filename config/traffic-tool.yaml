@@ -1,23 +1,24 @@
 api:
-  throttling-tier: Unlimited
+  throttling_tier: Unlimited
   visibility: PUBLIC
-  production-endpoint: https://localhost:9443/am/sample/pizzashack/v1/api/
-  sandbox-endpoint: https://localhost:9443/am/sample/pizzashack/v1/api/
+  production_endpoint: https://localhost:9443/am/sample/pizzashack/v1/api/
+  sandbox_endpoint: https://localhost:9443/am/sample/pizzashack/v1/api/
 
 application:
-  throttling-tier: Unlimited
+  throttling_tier: Unlimited
+  token_validity_period: -1
 
-subscription-tier: Unlimited
+subscription_tier: Unlimited
 
-tool-config:
-  no-of-processes: 20
-  max-connection-refuse-count: 50
-  no-of-data-points: 1000
+scenario_name: scenario_example
 
-api-host:
+tool_config:
+  no_of_processes: 20
+  max_connection_refuse_count: 50
+  no_of_data_points: 1000
+  heavy_traffic: True
+
+api_host:
   protocol: https
   ip: 172.17.0.1
   port: 8243
-
-commands:
-  python: python3

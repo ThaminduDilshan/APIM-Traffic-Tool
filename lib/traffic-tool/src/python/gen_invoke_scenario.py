@@ -3,21 +3,30 @@ import random
 import string
 import pickle
 from faker import Factory
+import yaml
+import os
+from datetime import datetime
 
 # Variables
+scenario_name = None
 user_ip = {}
 user_cookie = {}
 users_apps = {}
 scenario_pool = []
 
 fake_generator = Factory.create()
+abs_path = os.path.abspath(os.path.dirname(__file__))
+
+with open(abs_path+'/../../../../config/traffic-tool.yaml', 'r') as file:
+    traffic_config = yaml.load(file, Loader=yaml.FullLoader)
+scenario_name = traffic_config['scenario_name']
 
 
 '''
     This method will write the given log output to the log.txt file
 '''
 def log(tag, write_string):
-    with open('../../../../logs/traffic-tool.log', 'a+') as file:
+    with open(abs_path+'/../../../../logs/traffic-tool.log', 'a+') as file:
         file.write("[{}] ".format(tag) + str(datetime.now()) + ": " + write_string + "\n")
 
 
@@ -98,7 +107,7 @@ def genUniqueCookieList(count:int):
 '''
 
 # generate a set of ips and cookies for each user
-with open('../../data/scenario/data/user_generation.csv') as file:
+with open(abs_path+'/../../data/scenario/{}/data/user_generation.csv'.format(scenario_name)) as file:
     userlist = file.read().split('\n')
 
     ip_list = genUniqueIPList(len(userlist))
@@ -110,7 +119,7 @@ with open('../../data/scenario/data/user_generation.csv') as file:
         user_cookie.update( {username: cookie_list.pop()} )
 
 # update dictionary for apps and their users
-with open('../../data/scenario/data/app_creation.csv') as file:
+with open(abs_path+'/../../data/scenario/{}/data/app_creation.csv'.format(scenario_name)) as file:
     appList = file.read().split('\n')
 
     for app in appList:
@@ -119,7 +128,7 @@ with open('../../data/scenario/data/app_creation.csv') as file:
             users_apps.update( {appName: []} )
 
 # set ips with username, access tokens and append to relevant lists
-with open('../../data/scenario/api_invoke_tokens.csv') as file:
+with open(abs_path+'/../../data/scenario/{}/api_invoke_tokens.csv'.format(scenario_name)) as file:
     user_token = csv.reader(file)
 
     for row in user_token:
@@ -132,7 +141,7 @@ with open('../../data/scenario/api_invoke_tokens.csv') as file:
         (users_apps[app_name]).append([username,token,ip,cookie])
 
 # generate scenario data according to the script and append to the pool
-with open('../../data/scenario/data/api_invoke_scenario.csv') as file:
+with open(abs_path+'/../../data/scenario/{}/data/api_invoke_scenario.csv'.format(scenario_name)) as file:
     scenario_data = csv.reader(file, delimiter='$')
 
     for row in scenario_data:
@@ -159,18 +168,20 @@ with open('../../data/scenario/data/api_invoke_scenario.csv') as file:
                 scenario_pool.append([no_of_requests, api_name, "1", path, user[1], method, user[2], user[3], app_name, user[0]])
 
 # save scenario data
-write_str = "access_token,ip_address,user_cookie\n"
+write_str = "access_token,api_name,ip_address,user_cookie\n"
 
 for row in scenario_pool:
+    api_name = row[1]
     access_token = row[4]
     ip_address = row[6]
     user_cookie = row[7]
-    write_str += access_token + ',' + ip_address + ',' + user_cookie + "\n"
+    write_str += access_token + ',' + api_name + ',' + ip_address + ',' + user_cookie + "\n"
 
-with open('../../data/scenario/token_ip_cookie.csv', 'w') as file:
+with open(abs_path+'/../../data/scenario/{}/token_ip_cookie.csv'.format(scenario_name), 'w') as file:
     file.write(write_str)
 
 # saving scenario pool to a pickle file
-pickle.dump(scenario_pool, open("../../data/pickle/user_scenario_pool.sav", "wb"))
+pickle.dump(scenario_pool, open(abs_path+"/../../data/pickle/user_scenario_pool.sav", "wb"))
 
 log("INFO", "User scenario distribution generated successfully")
+print("User scenario distribution generated successfully")

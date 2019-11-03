@@ -8,10 +8,18 @@ delimiter : '$$ '
 import rstr
 from faker import Faker
 import argparse
+import os
+import yaml
 
 # global variables
 faker = Faker()
 usernames = []
+scenario_name = None
+abs_path = os.path.abspath(os.path.dirname(__file__))
+
+with open(abs_path+'/../../../../config/traffic-tool.yaml', 'r') as file:
+    traffic_config = yaml.load(file, Loader=yaml.FullLoader)
+scenario_name = traffic_config['scenario_name']
 
 
 # get username and password for a given user (username and password are considered as the same)
@@ -66,7 +74,7 @@ def app_userScenario():
         for inner in outer:
             finalStr += inner
 
-    file = open('../../data/scenario/data/user_app_pattern.csv', 'w')
+    file = open(abs_path+'/../../data/scenario/{}/data/user_app_pattern.csv'.format(scenario_name), 'w')
     file.write(finalStr)
     file.close()
 
@@ -82,7 +90,7 @@ def genUsersCSV():
             csvString += ele + '$$ '
         csvString += '\n'
 
-    file = open('../../data/scenario/data/user_generation.csv', 'w')
+    file = open(abs_path+'/../../data/scenario/{}/data/user_generation.csv'.format(scenario_name), 'w')
     file.write(csvString)
     file.close()
     print('User generation successful!')

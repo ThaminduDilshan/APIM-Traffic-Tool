@@ -10,6 +10,7 @@ import argparse
 import urllib3
 import pickle
 import yaml
+import os
 from multiprocessing.dummy import Pool as ThreadPool
 
 
@@ -28,6 +29,8 @@ max_connection_refuse_count = None
 host_protocol = None
 host_ip = None
 host_port = None
+heavy_traffic = None
+scenario_name = None
 
 script_starttime = None
 scenario_pool = []
@@ -36,29 +39,32 @@ active_processes = 0
 process_pool = []
 
 fake_generator = Factory.create()
+abs_path = os.path.abspath(os.path.dirname(__file__))
 
 
 '''
     This method will load and set the configuration data
 '''
 def loadConfig():
-    global no_of_processes, max_connection_refuse_count, host_protocol, host_ip, host_port
+    global no_of_processes, max_connection_refuse_count, host_protocol, host_ip, host_port, heavy_traffic, scenario_name
 
-    with open('../../../../config/traffic-tool.yaml', 'r') as file:
+    with open(abs_path+'/../../../../config/traffic-tool.yaml', 'r') as file:
         traffic_config = yaml.load(file, Loader=yaml.FullLoader)
 
-    no_of_processes = int(traffic_config['tool-config']['no-of-processes'])
-    max_connection_refuse_count = int(traffic_config['tool-config']['max-connection-refuse-count'])
-    host_protocol = traffic_config['api-host']['protocol']
-    host_ip = traffic_config['api-host']['ip']
-    host_port = traffic_config['api-host']['port']
+    no_of_processes = int(traffic_config['tool_config']['no_of_processes'])
+    max_connection_refuse_count = int(traffic_config['tool_config']['max_connection_refuse_count'])
+    heavy_traffic = str(traffic_config['tool_config']['heavy_traffic']).lower()
+    host_protocol = traffic_config['api_host']['protocol']
+    host_ip = traffic_config['api_host']['ip']
+    host_port = traffic_config['api_host']['port']
+    scenario_name = traffic_config['scenario_name']
 
 
 '''
     This method will write the given log output to the log.txt file
 '''
 def log(tag, write_string):
-    with open('../../../../logs/traffic-tool.log', 'a+') as file:
+    with open(abs_path+'/../../../../logs/traffic-tool.log', 'a+') as file:
         file.write("[{}] ".format(tag) + str(datetime.now()) + ": " + write_string + "\n")
 
 
@@ -101,7 +107,7 @@ def sendRequest(url_protocol, url_ip, url_port, api_name, api_version, path, acc
     write_string = ""
 
     write_string = str(datetime.now()) + "," + api_name + "," + access_token + "," + user_ip + "," + cookie + "," + api_name+"/"+api_version+"/"+path + "," + method + "," + str(code) + "\n"
-    with open('../../../../dataset/traffic/{}'.format(filename), 'a+') as file:
+    with open(abs_path+'/../../../../dataset/traffic/{}'.format(filename), 'a+') as file:
         file.write(write_string)
 
     return code,res_txt
@@ -137,7 +143,8 @@ def runInvoker(scenario_row):
     for i in range(no_of_requests):
         try:
             res_code, res_txt = sendRequest(host_protocol, host_ip, host_port, api_name, api_version, path, access_token, method, user_ip, cookie, app_name, username)
-            time.sleep(randomSleepTime())
+            if heavy_traffic != 'true':
+                time.sleep(randomSleepTime())
         except:
             connection_refuse_count += 1
             if connection_refuse_count > max_connection_refuse_count:
@@ -160,11 +167,11 @@ def runInvoker(scenario_row):
 # load and set tool configurations
 loadConfig()
 
-with open('../../../../dataset/traffic/{}'.format(filename), 'w') as file:
+with open(abs_path+'/../../../../dataset/traffic/{}'.format(filename), 'w') as file:
     file.write("timestamp,api,access_token,ip_address,cookie,invoke_path,http_method,response_code\n")
 
 # load and set the scenario pool
-scenario_pool = pickle.load(open("../../data/pickle/user_scenario_pool.sav", "rb"))
+scenario_pool = pickle.load(open(abs_path+"/../../data/pickle/user_scenario_pool.sav", "rb"))
 
 # shuffle the pool
 random.shuffle(scenario_pool)
