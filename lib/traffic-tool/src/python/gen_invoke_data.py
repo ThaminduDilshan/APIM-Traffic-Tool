@@ -1,100 +1,46 @@
 import csv
 import random
 import string
-from faker import Factory
 import datetime
-import argparse
 from datetime import datetime as dt
+from faker import Factory
+import argparse
+import pickle
+import yaml
 
-# Variables
-user_ip = {}
-user_cookie = {}
-users_apps = {}
-
-fake_generator = Factory.create()
 
 parser = argparse.ArgumentParser("generate traffic data")
 parser.add_argument("filename", help="Enter a filename to write final output", type=str)
 args = parser.parse_args()
 filename = args.filename + ".csv"
 
+# Variables
+no_of_data_points = None
+script_starttime = None
+scenario_pool = []
+current_data_points = 0
 
-'''
-    This method will return an integer slightly varied to the given median
-'''
-def varySlightly(median, no_of_users):
-    lower_bound = int(median) - int(int(no_of_users)/2)
-    upper_bound = int(median) + int(int(no_of_users)/2)
-    if lower_bound <= 0:
-        lower_bound = 1
-    req_count = random.randint(lower_bound,upper_bound)
-
-    return req_count
+fake_generator = Factory.create()
 
 
 '''
-    This method will return a randomly generated ipv4 address
+    This method will load and set the configuration data
 '''
-def ipGen():
-    # return "{}.{}.{}.{}".format(random.randint(1,255), random.randint(0,255), random.randint(0,255), random.randint(0,255))
-    return fake_generator.ipv4()
+def loadConfig():
+    global no_of_data_points
 
+    with open('../../../../config/traffic-tool.yaml', 'r') as file:
+        traffic_config = yaml.load(file, Loader=yaml.FullLoader)
 
-'''
-    This method will return a randomly generated cookie
-'''
-def getCookie():
-    lettersAndDigits = string.ascii_lowercase + string.digits
-    cookie = 'JSESSIONID='
-    cookie += ''.join( random.choice(lettersAndDigits) for ch in range(31) )
-    return cookie
+    no_of_data_points = int(traffic_config['tool-config']['no-of-data-points'])
 
 
 '''
-    This method will return a list of unique ipv4 addresses
+    This method will write the given log output to the log.txt file
 '''
-def genUniqueIPList(count:int):
-    ip_list = []
-    for ip in range(count):
-        ip_list.append(ipGen())
-
-    unique_list = list(set(ip_list))
-
-    while( len(unique_list) != len(ip_list) ):
-        diff = len(ip_list) - len(unique_list)
-
-        for i in range(diff):
-            unique_list.append(ipGen())
-        unique_list = list(set(unique_list))
-
-    # writing list of ips to a file
-    ip_all_str = "ip_address\n"
-    for ip in unique_list:
-        ip_all_str += ip + "\n"
-    with open('dataset/generated/ip_list_{}'.format(filename), 'w') as file:
-        file.write(ip_all_str)
-
-    return unique_list
-
-
-'''
-    This method will return a list of unique cookies
-'''
-def genUniqueCookieList(count:int):
-    cookie_list = []
-    for cookie in range(count):
-        cookie_list.append(getCookie())
-
-    unique_list = list(set(cookie_list))
-
-    while( len(unique_list) != len(cookie_list) ):
-        diff = len(cookie_list) - len(unique_list)
-
-        for i in range(diff):
-            unique_list.append(getCookie())
-        unique_list = list(set(unique_list))
-
-    return unique_list
+def log(tag, write_string):
+    with open('../../../../logs/traffic-tool.log', 'a+') as file:
+        file.write("[{}] ".format(tag) + str(dt.now()) + ": " + write_string + "\n")
 
 
 '''
@@ -103,7 +49,6 @@ def genUniqueCookieList(count:int):
 def genTimeList(starttime, no_of_invokes:int):
     timestamps = []
     current = starttime
-    # starttime = datetime.datetime(starttime)
     for i in range(no_of_invokes):
         current += datetime.timedelta(minutes=random.randrange(int(55/no_of_invokes)+5), seconds=random.randrange(40))
         timestamps.append(current)
@@ -112,94 +57,86 @@ def genTimeList(starttime, no_of_invokes:int):
 
 
 '''
-    Execute the scenario and generate the dataset
-    Usage: python3 generate_invokeData.py
-    output folder: dataset/generated/
+    This method will write the invoke request data to a file
+'''
+def writeInvokeData(timestamp, api_name, api_version, path, access_token, method, user_ip, cookie, app_name, username):
+    code = '200'
+    write_string = str(timestamp) + "," + api_name + "," + access_token + "," + user_ip + "," + cookie + "," + api_name+"/"+api_version+"/"+path + "," + method + "," + str(code) + "\n"
+
+    with open('../../../../dataset/generated-traffic/{}'.format(filename), 'a+') as file:
+        file.write(write_string)
+
+
+'''
+    This method will take a given invoke scenario and generate data for it
+'''
+def genInvokeData(starttime, scenario_row):
+    global no_of_data_points, current_data_points
+
+    no_of_requests = scenario_row[0] - random.randint(0, scenario_row[0])
+    api_name = scenario_row[1]
+    api_version = scenario_row[2]
+    path = scenario_row[3]
+    access_token = scenario_row[4]
+    method = scenario_row[5]
+    user_ip = scenario_row[6]
+    cookie = scenario_row[7]
+    app_name = scenario_row[8]
+    username = scenario_row[9]
+
+    # time stamps
+    simultaneous_requests = random.randint(0, no_of_requests)
+    time_stamps = genTimeList(starttime, no_of_requests-simultaneous_requests+1)
+    simultaneous_timestamp = str(time_stamps.pop(0))
+
+    # simulate scenario
+    for i in range(simultaneous_requests):
+        writeInvokeData(simultaneous_timestamp, api_name, api_version, path, access_token, method, user_ip, cookie, app_name, username)
+        current_data_points += 1
+        if current_data_points >= no_of_data_points:
+            return True
+
+    for i in range(no_of_requests-simultaneous_requests):
+        timestamp = str(time_stamps.pop(0))
+        writeInvokeData(timestamp, api_name, api_version, path, access_token, method, user_ip, cookie, app_name, username)
+        current_data_points += 1
+        if current_data_points >= no_of_data_points:
+            return True
+
+
+'''
+    Generate the dataset according to the scenario
+    Usage: python3 gen_invoke_data.py filename
+    output folder: dataset/generated-traffic/
 '''
 
-# generate set of ips and cookies for each user
-with open('APIM_scenario/data/user_generation.csv') as file:
-    userlist = file.read().split('\n')
+loadConfig()
 
-    ip_list = genUniqueIPList(len(userlist))
-    cookie_list = genUniqueCookieList(len(userlist))
+with open('../../../../dataset/generated-traffic/{}'.format(filename), 'w') as file:
+    file.write("timestamp,api,access_token,ip_address,cookie,invoke_path,http_method,response_code\n")
 
-    for user in userlist:
-        username = user.split('$$ ')[0]
-        user_ip.update( {username: ip_list.pop()} )
-        user_cookie.update( {username: cookie_list.pop()} )
+scenario_pool = pickle.load(open("../../data/pickle/user_scenario_pool.sav", "rb"))
+script_starttime = dt.now()
 
-# update dictionary for apps and their users
-with open('APIM_scenario/data/app_creation.csv') as file:
-    appList = file.read().split('\n')
+print("[INFO] Scenario loaded successfully. Wait until data generation complete!")
+log("INFO", "Scenario loaded successfully. Wait until data generation complete!")
 
-    for app in appList:
-        if app != "":
-            appName = app.split('$ ')[0]
-            users_apps.update( {appName: []} )
+# execute the scenario and generate the dataset
+ret_val = None
 
-# set ips with username, access tokens and append to relevant lists
-with open('APIM_scenario/api_invoke_tokens.csv') as file:
-    user_token = csv.reader(file)
+while True:
+    if ret_val:
+        break
 
-    for row in user_token:
-        username = row[0]
-        app_name = row[1]
-        token = row[2]
-        ip = user_ip.get(username)
-        cookie = user_cookie.get(username)
+    # shuffle the pool
+    random.shuffle(scenario_pool)
 
-        (users_apps[app_name]).append([username,token,ip,cookie])
-
-# execute the scenario according to the script
-
-with open('dataset/generated/{}'.format(filename), 'w') as file:
-    file.write("timestamp,api,access_token,ip_address,cookie,invoke_path,http_method\n")
-
-with open('APIM_scenario/data/api_invoke_scenario.csv') as file:
-    scenario_data = csv.reader(file, delimiter='$')
-    req_count = 0
-
-    for row in scenario_data:
-        app_name = row[0]
-        invokes = row[1]
-        invokes = invokes.strip('][').split("],[")
+    for row in scenario_pool:
         starttime = datetime.timedelta(minutes=random.randrange(40), seconds=random.randrange(60))
+        ret_val = genInvokeData(starttime, row)
+        if ret_val:
+            break
 
-        user_count = int(invokes[0].split(',')[0])
-        users = []
-        for i in range(user_count):
-            users.append(users_apps.get(app_name).pop())
-
-        for invoke in invokes:
-            row2 = invoke.split(',')
-            api_name = row2[1]
-            method = row2[2]
-            call_median = int(row2[3])
-            path = row2[4]
-            api_version = "1"
-            full_path = api_name + "/" + api_version + "/" + path + "/"
-
-            for user in users:              # user[username,token,ip,cookie]
-                no_of_requests = varySlightly(call_median, user_count) + 10
-                simultaneous_requests = random.randrange(no_of_requests)
-
-                # time stamp list
-                time_stamps = genTimeList(starttime, no_of_requests-simultaneous_requests+1)
-
-                simultaneous_timestamp = str(time_stamps.pop(0))
-                for i in range(simultaneous_requests):
-                    final_string = simultaneous_timestamp + "," + api_name + "," + user[1] + "," + user[2] + "," + user[3] + "," + full_path + "," + method + "\n"      # timestamp,api_name,access_token,ip,cookie,path,method
-
-                    with open('dataset/generated/{}'.format(filename), 'a+') as file:
-                        file.write(final_string)
-
-                for i in range(no_of_requests-simultaneous_requests):
-                    timestamp = str(time_stamps.pop(0))
-                    final_string = timestamp + "," + api_name + "," + user[1] + "," + user[2] + "," + user[3] + "," + full_path + "," + method + "\n"      # timestamp,api_name,access_token,ip,cookie,path,method
-
-                    with open('dataset/generated/{}'.format(filename), 'a+') as file:
-                        file.write(final_string)
-
-
-print("[INFO] "+str(dt.now())+" Data generation successful!")
+time_elapsed = dt.now() - script_starttime
+print("[INFO] Data generated successfully. Time elapsed: {} seconds".format(time_elapsed.seconds))
+log("INFO", "Data generated successfully. Time elapsed: {} seconds".format(time_elapsed.seconds))

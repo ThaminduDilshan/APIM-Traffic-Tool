@@ -1,4 +1,23 @@
-api-endpoints:
-  production: https://localhost:9443/am/sample/pizzashack/v1/api/
-  sandbox: https://localhost:9443/am/sample/pizzashack/v1/api/
+api:
+  throttling-tier: Unlimited
+  visibility: PUBLIC
+  production-endpoint: https://localhost:9443/am/sample/pizzashack/v1/api/
+  sandbox-endpoint: https://localhost:9443/am/sample/pizzashack/v1/api/
 
+application:
+  throttling-tier: Unlimited
+
+subscription-tier: Unlimited
+
+tool-config:
+  no-of-processes: 20
+  max-connection-refuse-count: 50
+  no-of-data-points: 1000
+
+api-host:
+  protocol: https
+  ip: 172.17.0.1
+  port: 8243
+
+commands:
+  python: python3

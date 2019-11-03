@@ -66,7 +66,7 @@ def app_userScenario():
         for inner in outer:
             finalStr += inner
 
-    file = open('APIM_scenario/data/user_app_pattern.csv', 'w')
+    file = open('../../data/scenario/data/user_app_pattern.csv', 'w')
     file.write(finalStr)
     file.close()
 
@@ -82,7 +82,7 @@ def genUsersCSV():
             csvString += ele + '$$ '
         csvString += '\n'
 
-    file = open('APIM_scenario/data/user_generation.csv', 'w')
+    file = open('../../data/scenario/data/user_generation.csv', 'w')
     file.write(csvString)
     file.close()
     print('User generation successful!')
