@@ -11,6 +11,7 @@ import urllib3
 import pickle
 import yaml
 import os
+import json
 from multiprocessing.dummy import Pool as ThreadPool
 
 
@@ -31,6 +32,7 @@ host_ip = None
 host_port = None
 heavy_traffic = None
 scenario_name = None
+post_data = None
 
 script_starttime = None
 scenario_pool = []
@@ -46,7 +48,7 @@ abs_path = os.path.abspath(os.path.dirname(__file__))
     This method will load and set the configuration data
 '''
 def loadConfig():
-    global no_of_processes, max_connection_refuse_count, host_protocol, host_ip, host_port, heavy_traffic, scenario_name
+    global no_of_processes, max_connection_refuse_count, host_protocol, host_ip, host_port, heavy_traffic, scenario_name, post_data
 
     with open(abs_path+'/../../../../config/traffic-tool.yaml', 'r') as file:
         traffic_config = yaml.load(file, Loader=yaml.FullLoader)
@@ -58,6 +60,7 @@ def loadConfig():
     host_ip = traffic_config['api_host']['ip']
     host_port = traffic_config['api_host']['port']
     scenario_name = traffic_config['scenario_name']
+    post_data = traffic_config['api']['post_data']
 
 
 '''
@@ -75,6 +78,7 @@ def sendRequest(url_protocol, url_ip, url_port, api_name, api_version, path, acc
     url = "{}://{}:{}/{}/{}/{}".format(url_protocol, url_ip, url_port, api_name, api_version, path)
     headers = {
         'accept': 'application/json',
+        'Content-Type': 'application/json',
         'Authorization': 'Bearer {}'.format(access_token),
         'client-ip': '{}'.format(user_ip),
         'x-forwarded-for': '{}'.format(user_ip),
@@ -89,7 +93,7 @@ def sendRequest(url_protocol, url_ip, url_port, api_name, api_version, path, acc
             code = response.status_code
             res_txt = response.text
         elif method=="POST":
-            data = {"Payload": "sample"}
+            data = json.dumps(post_data)
             response = requests.post(url=url, headers=headers, data=data, verify=False)
             code = response.status_code
             res_txt = response.text
