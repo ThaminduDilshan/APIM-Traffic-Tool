@@ -88,10 +88,10 @@ func_gen_invoke_data() {
     chmod +x ../lib/traffic-tool/src/python/gen_invoke_data.py
 
     if command -v python3 &>/dev/null; then
-      nohup python3 ../lib/traffic-tool/src/python/gen_invoke_data.py $FILENAME >> ../logs/traffic-shell.log &
+      nohup python3 ../lib/traffic-tool/src/python/gen_invoke_data.py $FILENAME >> ../logs/traffic-shell.log 2>&1 &
       echo $! > ../data/traffic_tool.pid
     elif command -v python &>/dev/null; then
-      nohup python ../lib/traffic-tool/src/python/gen_invoke_data.py $FILENAME >> ../logs/traffic-shell.log &
+      nohup python ../lib/traffic-tool/src/python/gen_invoke_data.py $FILENAME >> ../logs/traffic-shell.log 2>&1 &
       echo $! > ../data/traffic_tool.pid
     else
       echo "Python 3 is required for the command!"
@@ -113,10 +113,10 @@ func_traffic() {
     chmod +x ../lib/traffic-tool/src/python/invoke_API.py
 
     if command -v python3 &>/dev/null; then
-      nohup python3 ../lib/traffic-tool/src/python/invoke_API.py $FILENAME $EXECTIME >> ../logs/traffic-shell.log &
+      nohup python3 ../lib/traffic-tool/src/python/invoke_API.py $FILENAME $EXECTIME >> ../logs/traffic-shell.log 2>&1 &
       echo $! > ../data/traffic_tool.pid
     elif command -v python &>/dev/null; then
-      nohup python ../lib/traffic-tool/src/python/invoke_API.py $FILENAME $EXECTIME >> ../logs/traffic-shell.log &
+      nohup python ../lib/traffic-tool/src/python/invoke_API.py $FILENAME $EXECTIME >> ../logs/traffic-shell.log 2>&1 &
       echo $! > ../data/traffic_tool.pid
     else
       echo "Python 3 is required for the command!"
@@ -130,23 +130,22 @@ func_traffic() {
 
 func_stop_traffic() {
   PID=`cat ../data/traffic_tool.pid 2>/dev/null`
-  if [ -z $PID ]
+  if [ -z $PID ];
   then
     echo "Traffic Tool is Not Running"
   else
     kill -0 $PID 2>/dev/null
-    if [ $? -eq 0 ]
+    if [ $? -eq 0 ];
     then
       kill -9 $PID
-      if [ $? -eq 0 ]
+      if [ $? -eq 0 ];
       then
           echo "Traffic Tool Stopped Successfully"
       fi
     else
       echo "Traffic Tool Already Stopped"
     fi
-  fi
-  > ../data/traffic_tool.pid
+  fi > ../data/traffic_tool.pid
 }
 
 func_all() {
@@ -179,7 +178,7 @@ func_all() {
       if [ -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/api_invoke_tokens.csv ];
       then
         chmod +x ../lib/traffic-tool/src/python/invoke_API.py
-        nohup python3 ../lib/traffic-tool/src/python/invoke_API.py $FILENAME $EXECTIME >> ../logs/traffic-shell.log &
+        nohup python3 ../lib/traffic-tool/src/python/invoke_API.py $FILENAME $EXECTIME >> ../logs/traffic-shell.log 2>&1 &
         echo $! > ../data/traffic_tool.pid
       else
         echo "Missing token file in the 'data/scenario/$SCENARIONAME/' directory"
@@ -205,7 +204,7 @@ func_all() {
       if [ -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/api_invoke_tokens.csv ];
       then
         chmod +x ../lib/traffic-tool/src/python/invoke_API.py
-        nohup python ../lib/traffic-tool/src/python/invoke_API.py $FILENAME $EXECTIME >> ../logs/traffic-shell.log &
+        nohup python ../lib/traffic-tool/src/python/invoke_API.py $FILENAME $EXECTIME >> ../logs/traffic-shell.log 2>&1 &
         echo $! > ../data/traffic_tool.pid
       else
         echo "Missing token file in the 'data/scenario/$SCENARIONAME/' directory"
