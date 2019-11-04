@@ -13,7 +13,9 @@ general_config:
     - Mozilla/4.0 (compatible; MSIE 6.1; Windows XP)
     - Opera/9.80 (Windows NT 5.2; U; ru) Presto/2.5.22 Version/10.51
   attack_duration: 60 #900 seconds = 15 minutes
-DOS_attack:
-  ip: 
-  token:
-  cookie:
+  scenario: scenario_example
+#DOS_attack:
+# ip: 198.51.99.29
+# token: da790fba-6625-3ac2-a2f8-287884f364b2
+# cookie: JSESSIONID=tyakp52jiu5nozd4gon0nmchu5buwbu
+
