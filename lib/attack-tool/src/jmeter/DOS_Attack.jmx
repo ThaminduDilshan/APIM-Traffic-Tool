@@ -18,7 +18,7 @@
           <boolProp name="LoopController.continue_forever">false</boolProp>
           <stringProp name="LoopController.loops">1</stringProp>
         </elementProp>
-        <stringProp name="ThreadGroup.num_threads">1</stringProp>
+        <stringProp name="ThreadGroup.num_threads">20</stringProp>
         <stringProp name="ThreadGroup.ramp_time">1</stringProp>
         <boolProp name="ThreadGroup.scheduler">false</boolProp>
         <stringProp name="ThreadGroup.duration"></stringProp>
@@ -35,7 +35,7 @@
             <stringProp name="scriptLanguage">groovy</stringProp>
           </JSR223Sampler>
           <hashTree>
-            <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="JSR223 PreProcessor" enabled="true">
+            <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="JSR223 PreProcessor " enabled="true">
               <stringProp name="cacheKey">true</stringProp>
               <stringProp name="filename"></stringProp>
               <stringProp name="parameters"></stringProp>
@@ -69,15 +69,21 @@ Map attackConfig = ymlparser.load((baseDir+&quot;/../../../../config/attack-tool
 Map generalConfig = attackConfig.find{it.key==&quot;general_config&quot;}?.value
 List userAgents = generalConfig.find{it.key==&quot;user_agents&quot;}?.value
 String attackDurationPerApi = generalConfig.find{it.key==&quot;attack_duration&quot;}?.value
+Map dosConfig = attackConfig.find{it.key==&quot;DOS_attack&quot;}?.value
+//String attackIP = dosConfig.find{it.key==&quot;ip&quot;}?.value
+//String attackToken = dosConfig.find{it.key==&quot;token&quot;}?.value
+//String attackCookie = dosConfig.find{it.key==&quot;cookie&quot;}?.value
+String scenarioName = generalConfig.find{it.key==&quot;scenario&quot;}?.value
 
 
-File csvfile = new File(baseDir + &quot;/../../../traffic-tool/data/scenario/scenario_example/token_ip_cookie.csv&quot; )
+File csvfile = new File(baseDir + &quot;/../../../traffic-tool/data/scenario/&quot; + scenarioName + &quot;/token_ip_cookie.csv&quot; )
 List lines =csvfile.readLines()
 int i = 1;
 ArrayList userList = new ArrayList()
 for(line in lines)
 {
 	String[] userData = line.split(&quot;,&quot;);
+	//log.info(userData.toString())
 	//ip,cookie,token,apiname
 	User tempUser = new User(userData[2],userData[3],userData[0],userData[1]);
 	userList.add(tempUser);
@@ -105,33 +111,30 @@ vars.put(&quot;gatewayProtocol&quot;, gatewayProtocol);
 vars.put(&quot;gatewayHost&quot;, gatewayHost);
 vars.put(&quot;gatewayServeletPort&quot;, gatewayServeletPort);
 vars.put(&quot;nioPtTransportPort&quot;, nioPtTransportPort);
-vars.putObject(&quot;userAgents&quot;,userAgents)
-vars.put(&quot;attackDurationPerApi&quot;,attackDurationPerApi)
+//vars.put(&quot;attackIP&quot;,attackIP);
+//vars.put(&quot;attackToken&quot;,attackToken);
+//vars.put(&quot;attackCookie&quot;,attackCookie);
+vars.putObject(&quot;userAgents&quot;,userAgents);
+vars.put(&quot;attackDurationPerApi&quot;,attackDurationPerApi);
 
-//vars.putObject(&quot;apiList&quot;,apiList)
-//vars.putObject(&quot;userList&quot;,userList)
+
+String logString = &quot;Connection,Authorization,accept,client-ip,x-forwarded-for,Content-Type,User-agent,Host,Response Code\n&quot;;
+File dataSetCSV = new File(baseDir + &quot;/../../../../dataset/attack/DOS.csv&quot; );
+FileWriter fw = new FileWriter(dataSetCSV);
+fw.write(logString);
+fw.close();
+
+
 //log.info(vars.get(&quot;userAgents&quot;).toString());
 //log.info(gatewayProtocol)
-
-
-
 //log.info( scenario_base_path );
 </stringProp>
               <stringProp name="scriptLanguage">groovy</stringProp>
+              <stringProp name="TestPlan.comments">Read configurations, Make API and User objects</stringProp>
             </JSR223PreProcessor>
             <hashTree/>
           </hashTree>
         </hashTree>
-        <BeanShellSampler guiclass="BeanShellSamplerGui" testclass="BeanShellSampler" testname="BeanShell Sampler" enabled="false">
-          <stringProp name="BeanShellSampler.query">long futuretime = Long.parseLong(vars.get(&quot;TESTSTART.MS&quot;));
-TestStopTime = futuretime + 60000;
-vars.put(&quot;TestStopTime&quot;,&quot;&quot;+TestStopTime);
-</stringProp>
-          <stringProp name="BeanShellSampler.filename"></stringProp>
-          <stringProp name="BeanShellSampler.parameters"></stringProp>
-          <boolProp name="BeanShellSampler.resetInterpreter">false</boolProp>
-        </BeanShellSampler>
-        <hashTree/>
         <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="JSR223 Sampler" enabled="true">
           <stringProp name="scriptLanguage">groovy</stringProp>
           <stringProp name="parameters"></stringProp>
@@ -141,6 +144,7 @@ vars.put(&quot;TestStopTime&quot;,&quot;&quot;+TestStopTime);
 long currentTime = System.currentTimeMillis();
 long stopTime = currentTime + attackDurationPerAPI.intValue() * 1000;
 vars.put(&quot;TestStopTime&quot;,&quot;&quot;+stopTime);</stringProp>
+          <stringProp name="TestPlan.comments">Setting the attack duration</stringProp>
         </JSR223Sampler>
         <hashTree/>
         <ForeachController guiclass="ForeachControlPanel" testclass="ForeachController" testname="ForEach Controller" enabled="true">
@@ -197,21 +201,27 @@ import tools.User
 
 API currentAPI = vars.getObject(&quot;apiInstance&quot;)
 
-//Random rand = new Random();
-//def randomResource = currentAPI.getResources().get(rand.nextInt(currentAPI.getResources().size()))
+Random rand = new Random();
+
 vars.put(&quot;currentAPIName&quot;,currentAPI.getName());
 vars.put(&quot;currentAPIContext&quot;,currentAPI.getContext());
 vars.put(&quot;currentAPIVersion&quot;,currentAPI.getVersion());
-//vars.put(&quot;currentAPIResourceMethod&quot;,randomResource.get(&quot;method&quot;).toString())
-//vars.put(&quot;currentAPIResourcePath&quot;,randomResource.get(&quot;path&quot;).toString());
 vars.putObject(&quot;currentAPIUsers&quot;,currentAPI.getUserList())
 vars.putObject(&quot;currentAPIResources&quot;,currentAPI.getResources())
 
+def users = currentAPI.getUserList();
+User randomUser = users.get(rand.nextInt(users.size()))
+
+vars.put(&quot;randomUserIP&quot;,randomUser.getIp());
+vars.put(&quot;randomUserCookie&quot;,randomUser.getCookie());
+vars.put(&quot;randomUserToken&quot;,randomUser.getToken());
+vars.put(&quot;randomUserApiName&quot;,randomUser.getApiName());
 //def userAgents = vars.getObject(&quot;userAgents&quot;);
 //vars.putObject(&quot;currentUserAgents&quot;,userAgents)
 //log.info(vars.get(&quot;currentAPIResourceMethod&quot;).equals(&quot;GET&quot;).toString());
 //log.info(vars.get(&quot;currentAPIUsers&quot;).toString());
-log.info(currentAPI.getName());</stringProp>
+//log.info(currentAPI.getName());</stringProp>
+            <stringProp name="TestPlan.comments">Process the API data for the ForEach Controller / Selecting a random user per API for the DOS attack</stringProp>
           </JSR223Sampler>
           <hashTree/>
           <WhileController guiclass="WhileControllerGui" testclass="WhileController" testname="While Controller" enabled="true">
@@ -266,12 +276,7 @@ def users = vars.getObject(&quot;currentAPIUsers&quot;);
 
 Random rand = new Random();
 Random rand2 = new Random();
-User randomUser = users.get(rand.nextInt(users.size()))
 
-vars.put(&quot;randomUserIP&quot;,randomUser.getIp());
-vars.put(&quot;randomUserCookie&quot;,randomUser.getCookie());
-vars.put(&quot;randomUserToken&quot;,randomUser.getToken());
-vars.put(&quot;randomUserApiName&quot;,randomUser.getApiName());
 
 def userAgents = vars.getObject(&quot;userAgents&quot;);
 def randomUserAgent = userAgents.get(rand.nextInt(userAgents.size()));
@@ -285,6 +290,7 @@ vars.put(&quot;currentAPIResourcePath&quot;,randomResource.get(&quot;path&quot;)
 //int duration = vars.get(&quot;attackDurationPerApi&quot;)
 //log.info(randomUserAgent.toString());
 //log.info((vars.get(&quot;currentAPIResourceMethod&quot;)))</stringProp>
+              <stringProp name="TestPlan.comments">Selecting a random user agents and random resources to be used in the requests</stringProp>
             </JSR223Sampler>
             <hashTree/>
             <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If Controller GET" enabled="true">
@@ -316,7 +322,7 @@ ${__groovy(&quot;${currentAPIResourceMethod}&quot;==&quot;GET&quot;)}</stringPro
                 <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
                   <collectionProp name="HeaderManager.headers">
                     <elementProp name="" elementType="Header">
-                      <stringProp name="Header.name">Authorization</stringProp>
+                      <stringProp name="Header.name">Authorization </stringProp>
                       <stringProp name="Header.value">Bearer ${randomUserToken}</stringProp>
                     </elementProp>
                     <elementProp name="" elementType="Header">
@@ -335,11 +341,11 @@ ${__groovy(&quot;${currentAPIResourceMethod}&quot;==&quot;GET&quot;)}</stringPro
                       <stringProp name="Header.name">cookie</stringProp>
                       <stringProp name="Header.value">${randomUserCookie}</stringProp>
                     </elementProp>
-                    <elementProp name="" elementType="Header">
+                    <elementProp name="Content-Type" elementType="Header">
                       <stringProp name="Header.name">Content-Type</stringProp>
                       <stringProp name="Header.value">application/json</stringProp>
                     </elementProp>
-                    <elementProp name="" elementType="Header">
+                    <elementProp name="User-Agent" elementType="Header">
                       <stringProp name="Header.name">User-Agent</stringProp>
                       <stringProp name="Header.value">${randomUserAgent}</stringProp>
                     </elementProp>
@@ -382,8 +388,8 @@ ${__groovy(&quot;${currentAPIResourceMethod}&quot;==&quot;POST&quot;)}</stringPr
                 <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
                   <collectionProp name="HeaderManager.headers">
                     <elementProp name="" elementType="Header">
-                      <stringProp name="Header.name">Athorization </stringProp>
-                      <stringProp name="Header.value">Bearer  ${randomUserToken}</stringProp>
+                      <stringProp name="Header.name">Authorization </stringProp>
+                      <stringProp name="Header.value">Bearer ${randomUserToken}</stringProp>
                     </elementProp>
                     <elementProp name="" elementType="Header">
                       <stringProp name="Header.name">accept</stringProp>
@@ -617,6 +623,42 @@ ${__groovy(&quot;${currentAPIResourceMethod}&quot;==&quot;PATCH&quot;)}</stringP
                 <hashTree/>
               </hashTree>
             </hashTree>
+            <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="JSR223 Sampler" enabled="true">
+              <stringProp name="scriptLanguage">groovy</stringProp>
+              <stringProp name="parameters"></stringProp>
+              <stringProp name="filename"></stringProp>
+              <stringProp name="cacheKey">true</stringProp>
+              <stringProp name="script">import org.apache.jmeter.protocol.http.sampler.HTTPSampleResult;
+import org.apache.jmeter.protocol.http.sampler.HTTPSamplerProxy;
+import org.apache.jmeter.protocol.http.control.HeaderManager;
+
+
+HTTPSamplerProxy previousSampler = ctx.getPreviousSampler();
+CookieManager cookieManager = previousSampler.getCookieManager();
+
+
+HTTPSampleResult previousResult = (HTTPSampleResult)ctx.getPreviousResult();
+
+def headers = previousResult.getRequestHeaders().split(&quot;\n&quot;);
+def responseCode = previousResult.getResponseCode();
+String dataString = &quot;&quot;;
+
+for (header in headers)
+{
+	values = header.split(&quot;: &quot;);
+	dataString += values[1] + &quot;,&quot; ;
+	//log.info(header.toString())
+}
+dataString += responseCode;
+dataString += &quot;\n&quot;;
+baseDir = vars.get(&quot;baseDir&quot;);
+//log.info(baseDir);
+File dataSetCSV = new File( baseDir + &quot;/../../../../dataset/attack/DOS.csv&quot;);
+FileWriter fw = new FileWriter(dataSetCSV,true);
+fw.write(dataString);
+fw.close();</stringProp>
+            </JSR223Sampler>
+            <hashTree/>
           </hashTree>
           <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="JSR223 Sampler" enabled="true">
             <stringProp name="scriptLanguage">groovy</stringProp>
@@ -627,6 +669,7 @@ ${__groovy(&quot;${currentAPIResourceMethod}&quot;==&quot;PATCH&quot;)}</stringP
 long currentTime = System.currentTimeMillis();
 long stopTime = currentTime + attackDurationPerAPI.intValue() * 1000;
 vars.put(&quot;TestStopTime&quot;,&quot;&quot;+stopTime);</stringProp>
+            <stringProp name="TestPlan.comments">Resetting the timer after an attack on API finishes.</stringProp>
           </JSR223Sampler>
           <hashTree/>
         </hashTree>
