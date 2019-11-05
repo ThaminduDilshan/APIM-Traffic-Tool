@@ -103,7 +103,7 @@ def genUniqueCookieList(count:int):
 '''
     Execute the script and generate the user scenario distribution
     Usage: python3 gen_invoke_scenario.py
-    output folders: lib/traffic-tool/data/scenario/ and lib/traffic-tool/data/pickle/
+    output folders: lib/traffic-tool/data/scenario/ and lib/traffic-tool/data/runtime_data/
 '''
 
 # generate a set of ips and cookies for each user
@@ -181,7 +181,7 @@ with open(abs_path+'/../../data/scenario/{}/token_ip_cookie.csv'.format(scenario
     file.write(write_str)
 
 # saving scenario pool to a pickle file
-pickle.dump(scenario_pool, open(abs_path+"/../../data/pickle/user_scenario_pool.sav", "wb"))
+pickle.dump(scenario_pool, open(abs_path+"/../../data/runtime_data/user_scenario_pool.sav", "wb"))
 
 log("INFO", "User scenario distribution generated successfully")
 print("User scenario distribution generated successfully")

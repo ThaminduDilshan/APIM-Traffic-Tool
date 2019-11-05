@@ -119,7 +119,7 @@ loadConfig()
 with open(abs_path+'/../../../../dataset/generated-traffic/{}'.format(filename), 'w') as file:
     file.write("timestamp,api,access_token,ip_address,cookie,invoke_path,http_method,response_code\n")
 
-scenario_pool = pickle.load(open(abs_path+"/../../data/pickle/user_scenario_pool.sav", "rb"))
+scenario_pool = pickle.load(open(abs_path+"/../../data/runtime_data/user_scenario_pool.sav", "rb"))
 script_starttime = dt.now()
 
 print("[INFO] Scenario loaded successfully. Wait until data generation complete!")
