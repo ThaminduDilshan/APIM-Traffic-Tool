@@ -67,6 +67,7 @@ List userAgents = generalConfig.find{it.key==&quot;user_agents&quot;}?.value
 String attackDurationPerApi = generalConfig.find{it.key==&quot;attack_duration&quot;}?.value
 Map dosConfig = attackConfig.find{it.key==&quot;DOS_attack&quot;}?.value
 String scenarioName = generalConfig.find{it.key==&quot;scenario&quot;}?.value
+List postData = generalConfig.find{it.key==&quot;payloads&quot;}?.value
 
 //Parsing user ips,tokens and cookies
 File csvfile = new File(baseDir + &quot;/../../../traffic-tool/data/scenario/&quot; + scenarioName + &quot;/token_ip_cookie.csv&quot; )
@@ -108,6 +109,7 @@ props.put(&quot;gatewayHost&quot;, gatewayHost);
 props.put(&quot;gatewayServeletPort&quot;, gatewayServeletPort);
 props.put(&quot;nioPtTransportPort&quot;, nioPtTransportPort);
 props.put(&quot;userAgents&quot;,userAgents);
+props.put(&quot;postData&quot;,postData);
 props.put(&quot;attackDurationPerApi&quot;,attackDurationPerApi);
 props.put(&quot;apiList&quot;,apiList);
 
@@ -327,6 +329,12 @@ def randomUserAgent = userAgents.get(rand.nextInt(userAgents.size()));
 vars.put(&quot;randomUserAgent&quot;,randomUserAgent)
 
 
+// Selecting random request body data (only to be used in POST)
+def postData = props.get(&quot;postData&quot;);
+def randomRequestBody = postData.get(rand.nextInt(postData.size()));
+vars.putObject(&quot;randomRequestBody&quot;,randomRequestBody)
+
+
 // selecting a random resource from the API to send a request
 def currentApiResources = vars.getObject(&quot;currentAPIResources&quot;);
 def randomResource = currentApiResources.get(rand2.nextInt(currentApiResources.size()));
@@ -412,8 +420,15 @@ ${__groovy(&quot;${currentAPIResourceMethod}&quot;==&quot;POST&quot;)}</stringPr
             </IfController>
             <hashTree>
               <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="HTTP POST" enabled="true">
-                <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
-                  <collectionProp name="Arguments.arguments"/>
+                <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+                <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+                  <collectionProp name="Arguments.arguments">
+                    <elementProp name="" elementType="HTTPArgument">
+                      <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                      <stringProp name="Argument.value">${randomRequestBody}</stringProp>
+                      <stringProp name="Argument.metadata">=</stringProp>
+                    </elementProp>
+                  </collectionProp>
                 </elementProp>
                 <stringProp name="HTTPSampler.domain">${__property(gatewayHost)}</stringProp>
                 <stringProp name="HTTPSampler.port">${__property(nioPtTransportPort)}</stringProp>
