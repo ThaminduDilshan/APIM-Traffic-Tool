@@ -14,11 +14,40 @@ apis:
     resources:
       - method: GET
         path: menu
+      
+
+  - name: places
+    context: places
+    version: 1
+    resources:
+      - method: GET
+        path: menu
+
+  - name: payment
+    context: payment
+    version: 1
+    resources:
+      - method: GET
+        path: menu
       - method: POST
         path: order
 
-  - name: payment
-    context: places
+  - name: map
+    context: map
+    version: 1
+    resources:
+      - method: GET
+        path: menu
+      
+  - name: weather
+    context: weather
+    version: 1
+    resources:
+      - method: GET
+        path: menu
+
+  - name: cricket
+    context: cricket
     version: 1
     resources:
       - method: GET
