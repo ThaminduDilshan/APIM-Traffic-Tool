@@ -145,7 +145,8 @@ func_stop_traffic() {
     else
       echo "Traffic Tool Already Stopped"
     fi
-  fi > ../data/traffic_tool.pid
+  fi
+  > ../data/traffic_tool.pid
 }
 
 func_all() {
