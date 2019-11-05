@@ -14,7 +14,15 @@ general_config:
     - Opera/9.80 (Windows NT 5.2; U; ru) Presto/2.5.22 Version/10.51
   attack_duration: 60 #900 seconds = 15 minutes
   scenario: scenario_example
+  payloads: 
+    - '{"customerName": "Tom","delivered": true,"address": "customer_address","pizzaType": "customer_pizza","creditCardNumber": "customer_credit_card","quantity": 0,"orderId": "1"}'
+    - '{"customerName": "John","delivered": true,"address": "customer_address","pizzaType": "customer_pizza","creditCardNumber": "customer_credit_card","quantity": 0,"orderId": "1"}'
+    - '{"customerName": "Tim","delivered": true,"address": "customer_address","pizzaType": "customer_pizza","creditCardNumber": "customer_credit_card","quantity": 0,"orderId": "1"}'
+
+
+
 #DOS_attack:
+
 # ip: 198.51.99.29
 # token: da790fba-6625-3ac2-a2f8-287884f364b2
 # cookie: JSESSIONID=tyakp52jiu5nozd4gon0nmchu5buwbu
