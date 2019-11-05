@@ -16,9 +16,9 @@ func_help() {
 # function to generate random user details and distribute them according to the example scenario
 func_gen_example_scenario() {
   if command -v python3 &>/dev/null; then
-    python3 ../lib/traffic-tool/src/python/gen_user_details.py 1
+    python3 "$(pwd)"/../lib/traffic-tool/src/python/gen_user_details.py 1
   elif command -v python &>/dev/null; then
-    python ../lib/traffic-tool/src/python/gen_user_details.py 1
+    python "$(pwd)"/../lib/traffic-tool/src/python/gen_user_details.py 1
   else
     echo "Python 3 is required for the command!"
     exit 1
@@ -35,10 +35,10 @@ func_create_scenario() {
   fi
   if [ -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/api_creation.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/api_creation_swagger.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/app_creation.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/app_api_subscription_admin.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/user_generation.csv ];
   then
-    rm -f ../lib/traffic-tool/data/scenario/$SCENARIONAME/api_invoke_key_secret.csv
+    rm -f "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/api_invoke_key_secret.csv
     echo "Enter your jmeter path (Ex:- /home/user/Documents/apache-jmeter-5.1.1/bin)"
     read JMPATH
-    $JMPATH/jmeter -n -t '../lib/traffic-tool/src/jmeter/create_api_scenario.jmx' -l ../logs/jmeter-results-traffic.log -j ../logs/jmeter-traffic.log
+    $JMPATH/jmeter -n -t "$(pwd)"'/../lib/traffic-tool/src/jmeter/create_api_scenario.jmx' -l "$(pwd)"/../logs/jmeter-results-traffic.log -j "$(pwd)"/../logs/jmeter-traffic.log
   else
     echo "Missing one or more required files in the 'scenario/$SCENARIONAME/' directory"
     exit 1
@@ -55,18 +55,18 @@ func_gen_tokens() {
   fi
   if [ -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/app_creation.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/user_app_pattern.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/api_invoke_key_secret.csv ];
   then
-    rm -f ../lib/traffic-tool/data/scenario/$SCENARIONAME/api_invoke_tokens.csv
+    rm -f "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/api_invoke_tokens.csv
     echo "Enter your jmeter path (Ex:- /home/user/Documents/apache-jmeter-5.1.1/bin)"
     read JMPATH
-    $JMPATH/jmeter -n -t '../lib/traffic-tool/src/jmeter/generate_token_list.jmx' -l ../logs/jmeter-results-traffic.log -j ../logs/jmeter-traffic.log
+    $JMPATH/jmeter -n -t "$(pwd)"'/../lib/traffic-tool/src/jmeter/generate_token_list.jmx' -l "$(pwd)"/../logs/jmeter-results-traffic.log -j "$(pwd)"/../logs/jmeter-traffic.log
   else
     echo "Missing one or more required files in the 'scenario/$SCENARIONAME/' directory"
     exit 1
   fi
   if command -v python3 &>/dev/null; then
-    python3 ../lib/traffic-tool/src/python/gen_invoke_scenario.py
+    python3 "$(pwd)"/../lib/traffic-tool/src/python/gen_invoke_scenario.py
   elif command -v python &>/dev/null; then
-    python ../lib/traffic-tool/src/python/gen_invoke_scenario.py
+    python "$(pwd)"/../lib/traffic-tool/src/python/gen_invoke_scenario.py
   else
     echo "Python 3 is required for the command!"
     exit 1
@@ -79,14 +79,14 @@ func_gen_invoke_data() {
   then
     echo "Enter filename (without file extension):"
     read FILENAME
-    chmod +x ../lib/traffic-tool/src/python/gen_invoke_data.py
+    chmod +x "$(pwd)"/../lib/traffic-tool/src/python/gen_invoke_data.py
 
     if command -v python3 &>/dev/null; then
-      nohup python3 ../lib/traffic-tool/src/python/gen_invoke_data.py $FILENAME >> ../logs/traffic-shell.log 2>&1 &
-      echo $! > ../data/traffic_tool.pid
+      nohup python3 "$(pwd)"/../lib/traffic-tool/src/python/gen_invoke_data.py $FILENAME >> "$(pwd)"/../logs/traffic-shell.log 2>&1 &
+      echo $! > "$(pwd)"/../data/traffic_tool.pid
     elif command -v python &>/dev/null; then
-      nohup python ../lib/traffic-tool/src/python/gen_invoke_data.py $FILENAME >> ../logs/traffic-shell.log 2>&1 &
-      echo $! > ../data/traffic_tool.pid
+      nohup python "$(pwd)"/../lib/traffic-tool/src/python/gen_invoke_data.py $FILENAME >> "$(pwd)"/../logs/traffic-shell.log 2>&1 &
+      echo $! > "$(pwd)"/../data/traffic_tool.pid
     else
       echo "Python 3 is required for the command!"
       exit 1
@@ -105,14 +105,14 @@ func_traffic() {
     read FILENAME
     echo "Enter script execution time in minutes: "
     read EXECTIME
-    chmod +x ../lib/traffic-tool/src/python/invoke_API.py
+    chmod +x "$(pwd)"/../lib/traffic-tool/src/python/invoke_API.py
 
     if command -v python3 &>/dev/null; then
-      nohup python3 ../lib/traffic-tool/src/python/invoke_API.py $FILENAME $EXECTIME >> ../logs/traffic-shell.log 2>&1 &
-      echo $! > ../data/traffic_tool.pid
+      nohup python3 "$(pwd)"/../lib/traffic-tool/src/python/invoke_API.py $FILENAME $EXECTIME >> "$(pwd)"/../logs/traffic-shell.log 2>&1 &
+      echo $! > "$(pwd)"/../data/traffic_tool.pid
     elif command -v python &>/dev/null; then
-      nohup python ../lib/traffic-tool/src/python/invoke_API.py $FILENAME $EXECTIME >> ../logs/traffic-shell.log 2>&1 &
-      echo $! > ../data/traffic_tool.pid
+      nohup python "$(pwd)"/../lib/traffic-tool/src/python/invoke_API.py $FILENAME $EXECTIME >> "$(pwd)"/../logs/traffic-shell.log 2>&1 &
+      echo $! > "$(pwd)"/../data/traffic_tool.pid
     else
       echo "Python 3 is required for the command!"
       exit 1
@@ -125,7 +125,7 @@ func_traffic() {
 
 # function to stop the traffic tool while it is running
 func_stop_traffic() {
-  PID=`cat ../data/traffic_tool.pid 2>/dev/null`
+  PID=`cat "$(pwd)"/../data/traffic_tool.pid 2>/dev/null`
   if [ -z $PID ];
   then
     echo "Traffic Tool is Not Running"
@@ -142,7 +142,7 @@ func_stop_traffic() {
       echo "Traffic Tool Already Stopped"
     fi
   fi
-  > ../data/traffic_tool.pid
+  > "$(pwd)"/../data/traffic_tool.pid
 }
 
 # function to generate random user details, generate user distribution, create example scenario, generate access tokens
@@ -162,23 +162,23 @@ func_all() {
   read EXECTIME
 
   if command -v python3 &>/dev/null; then
-    python3 ../lib/traffic-tool/src/python/gen_user_details.py 1
+    python3 "$(pwd)"/../lib/traffic-tool/src/python/gen_user_details.py 1
 
     if [ -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/api_creation.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/api_creation_swagger.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/app_creation.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/app_api_subscription_admin.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/user_generation.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/user_app_pattern.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/api_invoke_scenario.csv ];
     then
-      rm -f ../lib/traffic-tool/data/scenario/$SCENARIONAME/api_invoke_key_secret.csv
-      $JMPATH/jmeter -n -t '../lib/traffic-tool/src/jmeter/create_api_scenario.jmx' -l ../logs/jmeter-results-traffic.log -j ../logs/jmeter-traffic.log
+      rm -f "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/api_invoke_key_secret.csv
+      $JMPATH/jmeter -n -t "$(pwd)"'/../lib/traffic-tool/src/jmeter/create_api_scenario.jmx' -l "$(pwd)"/../logs/jmeter-results-traffic.log -j "$(pwd)"/../logs/jmeter-traffic.log
 
-      rm -f ../lib/traffic-tool/data/scenario/$SCENARIONAME/api_invoke_tokens.csv
-      $JMPATH/jmeter -n -t '../lib/traffic-tool/src/jmeter/generate_token_list.jmx' -l ../logs/jmeter-results-traffic.log -j ../logs/jmeter-traffic.log
+      rm -f "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/api_invoke_tokens.csv
+      $JMPATH/jmeter -n -t "$(pwd)"'/../lib/traffic-tool/src/jmeter/generate_token_list.jmx' -l "$(pwd)"/../logs/jmeter-results-traffic.log -j "$(pwd)"/../logs/jmeter-traffic.log
 
-      python3 ../lib/traffic-tool/src/python/gen_invoke_scenario.py
+      python3 "$(pwd)"/../lib/traffic-tool/src/python/gen_invoke_scenario.py
 
       if [ -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/api_invoke_tokens.csv ];
       then
-        chmod +x ../lib/traffic-tool/src/python/invoke_API.py
-        nohup python3 ../lib/traffic-tool/src/python/invoke_API.py $FILENAME $EXECTIME >> ../logs/traffic-shell.log 2>&1 &
-        echo $! > ../data/traffic_tool.pid
+        chmod +x "$(pwd)"/../lib/traffic-tool/src/python/invoke_API.py
+        nohup python3 "$(pwd)"/../lib/traffic-tool/src/python/invoke_API.py $FILENAME $EXECTIME >> "$(pwd)"/../logs/traffic-shell.log 2>&1 &
+        echo $! > "$(pwd)"/../data/traffic_tool.pid
       else
         echo "Missing token file in the 'data/scenario/$SCENARIONAME/' directory"
         exit 1
@@ -188,23 +188,23 @@ func_all() {
       exit 1
     fi
   elif command -v python &>/dev/null; then
-    python ../lib/traffic-tool/src/python/gen_user_details.py 1
+    python "$(pwd)"/../lib/traffic-tool/src/python/gen_user_details.py 1
 
     if [ -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/api_creation.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/api_creation_swagger.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/app_creation.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/app_api_subscription_admin.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/user_generation.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/user_app_pattern.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/api_invoke_scenario.csv ];
     then
-      rm -f ../lib/traffic-tool/data/scenario/$SCENARIONAME/api_invoke_key_secret.csv
-      $JMPATH/jmeter -n -t '../lib/traffic-tool/src/jmeter/create_api_scenario.jmx' -l ../logs/jmeter-results-traffic.log -j ../logs/jmeter-traffic.log
+      rm -f "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/api_invoke_key_secret.csv
+      $JMPATH/jmeter -n -t "$(pwd)"'/../lib/traffic-tool/src/jmeter/create_api_scenario.jmx' -l "$(pwd)"/../logs/jmeter-results-traffic.log -j "$(pwd)"/../logs/jmeter-traffic.log
 
-      rm -f ../lib/traffic-tool/data/scenario/$SCENARIONAME/api_invoke_tokens.csv
-      $JMPATH/jmeter -n -t '../lib/traffic-tool/src/jmeter/generate_token_list.jmx' -l ../logs/jmeter-results-traffic.log -j ../logs/jmeter-traffic.log
+      rm -f "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/api_invoke_tokens.csv
+      $JMPATH/jmeter -n -t "$(pwd)"'/../lib/traffic-tool/src/jmeter/generate_token_list.jmx' -l "$(pwd)"/../logs/jmeter-results-traffic.log -j "$(pwd)"/../logs/jmeter-traffic.log
 
-      python ../lib/traffic-tool/src/python/gen_invoke_scenario.py
+      python "$(pwd)"/../lib/traffic-tool/src/python/gen_invoke_scenario.py
 
       if [ -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/api_invoke_tokens.csv ];
       then
-        chmod +x ../lib/traffic-tool/src/python/invoke_API.py
-        nohup python ../lib/traffic-tool/src/python/invoke_API.py $FILENAME $EXECTIME >> ../logs/traffic-shell.log 2>&1 &
-        echo $! > ../data/traffic_tool.pid
+        chmod +x "$(pwd)"/../lib/traffic-tool/src/python/invoke_API.py
+        nohup python "$(pwd)"/../lib/traffic-tool/src/python/invoke_API.py $FILENAME $EXECTIME >> "$(pwd)"/../logs/traffic-shell.log 2>&1 &
+        echo $! > "$(pwd)"/../data/traffic_tool.pid
       else
         echo "Missing token file in the 'data/scenario/$SCENARIONAME/' directory"
         exit 1
@@ -225,7 +225,9 @@ func_cleanup() {
   then
     echo "Enter your jmeter path (Ex:- /home/user/Documents/apache-jmeter-5.1.1/bin)"
     read JMPATH
-    $JMPATH/jmeter -n -t '../lib/traffic-tool/src/jmeter/cleanup_api_manager.jmx' -l ../logs/jmeter-results-traffic.log -j ../logs/jmeter-traffic.log
+    $JMPATH/jmeter -n -t "$(pwd)"'/../lib/traffic-tool/src/jmeter/cleanup_api_manager.jmx' -l "$(pwd)"/../logs/jmeter-results-traffic.log -j "$(pwd)"/../logs/jmeter-traffic.log
+    rm "$(pwd)"/../lib/traffic-tool/data/runtime_data/api_ids.csv
+    rm "$(pwd)"/../lib/traffic-tool/data/runtime_data/app_ids.csv
   else
     echo "Missing required data files"
     exit 1
@@ -239,35 +241,35 @@ case "$1" in
     exit 0
   ;;
   1)
-    func_gen_example_scenario 2>&1 | tee -a ../logs/traffic-shell.log
+    func_gen_example_scenario 2>&1 | tee -a "$(pwd)"/../logs/traffic-shell.log
     exit 0
   ;;
   2)
-    func_create_scenario 2>&1 | tee -a ../logs/traffic-shell.log
+    func_create_scenario 2>&1 | tee -a "$(pwd)"/../logs/traffic-shell.log
     exit 0
   ;;
   3)
-    func_gen_tokens 2>&1 | tee -a ../logs/traffic-shell.log
+    func_gen_tokens 2>&1 | tee -a "$(pwd)"/../logs/traffic-shell.log
     exit 0
   ;;
   4)
-    func_gen_invoke_data 2>&1 | tee -a ../logs/traffic-shell.log
+    func_gen_invoke_data 2>&1 | tee -a "$(pwd)"/../logs/traffic-shell.log
     exit 0
   ;;
   5)
-    func_traffic 2>&1 | tee -a ../logs/traffic-shell.log
+    func_traffic 2>&1 | tee -a "$(pwd)"/../logs/traffic-shell.log
     exit 0
   ;;
   6)
-    func_stop_traffic 2>&1 | tee -a ../logs/traffic-shell.log
+    func_stop_traffic 2>&1 | tee -a "$(pwd)"/../logs/traffic-shell.log
     exit 0
   ;;
   all)
-    func_all 2>&1 | tee -a ../logs/traffic-shell.log
+    func_all 2>&1 | tee -a "$(pwd)"/../logs/traffic-shell.log
     exit 0
   ;;
   clean)
-    func_cleanup 2>&1 | tee -a ../logs/traffic-shell.log
+    func_cleanup 2>&1 | tee -a "$(pwd)"/../logs/traffic-shell.log
     exit 0
   ;;
   *)
