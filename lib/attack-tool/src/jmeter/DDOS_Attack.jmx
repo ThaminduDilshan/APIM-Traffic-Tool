@@ -18,7 +18,7 @@
           <boolProp name="LoopController.continue_forever">false</boolProp>
           <stringProp name="LoopController.loops">1</stringProp>
         </elementProp>
-        <stringProp name="ThreadGroup.num_threads">1</stringProp>
+        <stringProp name="ThreadGroup.num_threads">100</stringProp>
         <stringProp name="ThreadGroup.ramp_time">1</stringProp>
         <boolProp name="ThreadGroup.scheduler">false</boolProp>
         <stringProp name="ThreadGroup.duration"></stringProp>
@@ -87,7 +87,7 @@ for(line in lines)
 	
 }
 
-
+// Instantiating APIs
 ArrayList apiList = new ArrayList()
 i = 1;
 for(api in apis)
@@ -100,7 +100,7 @@ for(api in apis)
 }
 
 
-
+// Adding Jmeter variables
 vars.put(&quot;baseDir&quot;,baseDir);
 vars.put(&quot;gatewayProtocol&quot;, gatewayProtocol);
 vars.put(&quot;gatewayHost&quot;, gatewayHost);
@@ -109,8 +109,8 @@ vars.put(&quot;nioPtTransportPort&quot;, nioPtTransportPort);
 vars.putObject(&quot;userAgents&quot;,userAgents)
 vars.put(&quot;attackDurationPerApi&quot;,attackDurationPerApi)
 
-// Making the column names of the csv
-String logString = &quot;TimeStamp,Connection,Authorization,accept,client-ip,x-forwarded-for,Content-Type,Host,Response Code,User-agent\n&quot;;
+// Defining the column names of the csv
+String logString = &quot;TimeStamp,URL,Connection,Authorization,accept,client-ip,x-forwarded-for,Content-Type,Host,Response Code,User-agent\n&quot;;
 File dataSetCSV = new File(baseDir + &quot;/../../../../dataset/attack/DDOS.csv&quot; );
 FileWriter fw = new FileWriter(dataSetCSV,false);
 fw.write(logString);
@@ -139,6 +139,7 @@ fw.close();
 long currentTime = System.currentTimeMillis();
 long stopTime = currentTime + attackDurationPerAPI.intValue() * 1000;
 vars.put(&quot;TestStopTime&quot;,&quot;&quot;+stopTime);</stringProp>
+          <stringProp name="TestPlan.comments">Setting the attack duration</stringProp>
         </JSR223Sampler>
         <hashTree/>
         <ForeachController guiclass="ForeachControlPanel" testclass="ForeachController" testname="ForEach Controller" enabled="true">
@@ -195,21 +196,14 @@ import tools.User
 
 API currentAPI = vars.getObject(&quot;apiInstance&quot;)
 
-//Random rand = new Random();
-//def randomResource = currentAPI.getResources().get(rand.nextInt(currentAPI.getResources().size()))
+// adding details about the API as Jmeter variables
 vars.put(&quot;currentAPIName&quot;,currentAPI.getName());
 vars.put(&quot;currentAPIContext&quot;,currentAPI.getContext());
 vars.put(&quot;currentAPIVersion&quot;,currentAPI.getVersion());
-//vars.put(&quot;currentAPIResourceMethod&quot;,randomResource.get(&quot;method&quot;).toString())
-//vars.put(&quot;currentAPIResourcePath&quot;,randomResource.get(&quot;path&quot;).toString());
 vars.putObject(&quot;currentAPIUsers&quot;,currentAPI.getUserList())
 vars.putObject(&quot;currentAPIResources&quot;,currentAPI.getResources())
 
-//def userAgents = vars.getObject(&quot;userAgents&quot;);
-//vars.putObject(&quot;currentUserAgents&quot;,userAgents)
-//log.info(vars.get(&quot;currentAPIResourceMethod&quot;).equals(&quot;GET&quot;).toString());
-//log.info(vars.get(&quot;currentAPIUsers&quot;).toString());
-log.info(currentAPI.getName());</stringProp>
+//log.info(currentAPI.getName());</stringProp>
           </JSR223Sampler>
           <hashTree/>
           <WhileController guiclass="WhileControllerGui" testclass="WhileController" testname="While Controller" enabled="true">
@@ -264,22 +258,26 @@ def users = vars.getObject(&quot;currentAPIUsers&quot;);
 
 Random rand = new Random();
 Random rand2 = new Random();
-User randomUser = users.get(rand.nextInt(users.size()))
 
+// Selecting random users per requests
+User randomUser = users.get(rand.nextInt(users.size()))
 vars.put(&quot;randomUserIP&quot;,randomUser.getIp());
 vars.put(&quot;randomUserCookie&quot;,randomUser.getCookie());
 vars.put(&quot;randomUserToken&quot;,randomUser.getToken());
 vars.put(&quot;randomUserApiName&quot;,randomUser.getApiName());
 
+// Selecting random user agents for request headers
 def userAgents = vars.getObject(&quot;userAgents&quot;);
 def randomUserAgent = userAgents.get(rand.nextInt(userAgents.size()));
 vars.put(&quot;randomUserAgent&quot;,randomUserAgent)
 
-
+// Selecting a random resource for sending the request
 def currentApiResources = vars.getObject(&quot;currentAPIResources&quot;);
 def randomResource = currentApiResources.get(rand2.nextInt(currentApiResources.size()));
 vars.put(&quot;currentAPIResourceMethod&quot;,randomResource.get(&quot;method&quot;).toString());
 vars.put(&quot;currentAPIResourcePath&quot;,randomResource.get(&quot;path&quot;).toString());
+
+
 //int duration = vars.get(&quot;attackDurationPerApi&quot;)
 //log.info(randomUserAgent.toString());
 //log.info((vars.get(&quot;currentAPIResourceMethod&quot;)))</stringProp>
@@ -380,7 +378,7 @@ ${__groovy(&quot;${currentAPIResourceMethod}&quot;==&quot;POST&quot;)}</stringPr
                 <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
                   <collectionProp name="HeaderManager.headers">
                     <elementProp name="" elementType="Header">
-                      <stringProp name="Header.name">Athorization </stringProp>
+                      <stringProp name="Header.name">Authorization </stringProp>
                       <stringProp name="Header.value">Bearer  ${randomUserToken}</stringProp>
                     </elementProp>
                     <elementProp name="" elementType="Header">
@@ -637,9 +635,10 @@ def responseCode = previousResult.getResponseCode();
 String dataString = &quot;&quot;;
 String userAgent;
 String timeStamp = new java.text.SimpleDateFormat(&quot;MM/dd/yyyy h:mm:ss a&quot;).format(new Date());
+String url = previousResult.getUrlAsString();
 
 dataString += timeStamp + &quot;,&quot;
-
+dataString += url + &quot;,&quot;
 for (header in headers)
 {
 	values = header.split(&quot;: &quot;);
@@ -658,7 +657,6 @@ dataString += &quot;\n&quot;;
 
 //writing the string to DDOS.csv
 baseDir = vars.get(&quot;baseDir&quot;);
-log.info(baseDir);
 File dataSetCSV = new File( baseDir + &quot;/../../../../dataset/attack/DDOS.csv&quot;);
 FileWriter fw = new FileWriter(dataSetCSV,true);
 fw.write(dataString);
@@ -675,6 +673,7 @@ fw.close();</stringProp>
 long currentTime = System.currentTimeMillis();
 long stopTime = currentTime + attackDurationPerAPI.intValue() * 1000;
 vars.put(&quot;TestStopTime&quot;,&quot;&quot;+stopTime);</stringProp>
+            <stringProp name="TestPlan.comments">Resetting the timer for while loop</stringProp>
           </JSR223Sampler>
           <hashTree/>
         </hashTree>
