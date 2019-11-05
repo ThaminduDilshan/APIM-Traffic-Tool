@@ -12,34 +12,33 @@
       <stringProp name="TestPlan.user_define_classpath"></stringProp>
     </TestPlan>
     <hashTree>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Thread Group" enabled="true">
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Configure the Attack" enabled="true">
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
           <boolProp name="LoopController.continue_forever">false</boolProp>
           <stringProp name="LoopController.loops">1</stringProp>
         </elementProp>
-        <stringProp name="ThreadGroup.num_threads">100</stringProp>
+        <stringProp name="ThreadGroup.num_threads">1</stringProp>
         <stringProp name="ThreadGroup.ramp_time">1</stringProp>
         <boolProp name="ThreadGroup.scheduler">false</boolProp>
         <stringProp name="ThreadGroup.duration"></stringProp>
         <stringProp name="ThreadGroup.delay"></stringProp>
       </ThreadGroup>
       <hashTree>
-        <OnceOnlyController guiclass="OnceOnlyControllerGui" testclass="OnceOnlyController" testname="Once Only Controller" enabled="true"/>
+        <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="JSR223 Sampler" enabled="true">
+          <stringProp name="scriptLanguage">groovy</stringProp>
+          <stringProp name="parameters"></stringProp>
+          <stringProp name="filename"></stringProp>
+          <stringProp name="cacheKey">true</stringProp>
+          <stringProp name="script">SampleResult.setIgnore();</stringProp>
+        </JSR223Sampler>
         <hashTree>
-          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="JSR223 Sampler" enabled="true">
-            <stringProp name="cacheKey">true</stringProp>
-            <stringProp name="filename"></stringProp>
-            <stringProp name="parameters"></stringProp>
-            <stringProp name="script">SampleResult.setIgnore();</stringProp>
+          <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="JSR223 PreProcessor " enabled="true">
             <stringProp name="scriptLanguage">groovy</stringProp>
-          </JSR223Sampler>
-          <hashTree>
-            <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="JSR223 PreProcessor " enabled="true">
-              <stringProp name="cacheKey">true</stringProp>
-              <stringProp name="filename"></stringProp>
-              <stringProp name="parameters"></stringProp>
-              <stringProp name="script">@Grab(&apos;org.yaml:snakeyaml:1.17&apos;)
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="cacheKey">true</stringProp>
+            <stringProp name="script">@Grab(&apos;org.yaml:snakeyaml:1.17&apos;)
 
 import org.yaml.snakeyaml.Yaml;
 import org.apache.jmeter.services.FileServer;
@@ -67,9 +66,6 @@ Map generalConfig = attackConfig.find{it.key==&quot;general_config&quot;}?.value
 List userAgents = generalConfig.find{it.key==&quot;user_agents&quot;}?.value
 String attackDurationPerApi = generalConfig.find{it.key==&quot;attack_duration&quot;}?.value
 Map dosConfig = attackConfig.find{it.key==&quot;DOS_attack&quot;}?.value
-//String attackIP = dosConfig.find{it.key==&quot;ip&quot;}?.value
-//String attackToken = dosConfig.find{it.key==&quot;token&quot;}?.value
-//String attackCookie = dosConfig.find{it.key==&quot;cookie&quot;}?.value
 String scenarioName = generalConfig.find{it.key==&quot;scenario&quot;}?.value
 
 //Parsing user ips,tokens and cookies
@@ -84,7 +80,6 @@ for(line in lines)
 	//ip,cookie,token,apiname
 	User tempUser = new User(userData[2],userData[3],userData[0],userData[1]);
 	userList.add(tempUser);
-	vars.putObject(&quot;user_&quot; + i,tempUser)
 	i++;
 	
 }
@@ -92,31 +87,35 @@ for(line in lines)
 //Creating API instances 
 ArrayList apiList = new ArrayList()
 i = 1;
+Random rand = new Random();
 for(api in apis)
 {
 	API temp = new API(api[&quot;name&quot;],api[&quot;context&quot;],api[&quot;version&quot;].toString(),api[&quot;resources&quot;]);
 	temp.buildUserList(userList);
-	vars.putObject(&quot;api_&quot; + i,temp);
+	// Selecting a random user per API for DOS attack
+	def users = temp.getUserList();
+	User randomUser = users.get(rand.nextInt(users.size()))
+	temp.setSingleUser(randomUser);
 	i++;
 	apiList.add(temp);
 }
 
 
-// Creating JMeter variables
-vars.put(&quot;baseDir&quot;,baseDir);
-vars.put(&quot;gatewayProtocol&quot;, gatewayProtocol);
-vars.put(&quot;gatewayHost&quot;, gatewayHost);
-vars.put(&quot;gatewayServeletPort&quot;, gatewayServeletPort);
-vars.put(&quot;nioPtTransportPort&quot;, nioPtTransportPort);
-//vars.put(&quot;attackIP&quot;,attackIP);
-//vars.put(&quot;attackToken&quot;,attackToken);
-//vars.put(&quot;attackCookie&quot;,attackCookie);
-vars.putObject(&quot;userAgents&quot;,userAgents);
-vars.put(&quot;attackDurationPerApi&quot;,attackDurationPerApi);
+// Creating properties to be used in the threads
+props.put(&quot;baseDir&quot;,baseDir);
+props.put(&quot;gatewayProtocol&quot;, gatewayProtocol);
+props.put(&quot;gatewayHost&quot;, gatewayHost);
+props.put(&quot;gatewayServeletPort&quot;, gatewayServeletPort);
+props.put(&quot;nioPtTransportPort&quot;, nioPtTransportPort);
+props.put(&quot;userAgents&quot;,userAgents);
+props.put(&quot;attackDurationPerApi&quot;,attackDurationPerApi);
+props.put(&quot;apiList&quot;,apiList);
 
-// Defining column names in the data set
+
+
+//Defining column names in the data set
 String logString = &quot;TimeStamp,URL,Connection,Authorization,accept,client-ip,x-forwarded-for,Content-Type,Host,Response Code,User-agent\n&quot;;
-File dataSetCSV = new File(baseDir + &quot;/../../../../dataset/attack/DDOS.csv&quot; );
+File dataSetCSV = new File(baseDir + &quot;/../../../../dataset/attack/DOS.csv&quot; );
 FileWriter fw = new FileWriter(dataSetCSV,false);
 fw.write(logString);
 fw.close();
@@ -126,8 +125,56 @@ fw.close();
 //log.info(gatewayProtocol)
 //log.info( scenario_base_path );
 </stringProp>
+            <stringProp name="TestPlan.comments">Parse configurations, instantiate API and User objects </stringProp>
+          </JSR223PreProcessor>
+          <hashTree/>
+        </hashTree>
+      </hashTree>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Perform the attack" enabled="true">
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+          <stringProp name="LoopController.loops">1</stringProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">100</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
+        <boolProp name="ThreadGroup.scheduler">false</boolProp>
+        <stringProp name="ThreadGroup.duration"></stringProp>
+        <stringProp name="ThreadGroup.delay"></stringProp>
+      </ThreadGroup>
+      <hashTree>
+        <OnceOnlyController guiclass="OnceOnlyControllerGui" testclass="OnceOnlyController" testname="Once Only Controller" enabled="true"/>
+        <hashTree>
+          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="JSR223 Sampler" enabled="true">
+            <stringProp name="cacheKey">true</stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="script">SampleResult.setIgnore();</stringProp>
+            <stringProp name="scriptLanguage">groovy</stringProp>
+          </JSR223Sampler>
+          <hashTree>
+            <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="JSR223 PreProcessor " enabled="true">
+              <stringProp name="cacheKey">true</stringProp>
+              <stringProp name="filename"></stringProp>
+              <stringProp name="parameters"></stringProp>
+              <stringProp name="script">import tools.User;
+import tools.API
+
+// Create a API list local to the thread
+def apiList = props.get(&quot;apiList&quot;); 
+int i = 1;
+for (api in apiList)
+{
+	vars.putObject(&quot;api_&quot; + i,api);
+	i++;
+}
+
+
+//log.info(vars.get(&quot;userAgents&quot;).toString());
+//log.info(gatewayProtocol)
+//log.info( scenario_base_path );
+</stringProp>
               <stringProp name="scriptLanguage">groovy</stringProp>
-              <stringProp name="TestPlan.comments">Read configurations, Make API and User objects</stringProp>
             </JSR223PreProcessor>
             <hashTree/>
           </hashTree>
@@ -137,7 +184,7 @@ fw.close();
           <stringProp name="parameters"></stringProp>
           <stringProp name="filename"></stringProp>
           <stringProp name="cacheKey">true</stringProp>
-          <stringProp name="script">long attackDurationPerAPI = Integer.parseInt(vars.get(&quot;attackDurationPerApi&quot;));
+          <stringProp name="script">long attackDurationPerAPI = Integer.parseInt(props.get(&quot;attackDurationPerApi&quot;));
 long currentTime = System.currentTimeMillis();
 long stopTime = currentTime + attackDurationPerAPI.intValue() * 1000;
 vars.put(&quot;TestStopTime&quot;,&quot;&quot;+stopTime);</stringProp>
@@ -205,15 +252,15 @@ vars.put(&quot;currentAPIVersion&quot;,currentAPI.getVersion());
 vars.putObject(&quot;currentAPIUsers&quot;,currentAPI.getUserList())
 vars.putObject(&quot;currentAPIResources&quot;,currentAPI.getResources())
 
-Random rand = new Random();
+//Random rand = new Random();
 // Selecting a random user per API for DOS attack
-def users = currentAPI.getUserList();
-User randomUser = users.get(rand.nextInt(users.size()))
+//def users = currentAPI.getUserList();
+//User randomUser = users.get(rand.nextInt(users.size()))
 
-vars.put(&quot;randomUserIP&quot;,randomUser.getIp());
-vars.put(&quot;randomUserCookie&quot;,randomUser.getCookie());
-vars.put(&quot;randomUserToken&quot;,randomUser.getToken());
-vars.put(&quot;randomUserApiName&quot;,randomUser.getApiName());
+vars.put(&quot;randomUserIP&quot;,currentAPI.getSingleUser().getIp());
+vars.put(&quot;randomUserCookie&quot;,currentAPI.getSingleUser().getCookie());
+vars.put(&quot;randomUserToken&quot;,currentAPI.getSingleUser().getToken());
+vars.put(&quot;randomUserApiName&quot;,currentAPI.getSingleUser().getApiName());
 
 //def userAgents = vars.getObject(&quot;userAgents&quot;);
 //vars.putObject(&quot;currentUserAgents&quot;,userAgents)
@@ -275,9 +322,10 @@ Random rand = new Random();
 Random rand2 = new Random();
 
 // selecting a random user agent to insert into request header
-def userAgents = vars.getObject(&quot;userAgents&quot;);
+def userAgents = props.get(&quot;userAgents&quot;);
 def randomUserAgent = userAgents.get(rand.nextInt(userAgents.size()));
 vars.put(&quot;randomUserAgent&quot;,randomUserAgent)
+
 
 // selecting a random resource from the API to send a request
 def currentApiResources = vars.getObject(&quot;currentAPIResources&quot;);
@@ -301,9 +349,9 @@ ${__groovy(&quot;${currentAPIResourceMethod}&quot;==&quot;GET&quot;)}</stringPro
                 <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
                   <collectionProp name="Arguments.arguments"/>
                 </elementProp>
-                <stringProp name="HTTPSampler.domain">${gatewayHost}</stringProp>
-                <stringProp name="HTTPSampler.port">${nioPtTransportPort}</stringProp>
-                <stringProp name="HTTPSampler.protocol">${gatewayProtocol}</stringProp>
+                <stringProp name="HTTPSampler.domain">${__property(gatewayHost)}</stringProp>
+                <stringProp name="HTTPSampler.port">${__property(nioPtTransportPort)}</stringProp>
+                <stringProp name="HTTPSampler.protocol">${__property(gatewayProtocol)}</stringProp>
                 <stringProp name="HTTPSampler.contentEncoding"></stringProp>
                 <stringProp name="HTTPSampler.path">${currentAPIContext}/${currentAPIVersion}/${currentAPIResourcePath}</stringProp>
                 <stringProp name="HTTPSampler.method">GET</stringProp>
@@ -367,9 +415,9 @@ ${__groovy(&quot;${currentAPIResourceMethod}&quot;==&quot;POST&quot;)}</stringPr
                 <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
                   <collectionProp name="Arguments.arguments"/>
                 </elementProp>
-                <stringProp name="HTTPSampler.domain">${gatewayHost}</stringProp>
-                <stringProp name="HTTPSampler.port">${nioPtTransportPort}</stringProp>
-                <stringProp name="HTTPSampler.protocol">${gatewayProtocol}</stringProp>
+                <stringProp name="HTTPSampler.domain">${__property(gatewayHost)}</stringProp>
+                <stringProp name="HTTPSampler.port">${__property(nioPtTransportPort)}</stringProp>
+                <stringProp name="HTTPSampler.protocol">${__property(gatewayProtocol)}</stringProp>
                 <stringProp name="HTTPSampler.contentEncoding"></stringProp>
                 <stringProp name="HTTPSampler.path">${currentAPIContext}/${currentAPIVersion}/${currentAPIResourcePath}</stringProp>
                 <stringProp name="HTTPSampler.method">POST</stringProp>
@@ -433,9 +481,9 @@ ${__groovy(&quot;${currentAPIResourceMethod}&quot;==&quot;PUT&quot;)}</stringPro
                 <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
                   <collectionProp name="Arguments.arguments"/>
                 </elementProp>
-                <stringProp name="HTTPSampler.domain">${gatewayHost}</stringProp>
-                <stringProp name="HTTPSampler.port">${nioPtTransportPort}</stringProp>
-                <stringProp name="HTTPSampler.protocol">${gatewayProtocol}</stringProp>
+                <stringProp name="HTTPSampler.domain">${__property(gatewayHost)}</stringProp>
+                <stringProp name="HTTPSampler.port">${__property(nioPtTransportPort)}</stringProp>
+                <stringProp name="HTTPSampler.protocol">${__property(gatewayProtocol)}</stringProp>
                 <stringProp name="HTTPSampler.contentEncoding"></stringProp>
                 <stringProp name="HTTPSampler.path">${currentAPIContext}/${currentAPIVersion}/${currentAPIResourcePath}</stringProp>
                 <stringProp name="HTTPSampler.method">PUT</stringProp>
@@ -499,9 +547,9 @@ ${__groovy(&quot;${currentAPIResourceMethod}&quot;==&quot;DELETE&quot;)}</string
                 <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
                   <collectionProp name="Arguments.arguments"/>
                 </elementProp>
-                <stringProp name="HTTPSampler.domain">${gatewayHost}</stringProp>
-                <stringProp name="HTTPSampler.port">${nioPtTransportPort}</stringProp>
-                <stringProp name="HTTPSampler.protocol">${gatewayProtocol}</stringProp>
+                <stringProp name="HTTPSampler.domain">${__property(gatewayHost)}</stringProp>
+                <stringProp name="HTTPSampler.port">${__property(nioPtTransportPort)}</stringProp>
+                <stringProp name="HTTPSampler.protocol">${__property(gatewayProtocol)}</stringProp>
                 <stringProp name="HTTPSampler.contentEncoding"></stringProp>
                 <stringProp name="HTTPSampler.path">${currentAPIContext}/${currentAPIVersion}/${currentAPIResourcePath}</stringProp>
                 <stringProp name="HTTPSampler.method">DELETE</stringProp>
@@ -565,9 +613,9 @@ ${__groovy(&quot;${currentAPIResourceMethod}&quot;==&quot;PATCH&quot;)}</stringP
                 <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
                   <collectionProp name="Arguments.arguments"/>
                 </elementProp>
-                <stringProp name="HTTPSampler.domain">${gatewayHost}</stringProp>
-                <stringProp name="HTTPSampler.port">${nioPtTransportPort}</stringProp>
-                <stringProp name="HTTPSampler.protocol">${gatewayProtocol}</stringProp>
+                <stringProp name="HTTPSampler.domain">${__property(gatewayHost)}</stringProp>
+                <stringProp name="HTTPSampler.port">${__property(nioPtTransportPort)}</stringProp>
+                <stringProp name="HTTPSampler.protocol">${__property(gatewayProtocol)}</stringProp>
                 <stringProp name="HTTPSampler.contentEncoding"></stringProp>
                 <stringProp name="HTTPSampler.path">${currentAPIContext}/${currentAPIVersion}/${currentAPIResourcePath}</stringProp>
                 <stringProp name="HTTPSampler.method">PATCH</stringProp>
@@ -662,7 +710,7 @@ dataString += userAgent;
 dataString += &quot;\n&quot;;
 
 //writing the string to DOS.csv
-baseDir = vars.get(&quot;baseDir&quot;);
+baseDir = props.get(&quot;baseDir&quot;);
 File dataSetCSV = new File( baseDir + &quot;/../../../../dataset/attack/DOS.csv&quot;);
 FileWriter fw = new FileWriter(dataSetCSV,true);
 fw.write(dataString);
@@ -675,7 +723,7 @@ fw.close();</stringProp>
             <stringProp name="parameters"></stringProp>
             <stringProp name="filename"></stringProp>
             <stringProp name="cacheKey">true</stringProp>
-            <stringProp name="script">long attackDurationPerAPI = Integer.parseInt(vars.get(&quot;attackDurationPerApi&quot;));
+            <stringProp name="script">long attackDurationPerAPI = Integer.parseInt(props.get(&quot;attackDurationPerApi&quot;));
 long currentTime = System.currentTimeMillis();
 long stopTime = currentTime + attackDurationPerAPI.intValue() * 1000;
 vars.put(&quot;TestStopTime&quot;,&quot;&quot;+stopTime);</stringProp>
