@@ -175,7 +175,7 @@ with open(abs_path+'/../../../../dataset/traffic/{}'.format(filename), 'w') as f
     file.write("timestamp,api,access_token,ip_address,cookie,invoke_path,http_method,response_code\n")
 
 # load and set the scenario pool
-scenario_pool = pickle.load(open(abs_path+"/../../data/pickle/user_scenario_pool.sav", "rb"))
+scenario_pool = pickle.load(open(abs_path+"/../../data/runtime_data/user_scenario_pool.sav", "rb"))
 
 # shuffle the pool
 random.shuffle(scenario_pool)

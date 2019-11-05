@@ -434,6 +434,27 @@ vars.put(&quot;b64encryptedValue&quot;,new String(b64encrypted));
                 <stringProp name="shareMode">shareMode.group</stringProp>
               </CSVDataSet>
               <hashTree/>
+              <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="JSR223 PostProcessor" enabled="true">
+                <stringProp name="TestPlan.comments">save created api ids</stringProp>
+                <stringProp name="scriptLanguage">groovy</stringProp>
+                <stringProp name="parameters"></stringProp>
+                <stringProp name="filename"></stringProp>
+                <stringProp name="cacheKey">true</stringProp>
+                <stringProp name="script">import org.apache.jmeter.services.FileServer;
+
+String baseDir = FileServer.getFileServer().getBaseDir();
+
+String api_id = vars.get(&quot;created_API_Id&quot;);
+
+// write each app id to a file
+FileWriter fstream = new FileWriter(baseDir+&quot;/../../data/runtime_data/api_ids.csv&quot;, true);
+BufferedWriter out = new BufferedWriter(fstream);
+out.write(api_id+&quot;\n&quot;);
+out.close();
+fstream.close();
+</stringProp>
+              </JSR223PostProcessor>
+              <hashTree/>
             </hashTree>
             <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Get access token to publish" enabled="true">
               <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
@@ -887,6 +908,26 @@ vars.put(&quot;b64encryptedValue&quot;,new String(b64encrypted));
                 <boolProp name="stopThread">true</boolProp>
                 <stringProp name="shareMode">shareMode.group</stringProp>
               </CSVDataSet>
+              <hashTree/>
+              <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="JSR223 PostProcessor" enabled="true">
+                <stringProp name="scriptLanguage">groovy</stringProp>
+                <stringProp name="parameters"></stringProp>
+                <stringProp name="filename"></stringProp>
+                <stringProp name="cacheKey">true</stringProp>
+                <stringProp name="script">import org.apache.jmeter.services.FileServer;
+
+String baseDir = FileServer.getFileServer().getBaseDir();
+
+String app_id = vars.get(&quot;applicationID&quot;);
+
+// write each app id to a file
+FileWriter fstream = new FileWriter(baseDir+&quot;/../../data/runtime_data/app_ids.csv&quot;, true);
+BufferedWriter out = new BufferedWriter(fstream);
+out.write(app_id+&quot;\n&quot;);
+out.close();
+fstream.close();
+</stringProp>
+              </JSR223PostProcessor>
               <hashTree/>
             </hashTree>
           </hashTree>

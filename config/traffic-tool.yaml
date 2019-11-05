@@ -17,7 +17,7 @@ tool_config:
   no_of_processes: 20
   max_connection_refuse_count: 50
   no_of_data_points: 10000
-  heavy_traffic: false
+  heavy_traffic: true
 
 api_host:
   protocol: https
