@@ -671,7 +671,7 @@ ${__groovy(&quot;${currentAPIResourceMethod}&quot;==&quot;PATCH&quot;)}</stringP
                 <hashTree/>
               </hashTree>
             </hashTree>
-            <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="JSR223 Sampler" enabled="false">
+            <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="JSR223 Sampler" enabled="true">
               <stringProp name="TestPlan.comments">Record the attack dataset</stringProp>
               <stringProp name="scriptLanguage">groovy</stringProp>
               <stringProp name="parameters"></stringProp>
