@@ -81,7 +81,7 @@ func_gen_tokens() {
 }
 
 func_gen_invoke_data() {
-  if [ -e "$(pwd)"/../lib/traffic-tool/data/pickle/user_scenario_pool.sav ];
+  if [ -e "$(pwd)"/../lib/traffic-tool/data/runtime_data/user_scenario_pool.sav ];
   then
     echo "Enter filename (without file extension):"
     read FILENAME
@@ -104,7 +104,7 @@ func_gen_invoke_data() {
 }
 
 func_traffic() {
-  if [ -e "$(pwd)"/../lib/traffic-tool/data/pickle/user_scenario_pool.sav ];
+  if [ -e "$(pwd)"/../lib/traffic-tool/data/runtime_data/user_scenario_pool.sav ];
   then
     echo "Enter filename (without file extension): "
     read FILENAME
