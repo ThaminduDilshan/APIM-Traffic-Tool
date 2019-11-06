@@ -3,7 +3,7 @@ api:
   visibility: PUBLIC
   production_endpoint: https://localhost:9443/am/sample/pizzashack/v1/api/
   sandbox_endpoint: https://localhost:9443/am/sample/pizzashack/v1/api/
-  post_data: {"customerName": "customer_name","delivered": true,"address": "customer_address","pizzaType": "customer_pizza","creditCardNumber": "customer_credit_card","quantity": 0,"orderId": "1"}
+  payload: {"customerName": "customer_name","delivered": true,"address": "customer_address","pizzaType": "customer_pizza","creditCardNumber": "customer_credit_card","quantity": 0,"orderId": "1"}
 
 application:
   throttling_tier: Unlimited
@@ -13,13 +13,13 @@ subscription_tier: Unlimited
 
 scenario_name: scenario_example
 
+api_host:
+  protocol: https
+  ip: 172.17.0.1
+  port: 8243
+
 tool_config:
   no_of_processes: 20
   max_connection_refuse_count: 50
   no_of_data_points: 10000
   heavy_traffic: false
-
-api_host:
-  protocol: https
-  ip: 172.17.0.1
-  port: 8243

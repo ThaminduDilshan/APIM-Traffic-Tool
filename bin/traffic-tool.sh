@@ -8,9 +8,22 @@ func_help() {
   echo "3: generate access tokens"
   echo "4: generate traffic data (without invoking)"
   echo "5: simulate traffic"
-  echo "6: stop traffic tool"
   echo "all: setup scenario and simulate traffic"
+  echo "stop: stop traffic tool"
   echo "clean: cleanup API Manager"
+  # echo "user_details: generate random user details"
+}
+
+# function to generate a set of random user details
+func_gen_user_details() {
+  if command -v python3 &>/dev/null; then
+    python3 "$(pwd)"/../lib/traffic-tool/src/python/gen_user_details.py 0
+  elif command -v python &>/dev/null; then
+    python "$(pwd)"/../lib/traffic-tool/src/python/gen_user_details.py 0
+  else
+    echo "Python 3 is required for the command!"
+    exit 1
+  fi
 }
 
 # function to generate random user details and distribute them according to the example scenario
@@ -260,16 +273,20 @@ case "$1" in
     func_traffic 2>&1 | tee -a "$(pwd)"/../logs/traffic-shell.log
     exit 0
   ;;
-  6)
-    func_stop_traffic 2>&1 | tee -a "$(pwd)"/../logs/traffic-shell.log
-    exit 0
-  ;;
   all)
     func_all 2>&1 | tee -a "$(pwd)"/../logs/traffic-shell.log
     exit 0
   ;;
+  stop)
+    func_stop_traffic 2>&1 | tee -a "$(pwd)"/../logs/traffic-shell.log
+    exit 0
+  ;;
   clean)
     func_cleanup 2>&1 | tee -a "$(pwd)"/../logs/traffic-shell.log
+    exit 0
+  ;;
+  user_details)
+    func_gen_user_details 2>&1 | tee -a "$(pwd)"/../logs/traffic-shell.log
     exit 0
   ;;
   *)
