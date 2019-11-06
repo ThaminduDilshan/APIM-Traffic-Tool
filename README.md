@@ -7,8 +7,12 @@ WSO2 API Manager is a full lifecycle API Management solution which has an API Ga
 ## What is APIM Traffic Tool?
 APIM Traffic Tool allows you to simulate a real world traffic on WSO2 API Manager. This tool is not just a simple request sender, but it also allows you to setup a user scenario in WSO2 API Manager and generate a set of tokens to invoke APIs. Tool is consisting of two main components traffic tool and attack tool. Trafic tool will simulate a real world traffic pattern while attack tool will simulate a given attack on WSO2 API Manager. APIM Traffic Tool can also be used to generate an API invoking traffic dataset and attack dataset for Machine Learning purposes.
 
-## How does Traffic Tool works?
-Tool will allow user to create a set of APIs and Applications in WSO2 API Manager according to a given scenario. Also the tool will signup a set of users in WSO2 carbon and set them with subscriber privileges. These user details are generated randomly by the tool. The users should be distributed among applications according to a scenario and traffic tool will generate access tokens for each user-application combination using the password grant type ([see more](https://docs.wso2.com/display/AM260/Password+Grant)). Then the tool will continuously send traffic to the WSO2 API Manager throughout a user specified time according to the given pattern.
+## How does APIM Traffic Tool Works?
+Tool will allow user to create a set of APIs and Applications in WSO2 API Manager according to a given scenario. Also the tool will signup a set of users in WSO2 carbon and set them with subscriber privileges. These user details are generated randomly by the tool. The users should be distributed among applications according to a scenario and traffic tool will generate access tokens for each user-application combination using the password grant type ([see more](https://docs.wso2.com/display/AM260/Password+Grant)). 
+
+The traffic tool will continuously send traffic to the WSO2 API Manager throughout a user specified time according to the given pattern.
+
+<attack tool will ...>
 
 # Quick Start Guide
 
@@ -22,7 +26,7 @@ Tool will allow user to create a set of APIs and Applications in WSO2 API Manage
 1. Install pip version 3 if not already installed.
 
 1. Install required python packages by running the following command in the project home directory.
-   - `$ pip install -r requirement.txt`
+   - `$ sudo pip install -r requirement.txt`
 
 1. Download and install Apache jmeter version 5.1.1 or higher (http://jmeter.apache.org/download_jmeter.cgi).
 
@@ -53,7 +57,7 @@ Default configurations for WSO2 API Manager and default scenario are given in al
       - `heavy_traffic`: If you want to simulate a heavy traffic, set this value as `true`. Otherwise set it to `false`.
 
 1. Configure the `<TOOL_HOME>/config/attack-tool.yaml` file as stated below (Configurations for the attack script).
-   - $$
+   - <attack tool configs>
 
 ## Using the Traffic Tool
 To use the traffic tool run the following command with the desired argument in a command line inside the `<TOOL_HOME>/bin` folder. To list down available options and their command line arguments, just run the command with the flag -h.
@@ -160,6 +164,13 @@ After simulating a traffic you may want to remove all the created APIs, applicat
 `$ ./traffic-tool.sh clean`
 
 You have to run the steps 1,2,3 and 5 inorder to simulate an API invoking traffic according to the example scenario. If you are simulating for a custom scenario, only run steps 2,3 and 5 after following the given steps under the heading “Adding Custom APIM Scenario”. You can also generate the traffic dataset without actually invoking the API Manager using the step 4 instead of step 5.
+
+## Using the Attack Tool
+To use the attack tool run the following command with the desired argument in a command line inside the `<TOOL_HOME>/bin` folder. To list down available options and their command line arguments, just run the command with the flag -h.
+
+<attack tool commands>
+
+# Additional Details
 
 ## Example Scenario
 APIM Traffic Tool ships with an example API invoking scenario. You can simply setup the environment and let the invoking happen in a few simple steps. Below is the example API invoke scenario used in the Traffic Tool.
