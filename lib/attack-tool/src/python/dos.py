@@ -7,7 +7,7 @@ import time
 from collections import defaultdict
 from datetime import datetime
 from multiprocessing import Pool
-
+from utils.entity_classes import *
 import pandas as pd
 import requests
 # disabling warnings
@@ -16,29 +16,29 @@ import yaml
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-
-# To store user details
-class User:
-    def __init__(self, ip, token, cookie):
-        self.ip = ip
-        self.token = token
-        self.cookie = cookie
-
-
-# To store API details
-class API:
-    def __init__(self, protocol, host, port, context, version, name):
-        self.protocol = protocol
-        self.host = host
-        self.port = port
-        self.context = context
-        self.name = name
-        self.version = version
-        self.resources = defaultdict(list)
-        self.base_url = "{}://{}:{}/{}/{}".format(protocol, host, port, context, version)
-
-    def add_resource(self, method, path):
-        self.resources[method].append(path)
+#
+# # To store user details
+# class User:
+#     def __init__(self, ip, token, cookie):
+#         self.ip = ip
+#         self.token = token
+#         self.cookie = cookie
+#
+#
+# # To store API details
+# class API:
+#     def __init__(self, protocol, host, port, context, version, name):
+#         self.protocol = protocol
+#         self.host = host
+#         self.port = port
+#         self.context = context
+#         self.name = name
+#         self.version = version
+#         self.resources = defaultdict(list)
+#         self.base_url = "{}://{}:{}/{}/{}".format(protocol, host, port, context, version)
+#
+#     def add_resource(self, method, path):
+#         self.resources[method].append(path)
 
 
 # Details of the attack
@@ -268,15 +268,15 @@ def attack():
 
 if __name__ == "__main__":
 
-    with open(os.path.abspath(os.path.join(__file__, "../../conf/config.yaml")), "r") as config_file:
+    with open(os.path.abspath(os.path.join(__file__, "../../../../../config/apim.yaml")), "r") as config_file:
         config_data = yaml.load(config_file, Loader=yaml.FullLoader)
 
     # configurations
     attack_duration_per_api = 5 * 60
     number_of_requests_per_api = 100000
-    protocol = config_data['gateway-url']['protocol']
-    host = config_data['gateway-url']['host']
-    port = config_data['gateway-url']['port']
+    protocol = config_data['management_console']['protocol']
+    host = config_data['management_console']['host']
+    port = config_data['api_manager']['nio_pt_transport_port']
 
     # API Data
     api_list = []
