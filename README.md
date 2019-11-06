@@ -8,7 +8,7 @@ WSO2 API Manager is a full lifecycle API Management solution which has an API Ga
 APIM Traffic Tool allows you to simulate a real world traffic on WSO2 API Manager. This tool is not just a simple request sender, but it also allows you to setup a user scenario in WSO2 API Manager and generate a set of tokens to invoke APIs. Tool is consisting of two main components traffic tool and attack tool. Trafic tool will simulate a real world traffic pattern while attack tool will simulate a given attack on WSO2 API Manager. APIM Traffic Tool can also be used to generate an API invoking traffic dataset and attack dataset for Machine Learning purposes.
 
 ## How does APIM Traffic Tool Works?
-Tool will allow user to create a set of APIs and Applications in WSO2 API Manager according to a given scenario. Also the tool will signup a set of users in WSO2 carbon and set them with subscriber privileges. These user details are generated randomly by the tool. The users should be distributed among applications according to a scenario and traffic tool will generate access tokens for each user-application combination using the password grant type ([see more](https://docs.wso2.com/display/AM260/Password+Grant)). 
+Tool will allow user to create a set of APIs and Applications in WSO2 API Manager according to a given scenario. Also the tool will signup a set of users in WSO2 carbon and set them with subscriber privileges. These user details are generated randomly by the tool. The users should be distributed among applications according to a scenario and traffic tool will generate access tokens for each user-application combination using the password grant type ([see more](https://docs.wso2.com/display/AM260/Password+Grant)).
 
 The traffic tool will continuously send traffic to the WSO2 API Manager throughout a user specified time according to the given pattern.
 
@@ -39,7 +39,7 @@ The traffic tool will continuously send traffic to the WSO2 API Manager througho
 ## Configuring the Tool
 Default configurations for WSO2 API Manager and default scenario are given in all the config files. If you are running WSO2 API Manager on different configurations or using the tool for a custom scenario, you can change the tool configurations as stated below. All configuration files are in the `<TOOL_HOME>/config` folder.
 
-1. Enter correct protocol type, host ip and ports of WSO2 API Manager in the `<TOOL_HOME>/config/apim.yaml` file (Default ports and details can be found at https://docs.wso2.com/display/AM260/Default+Product+Ports).
+1. Enter correct endpoints, protocol type, host ip and ports of WSO2 API Manager in the `<TOOL_HOME>/config/apim.yaml` file (Default ports and details can be found at https://docs.wso2.com/display/AM260/Default+Product+Ports).
 
 1. Add details of each API (name, context, version, resources) under apis section in `<TOOL_HOME>/config/apim.yaml` file.
 
@@ -147,9 +147,9 @@ Enter the scenario name (press enter if default):
 
 Enter your jmeter path (Ex:- /home/user/Documents/apache-jmeter-5.1.1/bin)
 /home/user123/Documents/apache-jmeter-5.1.1/bin
-Enter filename (without file extension): 
+Enter filename (without file extension):
 output
-Enter script execution time in minutes: 
+Enter script execution time in minutes:
 15
 ```
 
@@ -212,10 +212,12 @@ Enter all application-api combinations which the subscriptions should happen. Gi
 
 1. api_invoke_scenario.csv
 This file should be prepared according to your invoke scenario. Each row is for a different user type in the scenario table. A row in the file is in the following format. '$' sign is used as the delimiter. You can add any number of patterns to the list in the format `[no_of_users,http_method,no_of_requests,resource_path]`.
+
 `<application_name>$[[pattern_1],[pattern_2]]`
 
 1. user_generation.csv
 This file contains the user details in the following format. Delimiter for csv is two dollar signs and a space ($$<space>).
+
 `
 <username>, <password>, <first_name>, <last_name>, <organization>, <country>, <email>, <no(land)>, <no(mobile)>, <IM>, <url>
 `

@@ -52,6 +52,7 @@ func_create_scenario() {
     echo "Enter your jmeter path (Ex:- /home/user/Documents/apache-jmeter-5.1.1/bin)"
     read JMPATH
     $JMPATH/jmeter -n -t "$(pwd)"'/../lib/traffic-tool/src/jmeter/create_api_scenario.jmx' -l "$(pwd)"/../logs/jmeter-results-traffic.log -j "$(pwd)"/../logs/jmeter-traffic.log
+    echo "Script execution completed"
   else
     echo "Missing one or more required files in the 'scenario/$SCENARIONAME/' directory"
     exit 1
@@ -72,14 +73,17 @@ func_gen_tokens() {
     echo "Enter your jmeter path (Ex:- /home/user/Documents/apache-jmeter-5.1.1/bin)"
     read JMPATH
     $JMPATH/jmeter -n -t "$(pwd)"'/../lib/traffic-tool/src/jmeter/generate_token_list.jmx' -l "$(pwd)"/../logs/jmeter-results-traffic.log -j "$(pwd)"/../logs/jmeter-traffic.log
+    echo "Token generation completed"
   else
     echo "Missing one or more required files in the 'scenario/$SCENARIONAME/' directory"
     exit 1
   fi
   if command -v python3 &>/dev/null; then
     python3 "$(pwd)"/../lib/traffic-tool/src/python/gen_invoke_scenario.py
+    echo "Script execution completed"
   elif command -v python &>/dev/null; then
     python "$(pwd)"/../lib/traffic-tool/src/python/gen_invoke_scenario.py
+    echo "Script execution completed"
   else
     echo "Python 3 is required for the command!"
     exit 1
@@ -97,9 +101,11 @@ func_gen_invoke_data() {
     if command -v python3 &>/dev/null; then
       nohup python3 "$(pwd)"/../lib/traffic-tool/src/python/gen_invoke_data.py $FILENAME >> "$(pwd)"/../logs/traffic-shell.log 2>&1 &
       echo $! > "$(pwd)"/../data/traffic_tool.pid
+      echo "Data generation script started"
     elif command -v python &>/dev/null; then
       nohup python "$(pwd)"/../lib/traffic-tool/src/python/gen_invoke_data.py $FILENAME >> "$(pwd)"/../logs/traffic-shell.log 2>&1 &
       echo $! > "$(pwd)"/../data/traffic_tool.pid
+      echo "Data generation script started"
     else
       echo "Python 3 is required for the command!"
       exit 1
@@ -123,9 +129,11 @@ func_traffic() {
     if command -v python3 &>/dev/null; then
       nohup python3 "$(pwd)"/../lib/traffic-tool/src/python/invoke_API.py $FILENAME $EXECTIME >> "$(pwd)"/../logs/traffic-shell.log 2>&1 &
       echo $! > "$(pwd)"/../data/traffic_tool.pid
+      echo "Traffic tool started. Wait $EXECTIME minutes to complete the script"
     elif command -v python &>/dev/null; then
       nohup python "$(pwd)"/../lib/traffic-tool/src/python/invoke_API.py $FILENAME $EXECTIME >> "$(pwd)"/../logs/traffic-shell.log 2>&1 &
       echo $! > "$(pwd)"/../data/traffic_tool.pid
+      echo "Traffic tool started. Wait $EXECTIME minutes to complete the script"
     else
       echo "Python 3 is required for the command!"
       exit 1
@@ -181,9 +189,11 @@ func_all() {
     then
       rm -f "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/api_invoke_key_secret.csv
       $JMPATH/jmeter -n -t "$(pwd)"'/../lib/traffic-tool/src/jmeter/create_api_scenario.jmx' -l "$(pwd)"/../logs/jmeter-results-traffic.log -j "$(pwd)"/../logs/jmeter-traffic.log
+      echo "Scenario created in APIM"
 
       rm -f "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/api_invoke_tokens.csv
       $JMPATH/jmeter -n -t "$(pwd)"'/../lib/traffic-tool/src/jmeter/generate_token_list.jmx' -l "$(pwd)"/../logs/jmeter-results-traffic.log -j "$(pwd)"/../logs/jmeter-traffic.log
+      echo "Token generation completed"
 
       python3 "$(pwd)"/../lib/traffic-tool/src/python/gen_invoke_scenario.py
 
@@ -192,6 +202,7 @@ func_all() {
         chmod +x "$(pwd)"/../lib/traffic-tool/src/python/invoke_API.py
         nohup python3 "$(pwd)"/../lib/traffic-tool/src/python/invoke_API.py $FILENAME $EXECTIME >> "$(pwd)"/../logs/traffic-shell.log 2>&1 &
         echo $! > "$(pwd)"/../data/traffic_tool.pid
+        echo "Traffic tool started. Wait $EXECTIME minutes to complete the script"
       else
         echo "Missing token file in the 'data/scenario/$SCENARIONAME/' directory"
         exit 1
@@ -207,9 +218,11 @@ func_all() {
     then
       rm -f "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/api_invoke_key_secret.csv
       $JMPATH/jmeter -n -t "$(pwd)"'/../lib/traffic-tool/src/jmeter/create_api_scenario.jmx' -l "$(pwd)"/../logs/jmeter-results-traffic.log -j "$(pwd)"/../logs/jmeter-traffic.log
+      echo "Scenario created in APIM"
 
       rm -f "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/api_invoke_tokens.csv
       $JMPATH/jmeter -n -t "$(pwd)"'/../lib/traffic-tool/src/jmeter/generate_token_list.jmx' -l "$(pwd)"/../logs/jmeter-results-traffic.log -j "$(pwd)"/../logs/jmeter-traffic.log
+      echo "Token generation completed"
 
       python "$(pwd)"/../lib/traffic-tool/src/python/gen_invoke_scenario.py
 
@@ -218,6 +231,7 @@ func_all() {
         chmod +x "$(pwd)"/../lib/traffic-tool/src/python/invoke_API.py
         nohup python "$(pwd)"/../lib/traffic-tool/src/python/invoke_API.py $FILENAME $EXECTIME >> "$(pwd)"/../logs/traffic-shell.log 2>&1 &
         echo $! > "$(pwd)"/../data/traffic_tool.pid
+        echo "Traffic tool started. Wait $EXECTIME minutes to complete the script"
       else
         echo "Missing token file in the 'data/scenario/$SCENARIONAME/' directory"
         exit 1
@@ -241,6 +255,7 @@ func_cleanup() {
     $JMPATH/jmeter -n -t "$(pwd)"'/../lib/traffic-tool/src/jmeter/cleanup_api_manager.jmx' -l "$(pwd)"/../logs/jmeter-results-traffic.log -j "$(pwd)"/../logs/jmeter-traffic.log
     rm "$(pwd)"/../lib/traffic-tool/data/runtime_data/api_ids.csv
     rm "$(pwd)"/../lib/traffic-tool/data/runtime_data/app_ids.csv
+    echo "Script execution completed"
   else
     echo "Missing required data files"
     exit 1

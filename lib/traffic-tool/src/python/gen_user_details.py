@@ -25,6 +25,8 @@ scenario_name = traffic_config['scenario_name']
 # get username and password for a given user (username and password are considered as the same)
 def genUnPw(firstname:str, num:int):
     username = firstname.lower() + str(num)
+    if len(username) < 5:
+        username += '123'
     usernames.append(username)
     return username
 
