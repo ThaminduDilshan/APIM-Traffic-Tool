@@ -60,7 +60,7 @@ def loadConfig():
     host_ip = traffic_config['api_host']['ip']
     host_port = traffic_config['api_host']['port']
     scenario_name = traffic_config['scenario_name']
-    post_data = traffic_config['api']['post_data']
+    post_data = traffic_config['api']['payload']
 
 
 '''

@@ -49,6 +49,14 @@ Yaml ymlparser = new Yaml()
 
 Map config = ymlparser.load((baseDir+&quot;/../../../../config/apim.yaml&quot; as File).text)
 
+Map apim_endpoints = config.find{it.key==&quot;apim_endpoints&quot;}?.value
+String token_registration_endpoint = apim_endpoints.find{it.key==&quot;token_registration_endpoint&quot;}?.value
+String token_endpoint = apim_endpoints.find{it.key==&quot;token_endpoint&quot;}?.value
+String publisher_api_endpoint = apim_endpoints.find{it.key==&quot;publisher_api&quot;}?.value
+String store_application_endpoint = apim_endpoints.find{it.key==&quot;store_application&quot;}?.value
+String store_subs_endpoint = apim_endpoints.find{it.key==&quot;store_subscription&quot;}?.value
+String user_signup_endpoint = apim_endpoints.find{it.key==&quot;user_signup&quot;}?.value
+
 Map managementConsole = config.find{it.key==&quot;management_console&quot;}?.value
 String gatewayProtocol = managementConsole.find{it.key==&quot;protocol&quot;}?.value
 String gatewayHost = managementConsole.find{it.key==&quot;host&quot;}?.value
@@ -74,6 +82,13 @@ String appThrottlingTier = applicationconf.find{it.key==&quot;throttling_tier&qu
 String tokenValidityPeriod = applicationconf.find{it.key==&quot;token_validity_period&quot;}?.value
 
 String subscriptionTier = trafficConfig.find{it.key==&quot;subscription_tier&quot;}?.value
+
+props.put(&quot;token_registration_endpoint&quot;, token_registration_endpoint);
+props.put(&quot;token_endpoint&quot;, token_endpoint);
+props.put(&quot;publisher_api_endpoint&quot;, publisher_api_endpoint);
+props.put(&quot;store_application_endpoint&quot;, store_application_endpoint);
+props.put(&quot;store_subs_endpoint&quot;, store_subs_endpoint);
+props.put(&quot;user_signup_endpoint&quot;, user_signup_endpoint);
 
 props.put(&quot;gatewayProtocol&quot;, gatewayProtocol);
 props.put(&quot;gatewayHost&quot;, gatewayHost);
@@ -119,7 +134,10 @@ props.put(&quot;subscriptionTier&quot;, subscriptionTier);
             <stringProp name="parameters"></stringProp>
             <stringProp name="filename"></stringProp>
             <stringProp name="cacheKey">false</stringProp>
-            <stringProp name="script">
+            <stringProp name="script">vars.put(&quot;token_registration_endpoint&quot;, props.get(&quot;token_registration_endpoint&quot;));
+vars.put(&quot;token_endpoint&quot;, props.get(&quot;token_endpoint&quot;));
+vars.put(&quot;publisher_api_endpoint&quot;, props.get(&quot;publisher_api_endpoint&quot;));
+
 vars.put(&quot;gatewayProtocol&quot;, props.get(&quot;gatewayProtocol&quot;));
 vars.put(&quot;gatewayHost&quot;, props.get(&quot;gatewayHost&quot;));
 vars.put(&quot;gatewayServeletPort&quot;, props.get(&quot;gatewayServeletPortHTTPS&quot;));
@@ -153,7 +171,7 @@ vars.put(&quot;visibility&quot;, props.get(&quot;apiVisibility&quot;));
           <stringProp name="HTTPSampler.port">${gatewayServeletPort}</stringProp>
           <stringProp name="HTTPSampler.protocol">${gatewayProtocol}</stringProp>
           <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-          <stringProp name="HTTPSampler.path">/client-registration/v0.14/register</stringProp>
+          <stringProp name="HTTPSampler.path">${token_registration_endpoint}</stringProp>
           <stringProp name="HTTPSampler.method">POST</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
           <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -210,7 +228,7 @@ vars.put(&quot;visibility&quot;, props.get(&quot;apiVisibility&quot;));
           <stringProp name="HTTPSampler.port">${nioPtTransportPort}</stringProp>
           <stringProp name="HTTPSampler.protocol">${gatewayProtocol}</stringProp>
           <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-          <stringProp name="HTTPSampler.path">/token</stringProp>
+          <stringProp name="HTTPSampler.path">${token_endpoint}</stringProp>
           <stringProp name="HTTPSampler.method">POST</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
           <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -359,7 +377,7 @@ vars.put(&quot;b64encryptedValue&quot;,new String(b64encrypted));
               <stringProp name="HTTPSampler.port">${gatewayServeletPort}</stringProp>
               <stringProp name="HTTPSampler.protocol">${gatewayProtocol}</stringProp>
               <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-              <stringProp name="HTTPSampler.path">/api/am/publisher/v0.14/apis</stringProp>
+              <stringProp name="HTTPSampler.path">${publisher_api_endpoint}</stringProp>
               <stringProp name="HTTPSampler.method">POST</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
               <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -471,7 +489,7 @@ fstream.close();
               <stringProp name="HTTPSampler.port">${nioPtTransportPort}</stringProp>
               <stringProp name="HTTPSampler.protocol">${gatewayProtocol}</stringProp>
               <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-              <stringProp name="HTTPSampler.path">/token</stringProp>
+              <stringProp name="HTTPSampler.path">${token_endpoint}</stringProp>
               <stringProp name="HTTPSampler.method">POST</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
               <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -554,7 +572,7 @@ vars.put(&quot;b64encryptedValue&quot;,new String(b64encrypted));
               <stringProp name="HTTPSampler.port">${gatewayServeletPort}</stringProp>
               <stringProp name="HTTPSampler.protocol">${gatewayProtocol}</stringProp>
               <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-              <stringProp name="HTTPSampler.path">/api/am/publisher/v0.14/apis/change-lifecycle?apiId=${created_API_Id}&amp;action=Publish</stringProp>
+              <stringProp name="HTTPSampler.path">${publisher_api_endpoint}/change-lifecycle?apiId=${created_API_Id}&amp;action=Publish</stringProp>
               <stringProp name="HTTPSampler.method">POST</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
               <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -658,7 +676,10 @@ vars.put(&quot;b64encryptedValue&quot;,new String(b64encrypted));
               <stringProp name="parameters"></stringProp>
               <stringProp name="filename"></stringProp>
               <stringProp name="cacheKey">false</stringProp>
-              <stringProp name="script">
+              <stringProp name="script">vars.put(&quot;token_registration_endpoint&quot;, props.get(&quot;token_registration_endpoint&quot;));
+vars.put(&quot;token_endpoint&quot;, props.get(&quot;token_endpoint&quot;));
+vars.put(&quot;store_application_endpoint&quot;, props.get(&quot;store_application_endpoint&quot;));
+
 vars.put(&quot;gatewayProtocol&quot;, props.get(&quot;gatewayProtocol&quot;));
 vars.put(&quot;gatewayHost&quot;, props.get(&quot;gatewayHost&quot;));
 vars.put(&quot;gatewayServeletPort&quot;, props.get(&quot;gatewayServeletPortHTTPS&quot;));
@@ -691,7 +712,7 @@ vars.put(&quot;throttlingTier&quot;, props.get(&quot;appThrottlingTier&quot;));
             <stringProp name="HTTPSampler.port">${gatewayServeletPort}</stringProp>
             <stringProp name="HTTPSampler.protocol">${gatewayProtocol}</stringProp>
             <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-            <stringProp name="HTTPSampler.path">/client-registration/v0.14/register</stringProp>
+            <stringProp name="HTTPSampler.path">${token_registration_endpoint}</stringProp>
             <stringProp name="HTTPSampler.method">POST</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
             <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -748,7 +769,7 @@ vars.put(&quot;throttlingTier&quot;, props.get(&quot;appThrottlingTier&quot;));
             <stringProp name="HTTPSampler.port">${nioPtTransportPort}</stringProp>
             <stringProp name="HTTPSampler.protocol">${gatewayProtocol}</stringProp>
             <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-            <stringProp name="HTTPSampler.path">/token</stringProp>
+            <stringProp name="HTTPSampler.path">${token_endpoint}</stringProp>
             <stringProp name="HTTPSampler.method">POST</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
             <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -848,7 +869,7 @@ vars.put(&quot;b64encryptedValue&quot;,new String(b64encrypted));
               <stringProp name="HTTPSampler.port">${gatewayServeletPort}</stringProp>
               <stringProp name="HTTPSampler.protocol">${gatewayProtocol}</stringProp>
               <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-              <stringProp name="HTTPSampler.path">api/am/store/v0.14/applications</stringProp>
+              <stringProp name="HTTPSampler.path">${store_application_endpoint}</stringProp>
               <stringProp name="HTTPSampler.method">POST</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
               <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -996,7 +1017,12 @@ fstream.close();
             <stringProp name="parameters"></stringProp>
             <stringProp name="filename"></stringProp>
             <stringProp name="cacheKey">false</stringProp>
-            <stringProp name="script">
+            <stringProp name="script">vars.put(&quot;token_registration_endpoint&quot;, props.get(&quot;token_registration_endpoint&quot;));
+vars.put(&quot;token_endpoint&quot;, props.get(&quot;token_endpoint&quot;));
+vars.put(&quot;publisher_api_endpoint&quot;, props.get(&quot;publisher_api_endpoint&quot;));
+vars.put(&quot;store_application_endpoint&quot;, props.get(&quot;store_application_endpoint&quot;));
+vars.put(&quot;store_subs_endpoint&quot;, props.get(&quot;store_subs_endpoint&quot;));
+
 vars.put(&quot;gatewayProtocol&quot;, props.get(&quot;gatewayProtocol&quot;));
 vars.put(&quot;gatewayHost&quot;, props.get(&quot;gatewayHost&quot;));
 vars.put(&quot;gatewayServeletPort&quot;, props.get(&quot;gatewayServeletPortHTTPS&quot;));
@@ -1031,7 +1057,7 @@ vars.put(&quot;subscriptionTier&quot;, props.get(&quot;subscriptionTier&quot;));
             <stringProp name="HTTPSampler.port">${gatewayServeletPort}</stringProp>
             <stringProp name="HTTPSampler.protocol">${gatewayProtocol}</stringProp>
             <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-            <stringProp name="HTTPSampler.path">/client-registration/v0.14/register</stringProp>
+            <stringProp name="HTTPSampler.path">${token_registration_endpoint}</stringProp>
             <stringProp name="HTTPSampler.method">POST</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
             <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -1088,7 +1114,7 @@ vars.put(&quot;subscriptionTier&quot;, props.get(&quot;subscriptionTier&quot;));
             <stringProp name="HTTPSampler.port">${nioPtTransportPort}</stringProp>
             <stringProp name="HTTPSampler.protocol">${gatewayProtocol}</stringProp>
             <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-            <stringProp name="HTTPSampler.path">/token</stringProp>
+            <stringProp name="HTTPSampler.path">${token_endpoint}</stringProp>
             <stringProp name="HTTPSampler.method">POST</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
             <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -1188,7 +1214,7 @@ vars.put(&quot;b64encryptedValue&quot;,new String(b64encrypted));
               <stringProp name="HTTPSampler.port">${gatewayServeletPort}</stringProp>
               <stringProp name="HTTPSampler.protocol">${gatewayProtocol}</stringProp>
               <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-              <stringProp name="HTTPSampler.path">/api/am/store/v0.14/apis?limit=200</stringProp>
+              <stringProp name="HTTPSampler.path">${publisher_api_endpoint}?limit=200</stringProp>
               <stringProp name="HTTPSampler.method">GET</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
               <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -1245,7 +1271,7 @@ vars.put(&quot;API_name&quot;,new String(api_name));
               <stringProp name="HTTPSampler.port">${gatewayServeletPort}</stringProp>
               <stringProp name="HTTPSampler.protocol">${gatewayProtocol}</stringProp>
               <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-              <stringProp name="HTTPSampler.path">/api/am/store/v0.14/applications?limit=200</stringProp>
+              <stringProp name="HTTPSampler.path">${store_application_endpoint}?limit=200</stringProp>
               <stringProp name="HTTPSampler.method">GET</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
               <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -1313,7 +1339,7 @@ vars.put(&quot;App_name&quot;,new String(app_name));
               <stringProp name="HTTPSampler.port">${gatewayServeletPort}</stringProp>
               <stringProp name="HTTPSampler.protocol">${gatewayProtocol}</stringProp>
               <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-              <stringProp name="HTTPSampler.path">/api/am/store/v0.14/subscriptions</stringProp>
+              <stringProp name="HTTPSampler.path">${store_subs_endpoint}</stringProp>
               <stringProp name="HTTPSampler.method">POST</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
               <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -1406,7 +1432,8 @@ log.info(&quot;API name: &quot; + api_name + &quot;API id: &quot; + api_id);
             <stringProp name="parameters"></stringProp>
             <stringProp name="filename"></stringProp>
             <stringProp name="cacheKey">false</stringProp>
-            <stringProp name="script">
+            <stringProp name="script">vars.put(&quot;user_signup_endpoint&quot;, props.get(&quot;user_signup_endpoint&quot;));
+
 vars.put(&quot;gatewayProtocol&quot;, props.get(&quot;gatewayProtocol&quot;));
 vars.put(&quot;gatewayHost&quot;, props.get(&quot;gatewayHost&quot;));
 vars.put(&quot;gatewayServeletPortHTTP&quot;, props.get(&quot;gatewayServeletPortHTTP&quot;));
@@ -1457,7 +1484,7 @@ vars.put(&quot;gatewayServeletPortHTTP&quot;, props.get(&quot;gatewayServeletPor
               <stringProp name="HTTPSampler.port">${gatewayServeletPortHTTP}</stringProp>
               <stringProp name="HTTPSampler.protocol">http</stringProp>
               <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-              <stringProp name="HTTPSampler.path">store/site/blocks/user/sign-up/ajax/user-add.jag</stringProp>
+              <stringProp name="HTTPSampler.path">${user_signup_endpoint}</stringProp>
               <stringProp name="HTTPSampler.method">POST</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
               <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -1583,6 +1610,10 @@ log.info(&quot;&quot;)
             <stringProp name="cacheKey">false</stringProp>
             <stringProp name="script">String final_string = &quot;&quot;;
 
+vars.put(&quot;token_registration_endpoint&quot;, props.get(&quot;token_registration_endpoint&quot;));
+vars.put(&quot;token_endpoint&quot;, props.get(&quot;token_endpoint&quot;));
+vars.put(&quot;store_application_endpoint&quot;, props.get(&quot;store_application_endpoint&quot;));
+
 vars.put(&quot;gatewayProtocol&quot;, props.get(&quot;gatewayProtocol&quot;));
 vars.put(&quot;gatewayHost&quot;, props.get(&quot;gatewayHost&quot;));
 vars.put(&quot;gatewayServeletPort&quot;, props.get(&quot;gatewayServeletPortHTTPS&quot;));
@@ -1616,7 +1647,7 @@ vars.put(&quot;final_string&quot;, final_string);
           <stringProp name="HTTPSampler.port">${gatewayServeletPort}</stringProp>
           <stringProp name="HTTPSampler.protocol">${gatewayProtocol}</stringProp>
           <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-          <stringProp name="HTTPSampler.path">/client-registration/v0.14/register</stringProp>
+          <stringProp name="HTTPSampler.path">${token_registration_endpoint}</stringProp>
           <stringProp name="HTTPSampler.method">POST</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
           <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -1689,7 +1720,7 @@ vars.put(&quot;final_string&quot;, final_string);
             <stringProp name="HTTPSampler.port">${nioPtTransportPort}</stringProp>
             <stringProp name="HTTPSampler.protocol">${gatewayProtocol}</stringProp>
             <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-            <stringProp name="HTTPSampler.path">/token</stringProp>
+            <stringProp name="HTTPSampler.path">${token_endpoint}</stringProp>
             <stringProp name="HTTPSampler.method">POST</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
             <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -1773,7 +1804,7 @@ vars.put(&quot;b64encryptedValue&quot;,new String(b64encrypted));
             <stringProp name="HTTPSampler.port">${gatewayServeletPort}</stringProp>
             <stringProp name="HTTPSampler.protocol">${gatewayProtocol}</stringProp>
             <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-            <stringProp name="HTTPSampler.path">/api/am/store/v0.14/applications</stringProp>
+            <stringProp name="HTTPSampler.path">${store_application_endpoint}</stringProp>
             <stringProp name="HTTPSampler.method">GET</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
             <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -1832,7 +1863,7 @@ vars.put(&quot;b64encryptedValue&quot;,new String(b64encrypted));
             <stringProp name="HTTPSampler.port">${gatewayServeletPort}</stringProp>
             <stringProp name="HTTPSampler.protocol">${gatewayProtocol}</stringProp>
             <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-            <stringProp name="HTTPSampler.path">api/am/store/v0.14/applications/generate-keys?applicationId=${application_id}</stringProp>
+            <stringProp name="HTTPSampler.path">${store_application_endpoint}/generate-keys?applicationId=${application_id}</stringProp>
             <stringProp name="HTTPSampler.method">POST</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
             <boolProp name="HTTPSampler.auto_redirects">false</boolProp>

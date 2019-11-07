@@ -1,3 +1,12 @@
+apim_endpoints:
+  token_registration_endpoint: /client-registration/v0.14/register
+  token_endpoint: /token
+  publisher_api: /api/am/publisher/v0.14/apis
+  store_application: /api/am/store/v0.14/applications
+  store_subscription: /api/am/store/v0.14/subscriptions
+  user_signup: /store/site/blocks/user/sign-up/ajax/user-add.jag
+  delete_user: /services/RemoteUserStoreManagerService.RemoteUserStoreManagerServiceHttpsSoap11Endpoint
+
 management_console:
   protocol: https
   host: 172.17.0.1
@@ -14,7 +23,7 @@ apis:
 #    resources:
 #     - method: GET
 #       path: menu
-      
+
 
 #  - name: places
 #    context: places
@@ -38,7 +47,7 @@ apis:
 #    resources:
 #      - method: GET
 #        path: menu
-      
+
 #  - name: weather
 #    context: weather
 #    version: 1

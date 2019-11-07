@@ -49,6 +49,9 @@ Yaml ymlparser = new Yaml()
 
 Map config = ymlparser.load((baseDir+&quot;/../../../../config/apim.yaml&quot; as File).text)
 
+Map apim_endpoints = config.find{it.key==&quot;apim_endpoints&quot;}?.value
+String token_endpoint = apim_endpoints.find{it.key==&quot;token_endpoint&quot;}?.value
+
 Map managementConsole = config.find{it.key==&quot;management_console&quot;}?.value
 String gatewayProtocol = managementConsole.find{it.key==&quot;protocol&quot;}?.value
 String gatewayHost = managementConsole.find{it.key==&quot;host&quot;}?.value
@@ -76,6 +79,7 @@ props.put(&quot;sandbox_endpoint&quot;, sandbox_endpoint);
 props.put(&quot;apiThrottlingTier&quot;, apiThrottlingTier);
 props.put(&quot;apiVisibility&quot;, apiVisibility);
 props.put(&quot;scenarioBasePath&quot;, scenario_base_path);
+props.put(&quot;token_endpoint&quot;, token_endpoint);
 </stringProp>
           </JSR223PreProcessor>
           <hashTree/>
@@ -109,6 +113,8 @@ props.put(&quot;scenarioBasePath&quot;, scenario_base_path);
             <stringProp name="cacheKey">false</stringProp>
             <stringProp name="script">
 String final_string = &quot;&quot;;
+
+vars.put(&quot;token_endpoint&quot;, props.get(&quot;token_endpoint&quot;));
 
 vars.put(&quot;gatewayProtocol&quot;, props.get(&quot;gatewayProtocol&quot;));
 vars.put(&quot;gatewayHost&quot;, props.get(&quot;gatewayHost&quot;));
@@ -154,7 +160,7 @@ vars.put(&quot;final_string&quot;, final_string);
             <stringProp name="HTTPSampler.port">${nioPtTransportPort}</stringProp>
             <stringProp name="HTTPSampler.protocol">${gatewayProtocol}</stringProp>
             <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-            <stringProp name="HTTPSampler.path">/token</stringProp>
+            <stringProp name="HTTPSampler.path">${token_endpoint}</stringProp>
             <stringProp name="HTTPSampler.method">POST</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
             <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
