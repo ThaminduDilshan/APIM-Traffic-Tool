@@ -1,11 +1,23 @@
-apim_endpoints:
-  token_registration_endpoint: /client-registration/v0.14/register
+apim_version: 3.0
+# apim_version: 2.6
+
+apim_endpoints:   # 3.0
+  token_registration_endpoint: /client-registration/v0.15/register
   token_endpoint: /token
-  publisher_api: /api/am/publisher/v0.14/apis
-  store_application: /api/am/store/v0.14/applications
-  store_subscription: /api/am/store/v0.14/subscriptions
-  user_signup: /store/site/blocks/user/sign-up/ajax/user-add.jag
+  publisher_api: /api/am/publisher/v0.15/apis
+  store_application: /api/am/store/v0.15/applications
+  store_subscription: /api/am/store/v0.15/subscriptions
+  user_signup: /api/identity/user/v1.0/me
   delete_user: /services/RemoteUserStoreManagerService.RemoteUserStoreManagerServiceHttpsSoap11Endpoint
+
+# apim_endpoints:   # 2.6
+#   token_registration_endpoint: /client-registration/v0.14/register
+#   token_endpoint: /token
+#   publisher_api: /api/am/publisher/v0.14/apis
+#   store_application: /api/am/store/v0.14/applications
+#   store_subscription: /api/am/store/v0.14/subscriptions
+#   user_signup: /store/site/blocks/user/sign-up/ajax/user-add.jag
+#   delete_user: /services/RemoteUserStoreManagerService.RemoteUserStoreManagerServiceHttpsSoap11Endpoint
 
 management_console:
   protocol: https
