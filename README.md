@@ -213,16 +213,16 @@ Enter all application-api combinations which the subscriptions should happen. Gi
 1. api_invoke_scenario.csv
 This file should be prepared according to your invoke scenario. Each row is for a different user type in the scenario table. A row in the file is in the following format. '$' sign is used as the delimiter. You can add any number of patterns to the list in the format `[no_of_users,http_method,no_of_requests,resource_path]`.
 
-`<application_name>$[[pattern_1],[pattern_2]]`
+   `<application_name>$[[pattern_1],[pattern_2]]`
 
 1. user_generation.csv
 This file contains the user details in the following format. Delimiter for csv is two dollar signs and a space ($$<space>).
 
-`
-<username>, <password>, <first_name>, <last_name>, <organization>, <country>, <email>, <no(land)>, <no(mobile)>, <IM>, <url>
-`
-This file can be generated for 100 random users by running the following command.
-`$ ./traffic-tool.sh user_details`
+   `<username>, <password>, <first_name>, <last_name>, <organization>, <country>, <email>, <no(land)>, <no(mobile)>, <IM>, <url>`
+
+   This file can be generated for 100 random users by running the following command.
+   
+   `$ ./traffic-tool.sh user_details`
 
 1. user_app_pattern.csv
 Above generated users should be distributed among applications inorder to generate access tokens. This file contains all username-application_name combinations seperated by a new line character ('\n'). Csv delimiter is the comma (',').
