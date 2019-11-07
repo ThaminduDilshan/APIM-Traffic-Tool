@@ -40,24 +40,34 @@ apis:
         path: menu
       - method: POST
         path: order
+      - method: DELETE
+        path: order
 
-#  - name: map
-#    context: map
-#    version: 1
-#    resources:
-#      - method: GET
-#        path: menu
+  - name: map
+    context: map
+    version: 1
+    resources:
+      - method: GET
+        path: menu
+      - method: DELETE
+        path: order
 
-#  - name: weather
-#    context: weather
-#    version: 1
-#    resources:
-#      - method: GET
-#        path: menu
+  - name: weather
+    context: weather
+    version: 1
+    resources:
+      - method: GET
+        path: menu
+      - method: DELETE
+        path: order
 
-#  - name: cricket
-#    context: cricket
-#    version: 1
-#    resources:
-#      - method: GET
-#        path: menu
+
+  - name: cricket
+    context: cricket
+    version: 1
+    resources:
+      - method: GET
+        path: menu
+      - method: DELETE
+        path: order
+
