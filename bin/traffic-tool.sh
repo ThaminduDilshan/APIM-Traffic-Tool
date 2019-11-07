@@ -40,17 +40,12 @@ func_gen_example_scenario() {
 
 # function to create APIs, applications and users according to the scenario in APIM
 func_create_scenario() {
-  echo "Enter the scenario name (press enter if default):"
-  read SCENARIONAME
-  if [ -z "$SCENARIONAME" ];
-    then
-      SCENARIONAME="scenario_example"
-  fi
+  SCENARIONAME=$(cat "$(pwd)"/../config/traffic-tool.yaml | shyaml get-value scenario_name)
+  JMPATH=$(cat "$(pwd)"/../config/user-settings.yaml | shyaml get-value path_variables.jmeter)
+
   if [ -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/api_creation.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/api_creation_swagger.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/app_creation.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/app_api_subscription_admin.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/user_generation.csv ];
   then
     rm -f "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/api_invoke_key_secret.csv
-    echo "Enter your jmeter path (Ex:- /home/user/Documents/apache-jmeter-5.1.1/bin)"
-    read JMPATH
     $JMPATH/jmeter -n -t "$(pwd)"'/../lib/traffic-tool/src/jmeter/create_api_scenario.jmx' -l "$(pwd)"/../logs/jmeter-results-traffic.log -j "$(pwd)"/../logs/jmeter-traffic.log
     echo "Script execution completed"
   else
@@ -61,17 +56,12 @@ func_create_scenario() {
 
 # function to generate invoke tokens and the user scenario pool
 func_gen_tokens() {
-  echo "Enter the scenario name (press enter if default):"
-  read SCENARIONAME
-  if [ -z "$SCENARIONAME" ];
-    then
-      SCENARIONAME="scenario_example"
-  fi
+  SCENARIONAME=$(cat "$(pwd)"/../config/traffic-tool.yaml | shyaml get-value scenario_name)
+  JMPATH=$(cat "$(pwd)"/../config/user-settings.yaml | shyaml get-value path_variables.jmeter)
+
   if [ -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/app_creation.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/user_app_pattern.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/api_invoke_key_secret.csv ];
   then
     rm -f "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/api_invoke_tokens.csv
-    echo "Enter your jmeter path (Ex:- /home/user/Documents/apache-jmeter-5.1.1/bin)"
-    read JMPATH
     $JMPATH/jmeter -n -t "$(pwd)"'/../lib/traffic-tool/src/jmeter/generate_token_list.jmx' -l "$(pwd)"/../logs/jmeter-results-traffic.log -j "$(pwd)"/../logs/jmeter-traffic.log
     echo "Token generation completed"
   else
@@ -169,18 +159,13 @@ func_stop_traffic() {
 # function to generate random user details, generate user distribution, create example scenario, generate access tokens
 # and simulate the traffic from a single command
 func_all() {
-  echo "Enter the scenario name (press enter if default):"
-  read SCENARIONAME
-  if [ -z "$SCENARIONAME" ];
-    then
-      SCENARIONAME="scenario_example"
-  fi
-  echo "Enter your jmeter path (Ex:- /home/user/Documents/apache-jmeter-5.1.1/bin)"
-  read JMPATH
   echo "Enter filename (without file extension): "
   read FILENAME
   echo "Enter script execution time in minutes: "
   read EXECTIME
+
+  SCENARIONAME=$(cat "$(pwd)"/../config/traffic-tool.yaml | shyaml get-value scenario_name)
+  JMPATH=$(cat "$(pwd)"/../config/user-settings.yaml | shyaml get-value path_variables.jmeter)
 
   if command -v python3 &>/dev/null; then
     python3 "$(pwd)"/../lib/traffic-tool/src/python/gen_user_details.py 1
@@ -250,11 +235,11 @@ func_all() {
 func_cleanup() {
   if [ -e "$(pwd)"/../lib/traffic-tool/data/runtime_data/api_ids.csv -a -e "$(pwd)"/../lib/traffic-tool/data/runtime_data/app_ids.csv ];
   then
-    echo "Enter your jmeter path (Ex:- /home/user/Documents/apache-jmeter-5.1.1/bin)"
-    read JMPATH
+    JMPATH=$(cat "$(pwd)"/../config/user-settings.yaml | shyaml get-value path_variables.jmeter)
+
     $JMPATH/jmeter -n -t "$(pwd)"'/../lib/traffic-tool/src/jmeter/cleanup_api_manager.jmx' -l "$(pwd)"/../logs/jmeter-results-traffic.log -j "$(pwd)"/../logs/jmeter-traffic.log
-    rm "$(pwd)"/../lib/traffic-tool/data/runtime_data/api_ids.csv
-    rm "$(pwd)"/../lib/traffic-tool/data/runtime_data/app_ids.csv
+    > "$(pwd)"/../lib/traffic-tool/data/runtime_data/api_ids.csv
+    > "$(pwd)"/../lib/traffic-tool/data/runtime_data/app_ids.csv
     echo "Script execution completed"
   else
     echo "Missing required data files"
