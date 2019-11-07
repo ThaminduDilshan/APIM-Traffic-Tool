@@ -1,3 +1,6 @@
+# apim_version: 3.0
+apim_version: 2.6
+
 apim_endpoints:
   token_registration_endpoint: /client-registration/v0.14/register
   token_endpoint: /token

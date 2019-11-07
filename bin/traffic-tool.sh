@@ -3,15 +3,15 @@
 # help function to print help commands when invalid arguments are given
 func_help() {
   echo "Traffic Tool Options"
-  echo "1: generate example scenario"
-  echo "2: create scenario in APIM"
-  echo "3: generate access tokens"
-  echo "4: generate traffic data (without invoking)"
-  echo "5: simulate traffic"
-  echo "all: setup scenario and simulate traffic"
-  echo "stop: stop traffic tool"
-  echo "clean: cleanup API Manager"
-  # echo "user_details: generate random user details"
+  echo "1: Generate data for example scenario"
+  echo "2: Create scenario in APIM"
+  echo "3: Generate access tokens"
+  echo "4: Generate traffic data (without invoking)"
+  echo "5: Simulate traffic"
+  echo "all: Setup scenario and simulate traffic"
+  echo "stop: Stop traffic tool"
+  echo "clean: Cleanup scenario data in API Manager"
+  # echo "user_details: Generate random user details"
 }
 
 # function to generate a set of random user details

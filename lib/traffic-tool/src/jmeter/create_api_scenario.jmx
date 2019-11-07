@@ -49,6 +49,8 @@ Yaml ymlparser = new Yaml()
 
 Map config = ymlparser.load((baseDir+&quot;/../../../../config/apim.yaml&quot; as File).text)
 
+String apim_version = config.find{it.key==&quot;apim_version&quot;}?.value
+
 Map apim_endpoints = config.find{it.key==&quot;apim_endpoints&quot;}?.value
 String token_registration_endpoint = apim_endpoints.find{it.key==&quot;token_registration_endpoint&quot;}?.value
 String token_endpoint = apim_endpoints.find{it.key==&quot;token_endpoint&quot;}?.value
@@ -83,6 +85,7 @@ String tokenValidityPeriod = applicationconf.find{it.key==&quot;token_validity_p
 
 String subscriptionTier = trafficConfig.find{it.key==&quot;subscription_tier&quot;}?.value
 
+props.put(&quot;apim_version&quot;, apim_version);
 props.put(&quot;token_registration_endpoint&quot;, token_registration_endpoint);
 props.put(&quot;token_endpoint&quot;, token_endpoint);
 props.put(&quot;publisher_api_endpoint&quot;, publisher_api_endpoint);
@@ -1432,75 +1435,83 @@ log.info(&quot;API name: &quot; + api_name + &quot;API id: &quot; + api_id);
             <stringProp name="parameters"></stringProp>
             <stringProp name="filename"></stringProp>
             <stringProp name="cacheKey">false</stringProp>
-            <stringProp name="script">vars.put(&quot;user_signup_endpoint&quot;, props.get(&quot;user_signup_endpoint&quot;));
+            <stringProp name="script">vars.put(&quot;apim_version&quot;, props.get(&quot;apim_version&quot;));
+vars.put(&quot;user_signup_endpoint&quot;, props.get(&quot;user_signup_endpoint&quot;));
 
 vars.put(&quot;gatewayProtocol&quot;, props.get(&quot;gatewayProtocol&quot;));
 vars.put(&quot;gatewayHost&quot;, props.get(&quot;gatewayHost&quot;));
 vars.put(&quot;gatewayServeletPortHTTP&quot;, props.get(&quot;gatewayServeletPortHTTP&quot;));
+vars.put(&quot;gatewayServeletPortHTTPS&quot;, props.get(&quot;gatewayServeletPortHTTPS&quot;));
 </stringProp>
           </JSR223PreProcessor>
           <hashTree/>
         </hashTree>
         <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Create users" enabled="true"/>
         <hashTree>
-          <WhileController guiclass="WhileControllerGui" testclass="WhileController" testname="While Controller" enabled="true">
-            <stringProp name="WhileController.condition">${username}</stringProp>
-          </WhileController>
+          <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If Controller (APIM 2.6)" enabled="true">
+            <stringProp name="IfController.condition">${__groovy(&quot;${apim_version}&quot;!=&quot;3.0&quot;)}</stringProp>
+            <boolProp name="IfController.evaluateAll">false</boolProp>
+            <boolProp name="IfController.useExpression">true</boolProp>
+          </IfController>
           <hashTree>
-            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Sign up a new user" enabled="true">
-              <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
-                <collectionProp name="Arguments.arguments">
-                  <elementProp name="action" elementType="HTTPArgument">
-                    <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                    <stringProp name="Argument.value">addUser</stringProp>
-                    <stringProp name="Argument.metadata">=</stringProp>
-                    <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                    <stringProp name="Argument.name">action</stringProp>
-                  </elementProp>
-                  <elementProp name="username" elementType="HTTPArgument">
-                    <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                    <stringProp name="Argument.value">${username}</stringProp>
-                    <stringProp name="Argument.metadata">=</stringProp>
-                    <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                    <stringProp name="Argument.name">username</stringProp>
-                  </elementProp>
-                  <elementProp name="password" elementType="HTTPArgument">
-                    <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                    <stringProp name="Argument.value">${password}</stringProp>
-                    <stringProp name="Argument.metadata">=</stringProp>
-                    <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                    <stringProp name="Argument.name">password</stringProp>
-                  </elementProp>
-                  <elementProp name="allFieldsValues" elementType="HTTPArgument">
-                    <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                    <stringProp name="Argument.value">${fields}</stringProp>
-                    <stringProp name="Argument.metadata">=</stringProp>
-                    <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                    <stringProp name="Argument.name">allFieldsValues</stringProp>
-                  </elementProp>
-                </collectionProp>
-              </elementProp>
-              <stringProp name="HTTPSampler.domain">${gatewayHost}</stringProp>
-              <stringProp name="HTTPSampler.port">${gatewayServeletPortHTTP}</stringProp>
-              <stringProp name="HTTPSampler.protocol">http</stringProp>
-              <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-              <stringProp name="HTTPSampler.path">${user_signup_endpoint}</stringProp>
-              <stringProp name="HTTPSampler.method">POST</stringProp>
-              <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
-              <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
-              <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
-              <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
-              <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
-              <stringProp name="HTTPSampler.connect_timeout"></stringProp>
-              <stringProp name="HTTPSampler.response_timeout"></stringProp>
-            </HTTPSamplerProxy>
+            <WhileController guiclass="WhileControllerGui" testclass="WhileController" testname="While Controller" enabled="true">
+              <stringProp name="WhileController.condition">${username}</stringProp>
+            </WhileController>
             <hashTree>
-              <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="JSR223 PreProcessor" enabled="true">
-                <stringProp name="scriptLanguage">groovy</stringProp>
-                <stringProp name="parameters"></stringProp>
-                <stringProp name="filename"></stringProp>
-                <stringProp name="cacheKey">true</stringProp>
-                <stringProp name="script">String firstname = vars.get(&quot;firstname&quot;);
+              <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Sign up a new user" enabled="true">
+                <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+                  <collectionProp name="Arguments.arguments">
+                    <elementProp name="action" elementType="HTTPArgument">
+                      <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                      <stringProp name="Argument.value">addUser</stringProp>
+                      <stringProp name="Argument.metadata">=</stringProp>
+                      <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                      <stringProp name="Argument.name">action</stringProp>
+                    </elementProp>
+                    <elementProp name="username" elementType="HTTPArgument">
+                      <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                      <stringProp name="Argument.value">${username}</stringProp>
+                      <stringProp name="Argument.metadata">=</stringProp>
+                      <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                      <stringProp name="Argument.name">username</stringProp>
+                    </elementProp>
+                    <elementProp name="password" elementType="HTTPArgument">
+                      <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                      <stringProp name="Argument.value">${password}</stringProp>
+                      <stringProp name="Argument.metadata">=</stringProp>
+                      <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                      <stringProp name="Argument.name">password</stringProp>
+                    </elementProp>
+                    <elementProp name="allFieldsValues" elementType="HTTPArgument">
+                      <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                      <stringProp name="Argument.value">${fields}</stringProp>
+                      <stringProp name="Argument.metadata">=</stringProp>
+                      <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                      <stringProp name="Argument.name">allFieldsValues</stringProp>
+                    </elementProp>
+                  </collectionProp>
+                </elementProp>
+                <stringProp name="HTTPSampler.domain">${gatewayHost}</stringProp>
+                <stringProp name="HTTPSampler.port">${gatewayServeletPortHTTP}</stringProp>
+                <stringProp name="HTTPSampler.protocol">http</stringProp>
+                <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+                <stringProp name="HTTPSampler.path">${user_signup_endpoint}</stringProp>
+                <stringProp name="HTTPSampler.method">POST</stringProp>
+                <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+                <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+                <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+                <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+                <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+                <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+                <stringProp name="HTTPSampler.response_timeout"></stringProp>
+              </HTTPSamplerProxy>
+              <hashTree>
+                <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="JSR223 PreProcessor" enabled="true">
+                  <stringProp name="scriptLanguage">groovy</stringProp>
+                  <stringProp name="parameters"></stringProp>
+                  <stringProp name="filename"></stringProp>
+                  <stringProp name="cacheKey">true</stringProp>
+                  <stringProp name="script">String firstname = vars.get(&quot;firstname&quot;);
 String lastname = vars.get(&quot;lastname&quot;);
 String organization = vars.get(&quot;organization&quot;);
 String country = vars.get(&quot;country&quot;);
@@ -1517,30 +1528,123 @@ vars.put(&quot;fields&quot;, new String(fields));
 log.info(&quot;Creating user: &quot;+firstname +&quot; &quot;+lastname)
 log.info(&quot;&quot;)
 </stringProp>
-              </JSR223PreProcessor>
-              <hashTree/>
-              <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="CSV Data Set Config" enabled="true">
-                <stringProp name="filename">${__BeanShell(props.get(&quot;scenarioBasePath&quot;))}/data/user_generation.csv</stringProp>
-                <stringProp name="fileEncoding">UTF-8</stringProp>
-                <stringProp name="variableNames">username,password,firstname,lastname,organization,country,email,land,mobile,IM,url</stringProp>
-                <boolProp name="ignoreFirstLine">false</boolProp>
-                <stringProp name="delimiter">$$ </stringProp>
-                <boolProp name="quotedData">false</boolProp>
-                <boolProp name="recycle">false</boolProp>
-                <boolProp name="stopThread">true</boolProp>
-                <stringProp name="shareMode">shareMode.group</stringProp>
-              </CSVDataSet>
-              <hashTree/>
-              <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
-                <collectionProp name="Asserion.test_strings">
-                  <stringProp name="49586">200</stringProp>
-                </collectionProp>
-                <stringProp name="Assertion.custom_message"></stringProp>
-                <stringProp name="Assertion.test_field">Assertion.response_code</stringProp>
-                <boolProp name="Assertion.assume_success">false</boolProp>
-                <intProp name="Assertion.test_type">16</intProp>
-              </ResponseAssertion>
-              <hashTree/>
+                </JSR223PreProcessor>
+                <hashTree/>
+                <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="CSV Data Set Config" enabled="true">
+                  <stringProp name="filename">${__BeanShell(props.get(&quot;scenarioBasePath&quot;))}/data/user_generation.csv</stringProp>
+                  <stringProp name="fileEncoding">UTF-8</stringProp>
+                  <stringProp name="variableNames">username,password,firstname,lastname,organization,country,email,land,mobile,IM,url</stringProp>
+                  <boolProp name="ignoreFirstLine">false</boolProp>
+                  <stringProp name="delimiter">$$ </stringProp>
+                  <boolProp name="quotedData">false</boolProp>
+                  <boolProp name="recycle">false</boolProp>
+                  <boolProp name="stopThread">true</boolProp>
+                  <stringProp name="shareMode">shareMode.group</stringProp>
+                </CSVDataSet>
+                <hashTree/>
+                <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+                  <collectionProp name="Asserion.test_strings">
+                    <stringProp name="49586">200</stringProp>
+                  </collectionProp>
+                  <stringProp name="Assertion.custom_message"></stringProp>
+                  <stringProp name="Assertion.test_field">Assertion.response_code</stringProp>
+                  <boolProp name="Assertion.assume_success">false</boolProp>
+                  <intProp name="Assertion.test_type">16</intProp>
+                </ResponseAssertion>
+                <hashTree/>
+              </hashTree>
+            </hashTree>
+          </hashTree>
+          <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If Controller (APIM 3.0)" enabled="true">
+            <stringProp name="IfController.condition">${__groovy(&quot;${apim_version}&quot;==&quot;3.0&quot;)}</stringProp>
+            <boolProp name="IfController.evaluateAll">false</boolProp>
+            <boolProp name="IfController.useExpression">true</boolProp>
+          </IfController>
+          <hashTree>
+            <WhileController guiclass="WhileControllerGui" testclass="WhileController" testname="While Controller" enabled="true">
+              <stringProp name="WhileController.condition">${username}</stringProp>
+            </WhileController>
+            <hashTree>
+              <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Sign up a new user" enabled="true">
+                <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+                <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+                  <collectionProp name="Arguments.arguments">
+                    <elementProp name="" elementType="HTTPArgument">
+                      <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                      <stringProp name="Argument.value">{&#xd;
+	&quot;user&quot;: {&#xd;
+		&quot;username&quot;: &quot;${username}&quot;,&#xd;
+		&quot;realm&quot;: &quot;PRIMARY&quot;, &#xd;
+		&quot;password&quot;: &quot;${password}&quot;,&#xd;
+		&quot;claims&quot;: [&#xd;
+				{&quot;uri&quot;: &quot;http://wso2.org/claims/givenname&quot;,&quot;value&quot;: &quot;${firstname}&quot; },&#xd;
+				{&quot;uri&quot;: &quot;http://wso2.org/claims/emailaddress&quot;,&quot;value&quot;: &quot;${email}&quot;},&#xd;
+				{&quot;uri&quot;: &quot;http://wso2.org/claims/lastname&quot;,&quot;value&quot;: &quot;${lastname}&quot;},&#xd;
+				{&quot;uri&quot;: &quot;http://wso2.org/claims/mobile&quot;,&quot;value&quot;: &quot;${mobile}&quot;},&#xd;
+				{&quot;uri&quot;: &quot;http://wso2.org/claims/organization&quot;,&quot;value&quot;: &quot;${organization}&quot; },&#xd;
+				{&quot;uri&quot;: &quot;http://wso2.org/claims/telephone&quot;,&quot;value&quot;: &quot;${land}&quot; },&#xd;
+				{&quot;uri&quot;: &quot;http://wso2.org/claims/country&quot;,&quot;value&quot;: &quot;${country}&quot; },&#xd;
+				{&quot;uri&quot;: &quot;http://wso2.org/claims/url&quot;,&quot;value&quot;: &quot;${url}&quot; },&#xd;
+				{&quot;uri&quot;: &quot;http://wso2.org/claims/im&quot;,&quot;value&quot;: &quot;${IM}&quot; }&#xd;
+			]&#xd;
+	},&#xd;
+	&quot;properties&quot;: []&#xd;
+}</stringProp>
+                      <stringProp name="Argument.metadata">=</stringProp>
+                    </elementProp>
+                  </collectionProp>
+                </elementProp>
+                <stringProp name="HTTPSampler.domain">${gatewayHost}</stringProp>
+                <stringProp name="HTTPSampler.port">${gatewayServeletPortHTTPS}</stringProp>
+                <stringProp name="HTTPSampler.protocol">https</stringProp>
+                <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+                <stringProp name="HTTPSampler.path">${user_signup_endpoint}</stringProp>
+                <stringProp name="HTTPSampler.method">POST</stringProp>
+                <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+                <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+                <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+                <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+                <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+                <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+                <stringProp name="HTTPSampler.response_timeout"></stringProp>
+              </HTTPSamplerProxy>
+              <hashTree>
+                <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+                  <collectionProp name="HeaderManager.headers">
+                    <elementProp name="" elementType="Header">
+                      <stringProp name="Header.name">Authorization</stringProp>
+                      <stringProp name="Header.value">Basic YWRtaW46YWRtaW4=</stringProp>
+                    </elementProp>
+                    <elementProp name="" elementType="Header">
+                      <stringProp name="Header.name">Content-Type</stringProp>
+                      <stringProp name="Header.value">application/json</stringProp>
+                    </elementProp>
+                  </collectionProp>
+                </HeaderManager>
+                <hashTree/>
+                <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="CSV Data Set Config" enabled="true">
+                  <stringProp name="filename">${__BeanShell(props.get(&quot;scenarioBasePath&quot;))}/data/user_generation.csv</stringProp>
+                  <stringProp name="fileEncoding">UTF-8</stringProp>
+                  <stringProp name="variableNames">username,password,firstname,lastname,organization,country,email,land,mobile,IM,url</stringProp>
+                  <boolProp name="ignoreFirstLine">false</boolProp>
+                  <stringProp name="delimiter">$$ </stringProp>
+                  <boolProp name="quotedData">false</boolProp>
+                  <boolProp name="recycle">false</boolProp>
+                  <boolProp name="stopThread">true</boolProp>
+                  <stringProp name="shareMode">shareMode.group</stringProp>
+                </CSVDataSet>
+                <hashTree/>
+                <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+                  <collectionProp name="Asserion.test_strings">
+                    <stringProp name="49587">201</stringProp>
+                  </collectionProp>
+                  <stringProp name="Assertion.custom_message"></stringProp>
+                  <stringProp name="Assertion.test_field">Assertion.response_code</stringProp>
+                  <boolProp name="Assertion.assume_success">false</boolProp>
+                  <intProp name="Assertion.test_type">16</intProp>
+                </ResponseAssertion>
+                <hashTree/>
+              </hashTree>
             </hashTree>
           </hashTree>
         </hashTree>
