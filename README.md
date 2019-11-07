@@ -41,50 +41,50 @@ Default configurations for WSO2 API Manager and default scenario are given in al
 
 1. Add your jmeter path in the `<TOOL_HOME>/config/user-settings.yaml` file.
 
-1. Enter correct API Manager version (please state as 2.6 or 3.0), endpoints, protocol type, host ip and ports of WSO2 API Manager in the `<TOOL_HOME>/config/apim.yaml` file (Default ports and details can be found at https://docs.wso2.com/display/AM260/Default+Product+Ports).
+1. Enter correct API Manager version (please state as `2.6` or `3.0`), endpoints, protocol type, host ip and ports of WSO2 API Manager in the `<TOOL_HOME>/config/apim.yaml` file (Default ports and details can be found at https://docs.wso2.com/display/AM260/Default+Product+Ports).
 
-```
-Endpoints for WSO2 API Manager 2.6.0
+   ```
+   Endpoints for WSO2 API Manager 2.6.0
 
-token_registration_endpoint: /client-registration/v0.14/register
-token_endpoint: /token
-publisher_api: /api/am/publisher/v0.14/apis
-store_application: /api/am/store/v0.14/applications
-store_subscription: /api/am/store/v0.14/subscriptions
-user_signup: /store/site/blocks/user/sign-up/ajax/user-add.jag
-delete_user: /services/RemoteUserStoreManagerService.RemoteUserStoreManagerServiceHttpsSoap11Endpoint
+   token_registration_endpoint: /client-registration/v0.14/register
+   token_endpoint: /token
+   publisher_api: /api/am/publisher/v0.14/apis
+   store_application: /api/am/store/v0.14/applications
+   store_subscription: /api/am/store/v0.14/subscriptions
+   user_signup: /store/site/blocks/user/sign-up/ajax/user-add.jag
+   delete_user: /services/RemoteUserStoreManagerService.RemoteUserStoreManagerServiceHttpsSoap11Endpoint
 
-Endpoints for WSO2 API Manager 3.0.0
+   Endpoints for WSO2 API Manager 3.0.0
 
-token_registration_endpoint: /client-registration/v0.15/register
-token_endpoint: /token
-publisher_api: /api/am/publisher/v0.15/apis
-store_application: /api/am/store/v0.15/applications
-store_subscription: /api/am/store/v0.15/subscriptions
-user_signup: /api/identity/user/v1.0/me
-delete_user: /services/RemoteUserStoreManagerService.RemoteUserStoreManagerServiceHttpsSoap11Endpoint
-```
+   token_registration_endpoint: /client-registration/v0.15/register
+   token_endpoint: /token
+   publisher_api: /api/am/publisher/v0.15/apis
+   store_application: /api/am/store/v0.15/applications
+   store_subscription: /api/am/store/v0.15/subscriptions
+   user_signup: /api/identity/user/v1.0/me
+   delete_user: /services/RemoteUserStoreManagerService.RemoteUserStoreManagerServiceHttpsSoap11Endpoint
+   ```
 
 1. Add details of each API (name, context, version, resources) under apis section in `<TOOL_HOME>/config/apim.yaml` file.
 
-```
-Example Usage
+   ```
+   Example Usage
 
-apis:
- - name: news
-   context: news
-   version: 1
-   resources:
-    - method: GET
-      path: menu
+   apis:
+    - name: news
+      context: news
+      version: 1
+      resources:
+       - method: GET
+         path: menu
 
- - name: places
-   context: places
-   version: 1
-   resources:
-     - method: GET
-       path: menu
-```
+    - name: places
+      context: places
+      version: 1
+      resources:
+        - method: GET
+          path: menu
+   ```
 
 1. Configure the `<TOOL_HOME>/config/traffic-tool.yaml` file as stated below (Configurations for the traffic script).
    - Enter throttling tier, api visibility, production and sandbox endpoints for the APIs under api section (APIs are created using these configurations).
