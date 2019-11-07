@@ -100,8 +100,12 @@ Default configurations for WSO2 API Manager and default scenario are given in al
       - `heavy_traffic`: If you want to simulate a heavy traffic, set this value as `true`. Otherwise set it to `false`.
 
 1. Configure the `<TOOL_HOME>/config/attack-tool.yaml` file as stated below (Configurations for the attack script).
-   - <attack tool configs>
-
+   - `general_config` contains the configurations which are common to every attack type.
+        - `user_agents`: User agents which are used to invoke the API requests. The attack tool will randomly select a user agent from the list. 
+        - `attack_duration`: Runtime of the attack tool in seconds. (In DOS and DDOS attacks, this is the attack duration per API)
+        - `scenario`: Name of the scenario.
+        - `payloads`: A list of payloads that could be attached to the request body. The tool will randomly select a payload from the specified list.
+   - `attacks` contains the specific configurations for the attack types.
 ## Using the Traffic Tool
 To use the traffic tool run the following command with the desired argument in a command line inside the `<TOOL_HOME>/bin` folder. To list down available options and their command line arguments, just run the command with the flag -h.
 
