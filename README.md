@@ -39,6 +39,8 @@ The traffic tool will continuously send traffic to the WSO2 API Manager througho
 ## Configuring the Tool
 Default configurations for WSO2 API Manager and default scenario are given in all the config files. If you are running WSO2 API Manager on different configurations or using the tool for a custom scenario, you can change the tool configurations as stated below. All configuration files are in the `<TOOL_HOME>/config` folder.
 
+1. Add your jmeter path in the `<TOOL_HOME>/config/user-settings.yaml` file.
+
 1. Enter correct endpoints, protocol type, host ip and ports of WSO2 API Manager in the `<TOOL_HOME>/config/apim.yaml` file (Default ports and details can be found at https://docs.wso2.com/display/AM260/Default+Product+Ports).
 
 1. Add details of each API (name, context, version, resources) under apis section in `<TOOL_HOME>/config/apim.yaml` file.
@@ -83,14 +85,10 @@ Traffic tool allows you to generate a set of random user details and distribute 
 `$ ./traffic-tool.sh 1`
 
 #### 2. Create Example Scenario in WSO2 API Manager
-Traffic tool is capable of creating APIs, applications, subscribe them and signup a set of users in WSO2 API Manager according to the given scenario. Simply run the shell script with the argument 2. You will be prompted for the scenario name and jmeter path. Enter the path of the jmeter bin folder. If you are using the default scenario, just press `Enter` when prompted.
+Traffic tool is capable of creating APIs, applications, subscribe them and signup a set of users in WSO2 API Manager according to the given scenario. Simply run the shell script with the argument 2.
 
 ```
 $ ./traffic-tool.sh 2
-Enter the scenario name (press enter if default):
-
-Enter your jmeter path (Ex:- /home/user/Documents/apache-jmeter-5.1.1/bin)
-/home/user123/Documents/apache-jmeter-5.1.1/bin
 ```
 
 Please make sure you don't have any errors in the shell (Error count should be zero). If you encountered with errors, it is recommended to run the `clean` command and rerun the above command.
@@ -108,14 +106,10 @@ Tidying up ...    @ Wed Nov 06 11:04:22 IST 2019 (1573018462316)
 ```
 
 #### 3. Generate Access Tokens
-API consumers require access tokens in order to access resources. Run the shell script with the argument 3 to generate a set of access tokens for all user-application combinations. Tokens will be saved in scenario/<scenario_name>/api_invoke_tokens.csv file with ‘,’ as the delimiter. You will be prompted for the scenario name and jmeter path. Enter the path of the jmeter bin folder. If you are using the default scenario, just press `Enter` when prompted.
+API consumers require access tokens in order to access resources. Run the shell script with the argument 3 to generate a set of access tokens for all user-application combinations. Tokens will be saved in scenario/<scenario_name>/api_invoke_tokens.csv file with ‘,’ as the delimiter.
 
 ```
 $ ./traffic-tool.sh 3
-Enter the scenario name (press enter if default):
-
-Enter your jmeter path (Ex:- /home/user/Documents/apache-jmeter-5.1.1/bin)
-/home/user123/Documents/apache-jmeter-5.1.1/bin
 ```
 
 #### 4. Generate the Traffic Dataset without Invoking
@@ -143,10 +137,6 @@ APIM Traffic Tool allows you to simply run the steps 1,2,3 and 5 from a single c
 
 ```
 $ ./traffic-tool.sh all
-Enter the scenario name (press enter if default):
-
-Enter your jmeter path (Ex:- /home/user/Documents/apache-jmeter-5.1.1/bin)
-/home/user123/Documents/apache-jmeter-5.1.1/bin
 Enter filename (without file extension):
 output
 Enter script execution time in minutes:
