@@ -1,46 +1,22 @@
-
 import multiprocessing
-
 import os
 import pickle
 import time
-
 import yaml
 from faker import Factory
 import string
-import random
 from datetime import datetime
-
-
 from utils import util_methods
-
 import ipaddress
 import random
-
 from utils.util_methods import generate_biased_random
 
 
-def init(ctr, fg, time):
-    """
-    Initialize globals variables in a process memory space when the process pool is created
-
-    """
-    global counter, flag, start_time
-    counter = ctr
-    flag = fg
-    start_time = time
-
-
-def set_flag(val):
-    """
-    Set the flag value which is used for a exit condition for the script
-    :param val: an integer value
-    :return: none
-    """
-    flag.value = val
-
-
 def generate_unique_ip():
+    """
+    Returns a unique ip address
+    :return: an unique ip
+    """
     global fake_generator, current_ips
     # temp_ip = fake_generator.ipv4()
     random.seed()
@@ -54,15 +30,24 @@ def generate_unique_ip():
 
 
 def generate_cookie():
+    """
+    generates a random cookie
+    :return: a randomly generated cookie
+    """
     letters_and_digits = string.ascii_lowercase + string.digits
     cookie = 'JSESSIONID='
     cookie += ''.join(random.choice(letters_and_digits) for ch in range(31))
     return cookie
 
 
-def handler_time(scenario):
-    global attack_duration, protocol, host, port, payloads, user_agents
-    if datetime.now().timestamp() <= start_time.value + attack_duration:
+def handler_scenario(scenario):
+    """
+    Execute scenarios from the scenario pool
+    :param scenario: A list containing a scenario
+    :return: none
+    """
+    global attack_duration, protocol, host, port, payloads, user_agents, start_time
+    if datetime.now().timestamp() <= start_time + attack_duration:
         context = scenario[1]
         version = scenario[2]
         resource_path = scenario[3]
@@ -78,11 +63,11 @@ def handler_time(scenario):
         random_payload = random.choice(payloads)
 
         for i in range(request_target):
-            if datetime.now().timestamp() <= start_time.value + attack_duration:
-                response = util_methods.send_simple_request(request_path, method, token, random_ip, random_cookie, random_user_agent,payload=random_payload)
+            if datetime.now().timestamp() <= start_time + attack_duration:
+                response = util_methods.send_simple_request(request_path, method, token, random_ip, random_cookie, random_user_agent, payload=random_payload)
                 request_string = "{},{},{},{},{},{},{}".format(datetime.now(), request_path, method, token, random_ip, random_cookie, response.status_code)
                 util_methods.log_request("../../../../../../dataset/attack/stolen_token.csv", request_string, "a")
-                counter.value += 1
+
                 print("Request sent with token: %s" % token, flush=True)
 
             time.sleep(generate_biased_random(0, 5, 2))
@@ -111,18 +96,14 @@ if __name__ == '__main__':
     fake_generator = Factory.create()
     current_ips = []
 
-    #
-    start_time = multiprocessing.Value('f', datetime.now().timestamp())
-    counter = multiprocessing.Value('i', 0)
-    flag = multiprocessing.Value('i', 0)
+    start_time = datetime.now().timestamp()
 
-    #
     print("-------------------------------- Stolen Token Attack started -------------------------------- ")
     util_methods.log_request("../../../../../../dataset/attack/stolen_token.csv", "Timestamp, Request path, Method,Access Token, IP Address, Cookie, Response Code", "w")
 
-    p = multiprocessing.Pool(processes=20, initializer=init, initargs=(counter, flag, start_time))
-    while datetime.now().timestamp() <= start_time.value + attack_duration:
-        p.map(handler_time, scenario_pool)
+    p = multiprocessing.Pool(processes=20)
+    while datetime.now().timestamp() <= start_time + attack_duration:
+        p.map(handler_scenario, scenario_pool)
     p.close()
     p.join()
 
