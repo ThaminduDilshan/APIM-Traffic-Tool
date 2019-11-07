@@ -41,7 +41,7 @@ Default configurations for WSO2 API Manager and default scenario are given in al
 
 1. Add your jmeter path in the `<TOOL_HOME>/config/user-settings.yaml` file.
 
-1. Enter correct endpoints, protocol type, host ip and ports of WSO2 API Manager in the `<TOOL_HOME>/config/apim.yaml` file (Default ports and details can be found at https://docs.wso2.com/display/AM260/Default+Product+Ports).
+1. Enter correct API Manager version (please state as 2.6 or 3.0), endpoints, protocol type, host ip and ports of WSO2 API Manager in the `<TOOL_HOME>/config/apim.yaml` file (Default ports and details can be found at https://docs.wso2.com/display/AM260/Default+Product+Ports).
 
 ```
 Endpoints for WSO2 API Manager 2.6.0
