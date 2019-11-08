@@ -116,7 +116,7 @@ Default configurations for WSO2 API Manager and default scenario are given in al
    - Set the attack duration in seconds using `attack_duration`. (Note: For DOS and DDOS attacks, attack duration is defined per API) 
    - Enter the name of the scenario for `scenario`.
    - Append, modify or remove payloads from the list under `payloads` section. These payloads are used in the bodies of **POST**,**PUT** and **PATCH** requests.
-   - Set minimum and maximum request scalars under `abnormal_token_usage`. This will be used to scale the normal traffic inorder to generate attack traffic for simulating abnormal token usage attack.
+   - Set minimum and maximum request scalars under `abnormal_token_usage`. These will be used to scale the normal traffic inorder to generate attack traffic for simulating abnormal token usage attack.
    
 ## Using the Traffic Tool
 To use the traffic tool run the following command with the desired argument in a command line inside the `<TOOL_HOME>/bin` folder. To list down available options and their command line arguments, just run the command with the flag -h.
