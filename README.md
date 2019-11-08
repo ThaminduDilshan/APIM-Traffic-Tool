@@ -12,7 +12,18 @@ Tool will allow user to create a set of APIs and Applications in WSO2 API Manage
 
 The traffic tool will continuously send traffic to the WSO2 API Manager throughout a user specified time according to the given pattern.
 
-<attack tool will ...>
+The attack tool will attack WSO2 API Manager throughout a user specified time. Attack tool is capable of simulating following attack types.
+
+##### 1. DOS Attack
+
+##### 2. DDOS Attack
+
+##### 3. Abnormal token usage attack
+
+##### 4. Extreme delete attack
+
+##### 5. Stolen token attack
+
 
 # Quick Start Guide
 
@@ -203,7 +214,18 @@ You have to run the steps 1,2,3 and 5 inorder to simulate an API invoking traffi
 ## Using the Attack Tool
 To use the attack tool run the following command with the desired argument in a command line inside the `<TOOL_HOME>/bin` folder. To list down available options and their command line arguments, just run the command with the flag -h.
 
-<attack tool commands>
+`$ ./attack-tool.sh argument_number`
+
+```
+$ ./attack-tool.sh -h
+Attack Tool Options
+1: DOS attack
+2: DDOS attack
+3: Abnormal token usage attack
+4: Extreme delete attack
+5: Stolen token attack
+stop: Stop running attack
+```
 
 # Additional Details
 
