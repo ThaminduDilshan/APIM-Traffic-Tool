@@ -12,7 +12,7 @@ general_config:
     - Mozilla/5.0 (Windows; U; MSIE 7.0; Windows NT 6.0; en-US)
     - Mozilla/4.0 (compatible; MSIE 6.1; Windows XP)
     - Opera/9.80 (Windows NT 5.2; U; ru) Presto/2.5.22 Version/10.51
-  attack_duration: 10 #900 seconds = 15 minutes
+  attack_duration: 60 #900 seconds = 15 minutes
   scenario: scenario_example
   payloads:
     - '{"customerName": "Tom","delivered": true,"address": "customer_address","pizzaType": "customer_pizza","creditCardNumber": "customer_credit_card","quantity": 0,"orderId": "1"}'
