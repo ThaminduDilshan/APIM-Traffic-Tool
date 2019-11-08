@@ -32,7 +32,7 @@ def handler_scenario(scenario):
     :param scenario: A list containing a scenario
     :return: none
     """
-    global attack_duration, protocol, host, port, payloads, user_agents, start_time, max_request_multiplier, min_request_multiplier, pool
+    global attack_duration, protocol, host, port, payloads, user_agents, start_time, max_request_multiplier, min_request_multiplier,dataset_path
     up_time = datetime.now() - start_time
     if up_time.seconds < attack_duration:
 
@@ -56,7 +56,7 @@ def handler_scenario(scenario):
                 break
             response = util_methods.send_simple_request(request_path, method, token, ip, cookie, random_user_agent, payload=random_payload)
             request_string = "{},{},{},{},{},{},{}".format(datetime.now(), request_path, method, token, ip, cookie, response.status_code)
-            util_methods.log("../../../../../../dataset/attack/abnormal_token.csv", request_string, "a")
+            util_methods.log(dataset_path, request_string, "a")
 
             time.sleep(generate_biased_random(0, 3, 2))
             current_requests += 1
@@ -97,7 +97,7 @@ if __name__ == '__main__':
     while True:
         time_elapsed = datetime.now() - start_time
         if time_elapsed.seconds >= attack_duration:
-            log_string = "[INFO] Script terminated successfully. Time elapsed: {} minutes".format(time_elapsed.seconds / 60.0)
+            log_string = "[INFO] Attack terminated successfully. Time elapsed: {} minutes".format(time_elapsed.seconds / 60.0)
             print(log_string)
             util_methods.log(attack_tool_log_path, log_string, "a")
             break
