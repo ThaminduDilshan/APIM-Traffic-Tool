@@ -1,4 +1,3 @@
-
 # Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 #
 # WSO2 Inc. licenses this file to you under the Apache License,
@@ -15,12 +14,11 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import multiprocessing
+from multiprocessing.dummy import Pool
 import os
 import pickle
 import time
 import yaml
-from faker import Factory
 import string
 from datetime import datetime
 from utils import util_methods
@@ -35,7 +33,7 @@ def generate_unique_ip():
     :return: an unique ip
     """
     global fake_generator, current_ips
-    # temp_ip = fake_generator.ipv4()
+
     random.seed()
     MAX_IPV4 = ipaddress.IPv4Address._ALL_ONES
     temp_ip = ipaddress.IPv4Address._string_from_ip_int(random.randint(0, MAX_IPV4))
@@ -63,8 +61,9 @@ def handler_scenario(scenario):
     :param scenario: A list containing a scenario
     :return: none
     """
-    global attack_duration, protocol, host, port, payloads, user_agents, start_time
-    if datetime.now().timestamp() <= start_time + attack_duration:
+    global attack_duration, protocol, host, port, payloads, user_agents, start_time,dataset_path
+    up_time = datetime.now() - start_time
+    if up_time.seconds < attack_duration:
         context = scenario[1]
         version = scenario[2]
         resource_path = scenario[3]
@@ -80,12 +79,14 @@ def handler_scenario(scenario):
         random_payload = random.choice(payloads)
 
         for i in range(request_target):
-            if datetime.now().timestamp() <= start_time + attack_duration:
-                response = util_methods.send_simple_request(request_path, method, token, random_ip, random_cookie, random_user_agent, payload=random_payload)
-                request_string = "{},{},{},{},{},{},{}".format(datetime.now(), request_path, method, token, random_ip, random_cookie, response.status_code)
-                util_methods.log_request("../../../../../../dataset/attack/stolen_token.csv", request_string, "a")
+            up_time = datetime.now() - start_time
+            if up_time.seconds >= attack_duration:
+                break
+            response = util_methods.send_simple_request(request_path, method, token, random_ip, random_cookie, random_user_agent, payload=random_payload)
+            request_string = "{},{},{},{},{},{},{}".format(datetime.now(), request_path, method, token, random_ip, random_cookie, response.status_code)
+            util_methods.log(dataset_path, request_string, "a")
 
-                print("Request sent with token: %s" % token, flush=True)
+            print("Request sent with token: %s" % token, flush=True)
 
             time.sleep(generate_biased_random(0, 5, 2))
             current_requests += 1
@@ -102,26 +103,37 @@ if __name__ == '__main__':
         attack_config = yaml.load(attack_config_file, Loader=yaml.FullLoader)
 
     # configurations
-    protocol = config['management_console']['protocol']
-    host = config['management_console']['host']
-    port = config['api_manager']['nio_pt_transport_port']
+    protocol = attack_config['general_config']['api_host']['protocol']
+    host = attack_config['general_config']['api_host']['ip']
+    port = attack_config['general_config']['api_host']['port']
     attack_duration = attack_config['general_config']['attack_duration']
 
     payloads = attack_config['general_config']['payloads']
     user_agents = attack_config['general_config']['user_agents']
 
-    fake_generator = Factory.create()
     current_ips = []
 
-    start_time = datetime.now().timestamp()
+    attack_tool_log_path = "../../../../../../logs/attack-tool.log"
+    dataset_path = "../../../../../../dataset/attack/stolen_token.csv"
+    start_time = datetime.now()
 
-    print("-------------------------------- Stolen Token Attack started -------------------------------- ")
-    util_methods.log_request("../../../../../../dataset/attack/stolen_token.csv", "Timestamp, Request path, Method,Access Token, IP Address, Cookie, Response Code", "w")
+    log_string = "[INFO] {} - Stolen token attack started ".format(start_time)
 
-    p = multiprocessing.Pool(processes=20)
-    while datetime.now().timestamp() <= start_time + attack_duration:
-        p.map(handler_scenario, scenario_pool)
-    p.close()
-    p.join()
+    print(log_string)
+    util_methods.log(attack_tool_log_path, log_string, "a")
+    util_methods.log(dataset_path, "Timestamp, Request path, Method,Access Token, IP Address, Cookie, Response Code", "w")
 
-    print("-------------------------------- Stolen Token Attack Finished -------------------------------- ")
+    pool = Pool(processes=20)
+
+    while True:
+        time_elapsed = datetime.now() - start_time
+        if time_elapsed.seconds >= attack_duration:
+            log_string = "[INFO] Attack terminated successfully. Time elapsed: {} minutes".format(time_elapsed.seconds / 60.0)
+            print(log_string)
+            util_methods.log(attack_tool_log_path, log_string, "a")
+            break
+        else:
+            pool.map(handler_scenario, scenario_pool)
+
+    pool.close()
+    pool.join()
