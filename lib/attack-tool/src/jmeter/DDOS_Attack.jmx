@@ -1,4 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+
+WSO2 Inc. licenses this file to you under the Apache License,
+Version 2.0 (the "License"); you may not use this file except
+in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied. See the License for the
+specific language governing permissions and limitations
+under the License. -->
+
 <jmeterTestPlan version="1.2" properties="5.0" jmeter="5.1.1 r1855137">
   <hashTree>
     <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="DDOS Attack" enabled="true">
@@ -78,15 +95,15 @@ ArrayList userList = new ArrayList()
 for(line in lines)
 {
 	String[] userData = line.split(&quot;,&quot;);
-	
+
 	//ip,cookie,token,apiname
 	User tempUser = new User(userData[2],userData[3],userData[0],userData[1]);
 	userList.add(tempUser);
 	i++;
-	
+
 }
 
-//Creating API instances 
+//Creating API instances
 ArrayList apiList = new ArrayList()
 i = 1;
 Random rand = new Random();
@@ -162,7 +179,7 @@ fw.close();
 import tools.API
 
 // Create a API list local to the thread
-def apiList = props.get(&quot;apiList&quot;); 
+def apiList = props.get(&quot;apiList&quot;);
 int i = 1;
 for (api in apiList)
 {
@@ -306,7 +323,7 @@ Random rand2 = new Random();
 
 // Selecting random users per requests
 User randomUser = users.get(rand.nextInt(users.size()));
-//log.info(users.toString()); 
+//log.info(users.toString());
 vars.put(&quot;randomUserIP&quot;,randomUser.getIp());
 vars.put(&quot;randomUserCookie&quot;,randomUser.getCookie());
 vars.put(&quot;randomUserToken&quot;,randomUser.getToken());
@@ -326,7 +343,7 @@ vars.putObject(&quot;randomRequestBody&quot;,randomRequestBody);
 def currentApiResources = vars.getObject(&quot;currentAPIResources&quot;);
 def randomResource = currentApiResources.get(rand2.nextInt(currentApiResources.size()));
 vars.put(&quot;currentAPIResourceMethod&quot;,randomResource.get(&quot;method&quot;).toString());
-vars.put(&quot;currentAPIResourcePath&quot;,randomResource.get(&quot;path&quot;).toString()); 
+vars.put(&quot;currentAPIResourcePath&quot;,randomResource.get(&quot;path&quot;).toString());
 
 // path parameter for delete request
 def path = rand.nextInt(10000);
