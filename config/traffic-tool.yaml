@@ -1,3 +1,4 @@
+# definitions for APIs which will be created by the scenario
 api:
   throttling_tier: Unlimited
   visibility: PUBLIC
@@ -5,19 +6,24 @@ api:
   sandbox_endpoint: https://localhost:9443/am/sample/pizzashack/v1/api/
   payload: {"customerName": "customer_name","delivered": true,"address": "customer_address","pizzaType": "customer_pizza","creditCardNumber": "customer_credit_card","quantity": 0,"orderId": "1"}
 
+# definitions for applications which will be created by the scenario
 application:
   throttling_tier: Unlimited
   token_validity_period: -1
 
+# subscription tier to be used when subscribing APIs
 subscription_tier: Unlimited
 
+# name of the scenario folder
 scenario_name: scenario_example
 
+# details for all hosted APIs. Traffic tool will invoke according to these configurations
 api_host:
   protocol: https
   ip: 172.17.0.1
   port: 8243
 
+# configurations for the traffic tool processes
 tool_config:
   no_of_processes: 20
   max_connection_refuse_count: 50

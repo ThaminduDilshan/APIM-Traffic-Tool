@@ -1,6 +1,7 @@
-# apim_version: 3.0
+# version of the wso2 api manager (state as either 2.6 or 3.0)
 apim_version: 2.6
 
+# endpoints of the wso2 api manager
 apim_endpoints:
   token_registration_endpoint: /client-registration/v0.14/register
   token_endpoint: /token
@@ -10,6 +11,7 @@ apim_endpoints:
   user_signup: /store/site/blocks/user/sign-up/ajax/user-add.jag
   delete_user: /services/RemoteUserStoreManagerService.RemoteUserStoreManagerServiceHttpsSoap11Endpoint
 
+# api manager management console ports and configurations
 management_console:
   protocol: https
   host: 172.17.0.1
@@ -19,6 +21,7 @@ management_console:
 api_manager:
   nio_pt_transport_port: 8243
 
+# details of APIs in the scenario
 apis:
 #  - name: news
 #    context: news

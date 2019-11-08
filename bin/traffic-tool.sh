@@ -46,7 +46,7 @@ func_create_scenario() {
   if [ -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/api_creation.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/api_creation_swagger.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/app_creation.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/app_api_subscription_admin.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/user_generation.csv ];
   then
     rm -f "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/api_invoke_key_secret.csv
-    $JMPATH/jmeter -n -t "$(pwd)"'/../lib/traffic-tool/src/jmeter/create_api_scenario.jmx' -l "$(pwd)"/../logs/jmeter-results-traffic.log -j "$(pwd)"/../logs/jmeter-traffic.log
+    $JMPATH/jmeter -n -t "$(pwd)"'/../lib/traffic-tool/src/jmeter/create_api_scenario.jmx' -l "$(pwd)"/../logs/jmeter-results-traffic_tool.log -j "$(pwd)"/../logs/jmeter-traffic_tool.log
     echo "Script execution completed"
   else
     echo "Missing one or more required files in the 'scenario/$SCENARIONAME/' directory"
@@ -62,7 +62,7 @@ func_gen_tokens() {
   if [ -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/app_creation.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/user_app_pattern.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/api_invoke_key_secret.csv ];
   then
     rm -f "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/api_invoke_tokens.csv
-    $JMPATH/jmeter -n -t "$(pwd)"'/../lib/traffic-tool/src/jmeter/generate_token_list.jmx' -l "$(pwd)"/../logs/jmeter-results-traffic.log -j "$(pwd)"/../logs/jmeter-traffic.log
+    $JMPATH/jmeter -n -t "$(pwd)"'/../lib/traffic-tool/src/jmeter/generate_token_list.jmx' -l "$(pwd)"/../logs/jmeter-results-traffic_tool.log -j "$(pwd)"/../logs/jmeter-traffic_tool.log
     echo "Token generation completed"
   else
     echo "Missing one or more required files in the 'scenario/$SCENARIONAME/' directory"
@@ -173,11 +173,11 @@ func_all() {
     if [ -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/api_creation.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/api_creation_swagger.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/app_creation.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/app_api_subscription_admin.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/user_generation.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/user_app_pattern.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/api_invoke_scenario.csv ];
     then
       rm -f "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/api_invoke_key_secret.csv
-      $JMPATH/jmeter -n -t "$(pwd)"'/../lib/traffic-tool/src/jmeter/create_api_scenario.jmx' -l "$(pwd)"/../logs/jmeter-results-traffic.log -j "$(pwd)"/../logs/jmeter-traffic.log
+      $JMPATH/jmeter -n -t "$(pwd)"'/../lib/traffic-tool/src/jmeter/create_api_scenario.jmx' -l "$(pwd)"/../logs/jmeter-results-traffic_tool.log -j "$(pwd)"/../logs/jmeter-traffic_tool.log
       echo "Scenario created in APIM"
 
       rm -f "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/api_invoke_tokens.csv
-      $JMPATH/jmeter -n -t "$(pwd)"'/../lib/traffic-tool/src/jmeter/generate_token_list.jmx' -l "$(pwd)"/../logs/jmeter-results-traffic.log -j "$(pwd)"/../logs/jmeter-traffic.log
+      $JMPATH/jmeter -n -t "$(pwd)"'/../lib/traffic-tool/src/jmeter/generate_token_list.jmx' -l "$(pwd)"/../logs/jmeter-results-traffic_tool.log -j "$(pwd)"/../logs/jmeter-traffic_tool.log
       echo "Token generation completed"
 
       python3 "$(pwd)"/../lib/traffic-tool/src/python/gen_invoke_scenario.py
@@ -202,11 +202,11 @@ func_all() {
     if [ -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/api_creation.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/api_creation_swagger.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/app_creation.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/app_api_subscription_admin.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/user_generation.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/user_app_pattern.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/api_invoke_scenario.csv ];
     then
       rm -f "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/api_invoke_key_secret.csv
-      $JMPATH/jmeter -n -t "$(pwd)"'/../lib/traffic-tool/src/jmeter/create_api_scenario.jmx' -l "$(pwd)"/../logs/jmeter-results-traffic.log -j "$(pwd)"/../logs/jmeter-traffic.log
+      $JMPATH/jmeter -n -t "$(pwd)"'/../lib/traffic-tool/src/jmeter/create_api_scenario.jmx' -l "$(pwd)"/../logs/jmeter-results-traffic_tool.log -j "$(pwd)"/../logs/jmeter-traffic_tool.log
       echo "Scenario created in APIM"
 
       rm -f "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/api_invoke_tokens.csv
-      $JMPATH/jmeter -n -t "$(pwd)"'/../lib/traffic-tool/src/jmeter/generate_token_list.jmx' -l "$(pwd)"/../logs/jmeter-results-traffic.log -j "$(pwd)"/../logs/jmeter-traffic.log
+      $JMPATH/jmeter -n -t "$(pwd)"'/../lib/traffic-tool/src/jmeter/generate_token_list.jmx' -l "$(pwd)"/../logs/jmeter-results-traffic_tool.log -j "$(pwd)"/../logs/jmeter-traffic_tool.log
       echo "Token generation completed"
 
       python "$(pwd)"/../lib/traffic-tool/src/python/gen_invoke_scenario.py
@@ -237,7 +237,7 @@ func_cleanup() {
   then
     JMPATH=$(cat "$(pwd)"/../config/user-settings.yaml | shyaml get-value path_variables.jmeter)
 
-    $JMPATH/jmeter -n -t "$(pwd)"'/../lib/traffic-tool/src/jmeter/cleanup_api_manager.jmx' -l "$(pwd)"/../logs/jmeter-results-traffic.log -j "$(pwd)"/../logs/jmeter-traffic.log
+    $JMPATH/jmeter -n -t "$(pwd)"'/../lib/traffic-tool/src/jmeter/cleanup_api_manager.jmx' -l "$(pwd)"/../logs/jmeter-results-traffic_tool.log -j "$(pwd)"/../logs/jmeter-traffic_tool.log
     > "$(pwd)"/../lib/traffic-tool/data/runtime_data/api_ids.csv
     > "$(pwd)"/../lib/traffic-tool/data/runtime_data/app_ids.csv
     echo "Script execution completed"

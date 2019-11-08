@@ -1,2 +1,3 @@
+# define user path variables here
 path_variables:
-  jmeter: /home/nipuna/snap/apache-jmeter-5.1.1/bin
+  jmeter: /home/thamindu/Documents/Applications/apache-jmeter-5.1.1/bin
