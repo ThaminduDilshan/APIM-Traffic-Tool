@@ -1,6 +1,7 @@
 import multiprocessing
 import os
 import pickle
+import sys
 import time
 import yaml
 from faker import Factory
@@ -86,8 +87,8 @@ def handler_scenario(scenario):
             time.sleep(generate_biased_random(0, 3, 2))
             current_requests += 1
 
-    else:
-        pool.terminate()
+    # else:
+    #     sys.exit()
 
 
 if __name__ == '__main__':
@@ -123,5 +124,6 @@ if __name__ == '__main__':
         pool.map(handler_scenario, scenario_pool)
     pool.close()
     pool.join()
-
+    #pool.terminate()
+    print("".format(datetime.now()))
     print("-------------------------------- Abnormal Token Usage Attack Finished -------------------------------- ")
