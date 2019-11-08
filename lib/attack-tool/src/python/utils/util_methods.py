@@ -51,7 +51,7 @@ def generate_random_string(size):
     return out_str
 
 
-def log_request(path, data, mode):
+def log(path, data, mode):
     """
     logs the data in the given path
     :param path: path to the log file
