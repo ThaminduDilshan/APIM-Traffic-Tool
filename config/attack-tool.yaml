@@ -20,10 +20,8 @@ general_config:
     - '{"customerName": "Tim","delivered": true,"address": "customer_address","pizzaType": "customer_pizza","creditCardNumber": "customer_credit_card","quantity": 0,"orderId": "1"}'
 
 
-
-#DOS_attack:
-
-# ip: 198.51.99.29
-# token: da790fba-6625-3ac2-a2f8-287884f364b2
-# cookie: JSESSIONID=tyakp52jiu5nozd4gon0nmchu5buwbu
+attacks:
+  abnormal_token_usage:
+    min_request_multiplier: 5
+    max_request_multiplier: 10
 

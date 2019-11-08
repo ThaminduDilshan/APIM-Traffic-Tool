@@ -20,6 +20,7 @@ class API:
         self.version = version
         self.resources = defaultdict(list)
         self.base_url = "{}://{}:{}/{}/{}".format(protocol, host, port, context, version)
+        self.users = []
 
     def add_resource(self, method, path):
         self.resources[method].append(path)

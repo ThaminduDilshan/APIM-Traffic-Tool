@@ -12,6 +12,14 @@ import random
 from utils.util_methods import generate_biased_random
 
 
+def init(ctr):
+    """
+    Initialize globals variables in a process memory space when the process pool is created
+    """
+    global scenario_counter
+    scenario_counter = ctr
+
+
 def generate_unique_ip():
     """
     Returns a unique ip address
@@ -46,32 +54,40 @@ def handler_scenario(scenario):
     :param scenario: A list containing a scenario
     :return: none
     """
-    global attack_duration, protocol, host, port, payloads, user_agents, start_time
+    global attack_duration, protocol, host, port, payloads, user_agents, start_time, max_request_multiplier, min_request_multiplier, pool
+
     if datetime.now().timestamp() <= start_time + attack_duration:
+        print("Executing Scenario {}".format(scenario_counter.value))
+        scenario_counter.value += 1
         context = scenario[1]
         version = scenario[2]
         resource_path = scenario[3]
         token = scenario[4]
         method = scenario[5]
-        request_target = scenario[0]
+        request_target = scenario[0] * random.randint(min_request_multiplier, max_request_multiplier)
         current_requests = 0
+        ip = scenario[6]
+        cookie = scenario[7]
+
+        # if request target is more than 2
 
         request_path = "{}://{}:{}/{}/{}/{}".format(protocol, host, port, context, version, resource_path)
         random_user_agent = random.choice(user_agents)
-        random_ip = generate_unique_ip()
-        random_cookie = generate_cookie()
         random_payload = random.choice(payloads)
 
         for i in range(request_target):
             if datetime.now().timestamp() <= start_time + attack_duration:
-                response = util_methods.send_simple_request(request_path, method, token, random_ip, random_cookie, random_user_agent, payload=random_payload)
-                request_string = "{},{},{},{},{},{},{}".format(datetime.now(), request_path, method, token, random_ip, random_cookie, response.status_code)
-                util_methods.log_request("../../../../../../dataset/attack/stolen_token.csv", request_string, "a")
+                response = util_methods.send_simple_request(request_path, method, token, ip, cookie, random_user_agent, payload=random_payload)
+                request_string = "{},{},{},{},{},{},{}".format(datetime.now(), request_path, method, token, ip, cookie, response.status_code)
+                util_methods.log_request("../../../../../../dataset/attack/abnormal_token.csv", request_string, "a")
 
-                print("Request sent with token: %s" % token, flush=True)
+                # print("Request sent with token: %s" % token, flush=True)
 
-            time.sleep(generate_biased_random(0, 5, 2))
+            time.sleep(generate_biased_random(0, 3, 2))
             current_requests += 1
+
+    else:
+        pool.terminate()
 
 
 if __name__ == '__main__':
@@ -89,22 +105,23 @@ if __name__ == '__main__':
     host = config['management_console']['host']
     port = config['api_manager']['nio_pt_transport_port']
     attack_duration = attack_config['general_config']['attack_duration']
-
     payloads = attack_config['general_config']['payloads']
     user_agents = attack_config['general_config']['user_agents']
-
+    max_request_multiplier = attack_config['attacks']['abnormal_token_usage']['max_request_multiplier']
+    min_request_multiplier = attack_config['attacks']['abnormal_token_usage']['min_request_multiplier']
     fake_generator = Factory.create()
     current_ips = []
 
     start_time = datetime.now().timestamp()
+    scenario_counter = multiprocessing.Value("i", 1)
 
-    print("-------------------------------- Stolen Token Attack started -------------------------------- ")
-    util_methods.log_request("../../../../../../dataset/attack/stolen_token.csv", "Timestamp, Request path, Method,Access Token, IP Address, Cookie, Response Code", "w")
+    print("-------------------------------- Abnormal Token Usage Attack Started -------------------------------- ")
+    util_methods.log_request("../../../../../../dataset/attack/abnormal_token.csv", "Timestamp, Request path, Method,Access Token, IP Address, Cookie, Response Code", "w")
 
-    p = multiprocessing.Pool(processes=20)
+    pool = multiprocessing.Pool(processes=20, initializer=init, initargs=[scenario_counter])
     while datetime.now().timestamp() <= start_time + attack_duration:
-        p.map(handler_scenario, scenario_pool)
-    p.close()
-    p.join()
+        pool.map(handler_scenario, scenario_pool)
+    pool.close()
+    pool.join()
 
-    print("-------------------------------- Stolen Token Attack Finished -------------------------------- ")
+    print("-------------------------------- Abnormal Token Usage Attack Finished -------------------------------- ")
