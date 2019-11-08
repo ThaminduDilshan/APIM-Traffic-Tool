@@ -14,17 +14,15 @@ func_help() {
 # function to start a dos attack
 func_DOS() {
   JMPATH=$(cat "$(pwd)"/../config/user-settings.yaml | shyaml get-value path_variables.jmeter)
-  nohup `$JMPATH/jmeter -n -t "$(pwd)"'/../lib/attack-tool/src/jmeter/DOS_Attack.jmx' -l "$(pwd)"/../logs/jmeter-results-attack_tool.log -j "$(pwd)"/../logs/jmeter-attack_tool.log` 2>&1 &
-  echo $! > "$(pwd)"/../data/attack_tool.pid
-  echo "DOS attack started. See 'logs/attack-shell.log' for details"
+  $JMPATH/jmeter -n -t "$(pwd)"'/../lib/attack-tool/src/jmeter/DOS_Attack.jmx' -l "$(pwd)"/../logs/jmeter-results-attack_tool.log -j "$(pwd)"/../logs/jmeter-attack_tool.log
+  echo "DOS attack finished. See 'logs/attack-shell.log' for details"
 }
 
 # function to start a ddos attack
 func_DDOS() {
   JMPATH=$(cat "$(pwd)"/../config/user-settings.yaml | shyaml get-value path_variables.jmeter)
-  nohup `$JMPATH/jmeter -n -t "$(pwd)"'/../lib/attack-tool/src/jmeter/DDOS_Attack.jmx' -l "$(pwd)"/../logs/jmeter-results-attack_tool.log -j "$(pwd)"/../logs/jmeter-attack_tool.log` 2>&1 &
-  echo $! > "$(pwd)"/../data/attack_tool.pid
-  echo "DDOS attack started. See 'logs/attack-shell.log' for details"
+  $JMPATH/jmeter -n -t "$(pwd)"'/../lib/attack-tool/src/jmeter/DDOS_Attack.jmx' -l "$(pwd)"/../logs/jmeter-results-attack_tool.log -j "$(pwd)"/../logs/jmeter-attack_tool.log
+  echo "DDOS attack finished. See 'logs/attack-shell.log' for details"
 }
 
 # function to start an abnormal token usage attack
