@@ -3,11 +3,11 @@
 # help function to print help commands when invalid arguments are given
 func_help() {
   echo "Attack Tool Options"
-  echo "1: Start DOS attack"
-  echo "2: Start DDOS attack"
-  echo "3: Start abnormal token usage attack"
-  echo "4: Start extreme delete attack"
-  echo "5: Start stolen token attack"
+  echo "1: DOS attack"
+  echo "2: DDOS attack"
+  echo "3: Abnormal token usage attack"
+  echo "4: Extreme delete attack"
+  echo "5: Stolen token attack"
   echo "stop: Stop running attack"
 }
 
