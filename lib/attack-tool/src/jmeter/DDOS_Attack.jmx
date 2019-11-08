@@ -328,10 +328,16 @@ def randomResource = currentApiResources.get(rand2.nextInt(currentApiResources.s
 vars.put(&quot;currentAPIResourceMethod&quot;,randomResource.get(&quot;method&quot;).toString());
 vars.put(&quot;currentAPIResourcePath&quot;,randomResource.get(&quot;path&quot;).toString()); 
 
+// path parameter for delete request
+def path = rand.nextInt(10000);
+vars.put(&apos;pathParam&apos;,path.toString());
+
 
 //int duration = vars.get(&quot;attackDurationPerApi&quot;)
 //log.info(randomUserAgent.toString());
-//log.info((vars.get(&quot;currentAPIResourceMethod&quot;)))</stringProp>
+//log.info((vars.get(&quot;currentAPIResourceMethod&quot;)))
+
+</stringProp>
             </JSR223Sampler>
             <hashTree/>
             <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If Controller GET" enabled="true">
@@ -554,7 +560,7 @@ ${__groovy(&quot;${currentAPIResourceMethod}&quot;==&quot;DELETE&quot;)}</string
                 <stringProp name="HTTPSampler.port">${__property(nioPtTransportPort)}</stringProp>
                 <stringProp name="HTTPSampler.protocol">${__property(gatewayProtocol)}</stringProp>
                 <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-                <stringProp name="HTTPSampler.path">${currentAPIContext}/${currentAPIVersion}/${currentAPIResourcePath}</stringProp>
+                <stringProp name="HTTPSampler.path">${currentAPIContext}/${currentAPIVersion}/${currentAPIResourcePath}/${pathParam}</stringProp>
                 <stringProp name="HTTPSampler.method">DELETE</stringProp>
                 <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
                 <boolProp name="HTTPSampler.auto_redirects">false</boolProp>

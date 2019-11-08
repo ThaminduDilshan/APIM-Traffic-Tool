@@ -317,6 +317,7 @@ vars.put(&quot;randomUserApiName&quot;,currentAPI.getSingleUser().getApiName());
               <stringProp name="filename"></stringProp>
               <stringProp name="cacheKey">true</stringProp>
               <stringProp name="script">import tools.User;
+import org.apache.commons.text.RandomStringGenerator;
 
 def users = vars.getObject(&quot;currentAPIUsers&quot;);
 
@@ -342,7 +343,11 @@ vars.put(&quot;currentAPIResourceMethod&quot;,randomResource.get(&quot;method&qu
 vars.put(&quot;currentAPIResourcePath&quot;,randomResource.get(&quot;path&quot;).toString());
 //int duration = vars.get(&quot;attackDurationPerApi&quot;)
 //log.info(randomUserAgent.toString());
-//log.info((vars.get(&quot;currentAPIResourceMethod&quot;)))</stringProp>
+//log.info((vars.get(&quot;currentAPIResourceMethod&quot;)))
+
+// path parameter for delete request
+def path = rand.nextInt(10000);
+vars.put(&apos;pathParam&apos;,path.toString());</stringProp>
               <stringProp name="TestPlan.comments">Selecting a random user agents and random resources to be used in the requests</stringProp>
             </JSR223Sampler>
             <hashTree/>
@@ -566,7 +571,7 @@ ${__groovy(&quot;${currentAPIResourceMethod}&quot;==&quot;DELETE&quot;)}</string
                 <stringProp name="HTTPSampler.port">${__property(nioPtTransportPort)}</stringProp>
                 <stringProp name="HTTPSampler.protocol">${__property(gatewayProtocol)}</stringProp>
                 <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-                <stringProp name="HTTPSampler.path">${currentAPIContext}/${currentAPIVersion}/${currentAPIResourcePath}</stringProp>
+                <stringProp name="HTTPSampler.path">${currentAPIContext}/${currentAPIVersion}/${currentAPIResourcePath}/${pathParam}</stringProp>
                 <stringProp name="HTTPSampler.method">DELETE</stringProp>
                 <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
                 <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
