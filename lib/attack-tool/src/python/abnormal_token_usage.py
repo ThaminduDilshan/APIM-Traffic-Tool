@@ -80,8 +80,8 @@ if __name__ == '__main__':
     attack_duration = attack_config['general_config']['attack_duration']
     payloads = attack_config['general_config']['payloads']
     user_agents = attack_config['general_config']['user_agents']
-    max_request_multiplier = attack_config['attacks']['abnormal_token_usage']['max_request_multiplier']
-    min_request_multiplier = attack_config['attacks']['abnormal_token_usage']['min_request_multiplier']
+    max_request_multiplier = attack_config['attacks']['abnormal_token_usage']['max_request_scalar']
+    min_request_multiplier = attack_config['attacks']['abnormal_token_usage']['min_request_scalar']
 
     start_time = datetime.now()
     attack_tool_log_path = "../../../../../../logs/attack-tool.log"
