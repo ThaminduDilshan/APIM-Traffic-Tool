@@ -1,27 +1,83 @@
 #!/bin/sh
 
+# help function to print help commands when invalid arguments are given
 func_help() {
   echo "Attack Tool Options"
-  echo "1: DOS Attack"
-  echo "2: DDOS Attack"
+  echo "1: Start DOS attack"
+  echo "2: Start DDOS attack"
+  echo "3: Start abnormal token usage attack"
+  echo "4: Start extreme delete attack"
+  echo "5: Start stolen token attack"
+  echo "stop: Stop running attack"
 }
 
+# function to start a dos attack
 func_DOS() {
-  echo "Enter your jmeter path (Ex:- /home/user/Documents/apache-jmeter-5.1.1/bin)"
-    read JMPATH
-    $JMPATH/jmeter -n -t '../lib/attack-tool/src/jmeter/DOS_Attack.jmx' -l ../logs/jmeter-attack-results.log -j ../logs/jmeter-attack.log
-    echo $! > ../data/attack_tool.pid
+  JMPATH=$(cat "$(pwd)"/../config/user-settings.yaml | shyaml get-value path_variables.jmeter)
+  nohup `$JMPATH/jmeter -n -t "$(pwd)"'/../lib/attack-tool/src/jmeter/DOS_Attack.jmx' -l "$(pwd)"/../logs/jmeter-results-attack_tool.log -j "$(pwd)"/../logs/jmeter-attack_tool.log` 2>&1 &
+  echo $! > "$(pwd)"/../data/attack_tool.pid
+  echo "DOS attack started. See 'logs/attack-shell.log' for details"
 }
 
+# function to start a ddos attack
 func_DDOS() {
-  echo "Enter your jmeter path (Ex:- /home/user/Documents/apache-jmeter-5.1.1/bin)"
-    read JMPATH
-    $JMPATH/jmeter -n -t '../lib/attack-tool/src/jmeter/DDOS_Attack.jmx' -l ../logs/jmeter-attack-results.log -j ../logs/jmeter-attack.log
-    echo $! > ../data/attack_tool.pid
+  JMPATH=$(cat "$(pwd)"/../config/user-settings.yaml | shyaml get-value path_variables.jmeter)
+  nohup `$JMPATH/jmeter -n -t "$(pwd)"'/../lib/attack-tool/src/jmeter/DDOS_Attack.jmx' -l "$(pwd)"/../logs/jmeter-results-attack_tool.log -j "$(pwd)"/../logs/jmeter-attack_tool.log` 2>&1 &
+  echo $! > "$(pwd)"/../data/attack_tool.pid
+  echo "DDOS attack started. See 'logs/attack-shell.log' for details"
 }
 
+# function to start an abnormal token usage attack
+func_abnormal_token_usage() {
+  if command -v python3 &>/dev/null; then
+    nohup python3 "$(pwd)"/../lib/attack-tool/src/python/abnormal_token_usage.py >> "$(pwd)"/../logs/attack-shell.log 2>&1 &
+    echo $! > "$(pwd)"/../data/attack_tool.pid
+    echo "Abnormal token usage attack started. See 'logs/attack-shell.log' for details"
+  elif command -v python &>/dev/null; then
+    nohup python "$(pwd)"/../lib/attack-tool/src/python/abnormal_token_usage.py >> "$(pwd)"/../logs/attack-shell.log 2>&1 &
+    echo $! > "$(pwd)"/../data/attack_tool.pid
+    echo "Abnormal token usage attack started. See 'logs/attack-shell.log' for details"
+  else
+    echo "Python 3 is required for the command!"
+    exit 1
+  fi
+}
+
+# function to start an extreme delete attack (data deletion attack)
+func_extreme_delete() {
+  if command -v python3 &>/dev/null; then
+    nohup python3 "$(pwd)"/../lib/attack-tool/src/python/extreme_delete.py >> "$(pwd)"/../logs/attack-shell.log 2>&1 &
+    echo $! > "$(pwd)"/../data/attack_tool.pid
+    echo "Extreme delete attack started. See 'logs/attack-shell.log' for details"
+  elif command -v python &>/dev/null; then
+    nohup python "$(pwd)"/../lib/attack-tool/src/python/extreme_delete.py >> "$(pwd)"/../logs/attack-shell.log 2>&1 &
+    echo $! > "$(pwd)"/../data/attack_tool.pid
+    echo "Extreme delete attack started. See 'logs/attack-shell.log' for details"
+  else
+    echo "Python 3 is required for the command!"
+    exit 1
+  fi
+}
+
+# function to start a stolen token attack
+func_stolen_token() {
+  if command -v python3 &>/dev/null; then
+    nohup python3 "$(pwd)"/../lib/attack-tool/src/python/stolen_token.py >> "$(pwd)"/../logs/attack-shell.log 2>&1 &
+    echo $! > "$(pwd)"/../data/attack_tool.pid
+    echo "Stolen token attack started. See 'logs/attack-shell.log' for details"
+  elif command -v python &>/dev/null; then
+    nohup python "$(pwd)"/../lib/attack-tool/src/python/stolen_token.py >> "$(pwd)"/../logs/attack-shell.log 2>&1 &
+    echo $! > "$(pwd)"/../data/attack_tool.pid
+    echo "Stolen token attack started. See 'logs/attack-shell.log' for details"
+  else
+    echo "Python 3 is required for the command!"
+    exit 1
+  fi
+}
+
+# function to stop the attack tool while it is running
 func_stop_attack() {
-  PID=`cat ../data/attack_tool.pid 2>/dev/null`
+  PID=`cat "$(pwd)"/../data/attack_tool.pid 2>/dev/null`
   if [ -z $PID ];
   then
     echo "Attack Tool is Not Running"
@@ -37,7 +93,8 @@ func_stop_attack() {
     else
       echo "Attack Tool Already Stopped"
     fi
-  fi > ../data/attack_tool.pid
+  fi
+  > "$(pwd)"/../data/attack_tool.pid
 }
 
 
@@ -47,15 +104,27 @@ case "$1" in
     exit 0
   ;;
   1)
-    func_DOS | tee -a ../logs/attack-shell.log
+    func_DOS 2>&1 | tee -a "$(pwd)"/../logs/attack-shell.log
     exit 0
   ;;
   2)
-    func_DDOS | tee -a ../logs/attack-shell.log
+    func_DDOS 2>&1 | tee -a "$(pwd)"/../logs/attack-shell.log
     exit 0
   ;;
   3)
-    func_stop_attack | tee -a ../logs/attack-shell.log
+    func_abnormal_token_usage 2>&1 | tee -a "$(pwd)"/../logs/attack-shell.log
+    exit 0
+  ;;
+  4)
+    func_extreme_delete 2>&1 | tee -a "$(pwd)"/../logs/attack-shell.log
+    exit 0
+  ;;
+  5)
+    func_stolen_token 2>&1 | tee -a "$(pwd)"/../logs/attack-shell.log
+    exit 0
+  ;;
+  stop)
+    func_stop_attack 2>&1 | tee -a "$(pwd)"/../logs/attack-shell.log
     exit 0
   ;;
   *)
