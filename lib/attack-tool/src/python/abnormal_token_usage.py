@@ -97,7 +97,7 @@ if __name__ == '__main__':
     while True:
         time_elapsed = datetime.now() - start_time
         if time_elapsed.seconds >= attack_duration:
-            log_string = "[INFO] Attack terminated successfully. Time elapsed: {} minutes".format(time_elapsed.seconds / 60.0)
+            log_string = "[INFO] {} - Attack terminated successfully. Time elapsed: {} minutes".format(datetime.now(),time_elapsed.seconds / 60.0)
             print(log_string)
             util_methods.log(attack_tool_log_path, log_string, "a")
             break
