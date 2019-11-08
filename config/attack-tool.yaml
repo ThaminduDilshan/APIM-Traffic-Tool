@@ -1,5 +1,6 @@
 # General Configurations of the attack tool
 general_config:
+
   # details for all hosted APIs. Attack tool will invoke according to these configurations
   api_host:
     protocol: https
@@ -23,9 +24,11 @@ general_config:
 
   # Attack duration in seconds. In DOS/DDOS attacks this duration will be per API
   attack_duration: 60
+
   # Scenario name
   scenario: scenario_example
 
+  # Payloads for the request body. Attack tool will randomly select one of the following payloads when sending POST and PUT requests
   payloads:
     - '{"customerName": "Tom","delivered": true,"address": "customer_address","pizzaType": "customer_pizza","creditCardNumber": "customer_credit_card","quantity": 0,"orderId": "1"}'
     - '{"customerName": "John","delivered": true,"address": "customer_address","pizzaType": "customer_pizza","creditCardNumber": "customer_credit_card","quantity": 0,"orderId": "1"}'
@@ -34,5 +37,7 @@ general_config:
 # Attack specific configurations
 attacks:
   abnormal_token_usage:
-    min_request_multiplier: 5
-    max_request_multiplier: 10
+
+    # Attack tool will use a random value between the min and max scalars to multiply the request count in normal traffic
+    min_request_scalar: 5
+    max_request_scalar: 10
