@@ -14,16 +14,11 @@ The traffic tool will continuously send traffic to the WSO2 API Manager througho
 
 The attack tool will attack WSO2 API Manager throughout a user specified time. Attack tool is capable of simulating following attack types.
 
-##### 1. DOS Attack
-
-##### 2. DDOS Attack
-
-##### 3. Abnormal token usage attack
-
-##### 4. Extreme delete attack
-
-##### 5. Stolen token attack
-
+###### 1. DOS Attack
+###### 2. DDOS Attack
+###### 3. Abnormal token usage attack
+###### 4. Extreme delete attack
+###### 5. Stolen token attack
 
 # Quick Start Guide
 
@@ -109,14 +104,17 @@ Default configurations for WSO2 API Manager and default scenario are given in al
       - `max_connection_refuse_count`: Maximum number of connection refuse count allowed. Traffic tool will stop after the given number of connection refuses.
       - `no_of_data_points`: No of data points or requests to be generated when generating the traffic data without invoking.
       - `heavy_traffic`: If you want to simulate a heavy traffic, set this value as `true`. Otherwise set it to `false`.
+      
+        > It is recommended to set `heavy_traffic` to `false` in model training and testing environments to have a better training for attacks.
 
 1. Configure the `<TOOL_HOME>/config/attack-tool.yaml` file as stated below (Configurations for the attack script).
-   - `general_config` contains the configurations which are common to every attack type.
-        - `user_agents`: User agents which are used to invoke the API requests. The attack tool will randomly select a user agent from the list. 
-        - `attack_duration`: Runtime of the attack tool in seconds. (In DOS and DDOS attacks, this is the attack duration per API)
-        - `scenario`: Name of the scenario.
-        - `payloads`: A list of payloads that could be attached to the request body. The tool will randomly select a payload from the specified list.
-   - `attacks` contains the specific configurations for the attack types.
+   - Modify **protocol**,**ip address** and **port** of the host using `api_host` section.
+   - Append, modify or remove user agents from the list under `user_agents` section.
+   - Set the attack duration in seconds using `attack_duration`. (Note: For DOS and DDOS attacks, attack duration is defined per API) 
+   - Enter the name of the scenario for `scenario`.
+   - Append, modify or remove payloads from the list under `payloads` section. These payloads are used in the bodies of **POST**,**PUT** and **PATCH** requests.
+   - Set minimum and maximum request scalars under `abnormal_token_usage`. These will be used to scale the normal traffic inorder to generate attack traffic for simulating abnormal token usage attack.
+   
 ## Using the Traffic Tool
 To use the traffic tool run the following command with the desired argument in a command line inside the `<TOOL_HOME>/bin` folder. To list down available options and their command line arguments, just run the command with the flag -h.
 
@@ -167,9 +165,12 @@ API consumers require access tokens in order to access resources. Run the shell 
 ```
 $ ./traffic-tool.sh 3
 ```
+> By default, access tokens get expired after 60 minutes time interval. So if you are planning to simulate a traffic for more than 1 hour duration, please configure WSO2 API Manager and APIM Traffic Tool as below.
+>   1. Set the value of `<UserAccessTokenDefaultValidityPeriod>` element in the `<API-M_HOME>/repository/conf/identity/identity.xml` file as appropriate. It is recommended to set user access token validity period to at least `36000` for testing environments ([more on access tokens](https://docs.wso2.com/display/AM260/Working+with+Access+Tokens)).
+>   1. Set the value of `token_validity_period` as appropriate in the `<TOOL_HOME>/config/traffic-tool.yaml` file. It is recommended to set `token_validity_period` to `-1` for testing environments.
 
 #### 4. Generate the Traffic Dataset without Invoking
-Traffic tool will allow you to generate an API invoking traffic without actually invoking the APIs. Run the shell script with the argument 4. You will be prompted for a filename. Enter the filename without a file extension(without .txt, .csv, etc) and the output or the dataset will be saved in dataset/generated-traffic/<filename>.csv directory.
+Traffic tool will allow you to generate an API invoking traffic without actually invoking the APIs. Run the shell script with the argument 4. You will be prompted for a filename. Enter the filename without a file extension(without .txt, .csv, etc) and the output or the dataset will be saved in dataset/generated-traffic/filename.csv directory.
 
 ```
 $ ./traffic-tool.sh 4
@@ -178,7 +179,7 @@ gen_traffic_data
 ```
 
 #### 5. Simulate a Traffic on API Manager
-To simulate an API invoking traffic on WSO2 API Manager, run the shell script with the argument 5. You will be prompted for a filename and the script run time. Enter the filename without a file extension(without .txt, .csv, etc) and the output or the dataset will be saved in dataset/traffic/<filename>.csv directory. Traffic will be executed throughout the given time (Enter the time in minutes when prompted).
+To simulate an API invoking traffic on WSO2 API Manager, run the shell script with the argument 5. You will be prompted for a filename and the script run time. Enter the filename without a file extension(without .txt, .csv, etc) and the output or the dataset will be saved in dataset/traffic/filename.csv directory. Traffic will be executed throughout the given time (Enter the time in minutes when prompted).
 
 ```
 $ ./traffic-tool.sh 5
@@ -251,6 +252,28 @@ Scenario is involved with following 6 different APIs and 3 different application
 100 users are distributed among those applications according to the following table and invoking happens as stated in the 5th column.
 
 ![APIM Example Scenario](/resources/images/APIM_scenario.png)
+
+## Attack Simulation for the Example Scenario
+
+##### Denial of Service (DOS) attacks
+
+The aim of the DOS attacks is to make the API resources unavailable for the intended users. As DOS attacks originate from a one source, the attack tool simulates DOS attacks by sending bursts of API requests to an API, using a single user who has subscribed to that particular API. Therefore, user IP, access token and user cookie will stay the same for every request for a particular API.  
+
+##### Distributed Denial of Service (DDOS) attacks
+
+The aim of the DDOS attacks is also to make the API resources unavailable for the intended users. The main difference between DOS and DDOS is that the DDOS attacks can originate from multiple sources, the attack tool simulates DDOS attacks by sending bursts of API requests to an API, using multiple users who have subscribed to that particular API. Therefore, user IP, access token and user cookie will not be the same for every request for a particular API.  
+
+##### Abnormal Token Usage Attacks
+
+Abnormal token usage can occur where the client's behavior deviates significantly from his usual behavior. For an example, a user who rarely uses the cricket application mentioned in the example scenario, suddenly starts to use the News and Cricket APIs in the cricket application heavily. The attack tool simulates this attack type by scaling up or down the request count in the usual traffic pattern for a particular time period. (If the user sends only 5 **GET** requests per hour, the attack tool may send 50 requests in the attack duration)  
+
+##### Extreme Delete Attacks
+
+In extreme delete attacks, an unusual number of **DELETE** requests are sent to an API resource. And also they usually occur without prior communication with the API (like without a **GET** request).The attack tool simulates extreme delete attacks by sending random requests to the DELETE endpoints of an API.
+
+##### Stolen Token Attacks
+
+In stolen token attacks, the attackers invoke APIs with access tokens that are stolen or hijacked. The attack tool simulates the stolen token attacks by sending API requests with valid access tokens but using IP addresses,user cookies and user agents which are different from the normal invoke pattern.
 
 ## Adding Custom APIM Scenario
 Adding a custom API Manager scenario is little bit tricky task. As for the current version of the APIM Traffic Tool, you have to configure a set of files in order to invoke for a custom scenario. First you have to think and design a real world API access pattern which is similar to the example scenario given. Then follow below steps to change scenario data files. Default scenario files are at `<TOOL_HOME>/lib/traffic-tool/data/scenario/scenario_example/data/` directory. You can add a new folder named as your scenario_name to the `/scenario` folder and add a `/data` folder containing following files. Line seperator for all csv files is the new line character ('\n').
