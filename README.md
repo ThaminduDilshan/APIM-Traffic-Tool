@@ -14,16 +14,11 @@ The traffic tool will continuously send traffic to the WSO2 API Manager througho
 
 The attack tool will attack WSO2 API Manager throughout a user specified time. Attack tool is capable of simulating following attack types.
 
-##### 1. DOS Attack
-
-##### 2. DDOS Attack
-
-##### 3. Abnormal token usage attack
-
-##### 4. Extreme delete attack
-
-##### 5. Stolen token attack
-
+###### 1. DOS Attack
+###### 2. DDOS Attack
+###### 3. Abnormal token usage attack
+###### 4. Extreme delete attack
+###### 5. Stolen token attack
 
 # Quick Start Guide
 
@@ -109,6 +104,8 @@ Default configurations for WSO2 API Manager and default scenario are given in al
       - `max_connection_refuse_count`: Maximum number of connection refuse count allowed. Traffic tool will stop after the given number of connection refuses.
       - `no_of_data_points`: No of data points or requests to be generated when generating the traffic data without invoking.
       - `heavy_traffic`: If you want to simulate a heavy traffic, set this value as `true`. Otherwise set it to `false`.
+      
+        > It is recommended to set `heavy_traffic` to `false` in model training and testing environments to have a better training for attacks.
 
 1. Configure the `<TOOL_HOME>/config/attack-tool.yaml` file as stated below (Configurations for the attack script).
    - Modify **protocol**,**ip address** and **port** of the host using `api_host` section.
@@ -168,9 +165,12 @@ API consumers require access tokens in order to access resources. Run the shell 
 ```
 $ ./traffic-tool.sh 3
 ```
+> By default, access tokens get expired after 60 minutes time interval. So if you are planning to simulate a traffic for more than 1 hour duration, please configure WSO2 API Manager and APIM Traffic Tool as below.
+>   1. Set the value of `<UserAccessTokenDefaultValidityPeriod>` element in the `<API-M_HOME>/repository/conf/identity/identity.xml` file as appropriate. It is recommended to set user access token validity period to at least `36000` for testing environments ([more on access tokens](https://docs.wso2.com/display/AM260/Working+with+Access+Tokens)).
+>   1. Set the value of `token_validity_period` as appropriate in the `<TOOL_HOME>/config/traffic-tool.yaml` file. It is recommended to set `token_validity_period` to `-1` for testing environments.
 
 #### 4. Generate the Traffic Dataset without Invoking
-Traffic tool will allow you to generate an API invoking traffic without actually invoking the APIs. Run the shell script with the argument 4. You will be prompted for a filename. Enter the filename without a file extension(without .txt, .csv, etc) and the output or the dataset will be saved in dataset/generated-traffic/<filename>.csv directory.
+Traffic tool will allow you to generate an API invoking traffic without actually invoking the APIs. Run the shell script with the argument 4. You will be prompted for a filename. Enter the filename without a file extension(without .txt, .csv, etc) and the output or the dataset will be saved in dataset/generated-traffic/filename.csv directory.
 
 ```
 $ ./traffic-tool.sh 4
@@ -179,7 +179,7 @@ gen_traffic_data
 ```
 
 #### 5. Simulate a Traffic on API Manager
-To simulate an API invoking traffic on WSO2 API Manager, run the shell script with the argument 5. You will be prompted for a filename and the script run time. Enter the filename without a file extension(without .txt, .csv, etc) and the output or the dataset will be saved in dataset/traffic/<filename>.csv directory. Traffic will be executed throughout the given time (Enter the time in minutes when prompted).
+To simulate an API invoking traffic on WSO2 API Manager, run the shell script with the argument 5. You will be prompted for a filename and the script run time. Enter the filename without a file extension(without .txt, .csv, etc) and the output or the dataset will be saved in dataset/traffic/filename.csv directory. Traffic will be executed throughout the given time (Enter the time in minutes when prompted).
 
 ```
 $ ./traffic-tool.sh 5
