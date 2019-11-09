@@ -253,6 +253,29 @@ Scenario is involved with following 6 different APIs and 3 different application
 
 ![APIM Example Scenario](/resources/images/APIM_scenario.png)
 
+### Attack simulation for the example scenario
+
+##### Denial of Service (DOS) attacks
+
+The aim of the DOS attacks is to make the API resources unavailable for the intended users. As DOS attacks originate from a one source, the attack tool simulates DOS attacks by sending bursts of API requests to an API, using a single user who has subscribed to that particular API. Therefore, user IP, access token and user cookie will stay the same for every request for a particular API.  
+
+##### Distributed Denial of Service (DDOS) attacks
+
+The aim of the DDOS attacks is also to make the API resources unavailable for the intended users. The main difference between DOS and DDOS is that the DDOS attacks can originate from multiple sources, the attack tool simulates DDOS attacks by sending bursts of API requests to an API, using multiple users who have subscribed to that particular API. Therefore, user IP, access token and user cookie will not be the same for every request for a particular API.  
+
+##### Abnormal Token Usage Attacks
+
+Abnormal token usage can occur where the client's behavior deviates significantly from his usual behavior. For an example, a user who rarely uses the cricket application mentioned in the example scenario, suddenly starts to use the News and Cricket APIs in the cricket application heavily. The attack tool simulates this attack type by scaling the request count in the usual traffic pattern for a particular time period. (If the user sends only 5 **GET** requests per hour, the attack tool may send 50 requests in the attack duration)  
+
+##### Extreme Delete Attacks
+
+In extreme delete attacks, an unusual number of **DELETE** requests are sent to an API resource. And also they usually occur without prior communication with the API (like a **GET** request).The attack tool simulates extreme delete attacks by sending random requests to the DELETE endpoints of an API.
+
+##### Stolen Token Attacks
+
+In stolen token attacks, the attackers invoke APIs with access tokens that are stolen or hijacked. The attack tool simulates the stolen token attacks by sending API requests with valid access tokens but using IP addresses,user cookies and user agents which are different from the normal invoke pattern.
+
+
 ## Adding Custom APIM Scenario
 Adding a custom API Manager scenario is little bit tricky task. As for the current version of the APIM Traffic Tool, you have to configure a set of files in order to invoke for a custom scenario. First you have to think and design a real world API access pattern which is similar to the example scenario given. Then follow below steps to change scenario data files. Default scenario files are at `<TOOL_HOME>/lib/traffic-tool/data/scenario/scenario_example/data/` directory. You can add a new folder named as your scenario_name to the `/scenario` folder and add a `/data` folder containing following files. Line seperator for all csv files is the new line character ('\n').
 
