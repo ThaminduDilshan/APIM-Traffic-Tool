@@ -5,3 +5,4 @@
 /lib/traffic-tool/data/scenario/scenario_example/data/user_app_pattern.csv
 /lib/traffic-tool/data/scenario/scenario_example/data/user_generation.csv
 /venv
+lib/attack-tool/src/python/utils/__pycache__/

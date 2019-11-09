@@ -29,6 +29,7 @@ import pickle
 import yaml
 import os
 import json
+import math
 from multiprocessing.dummy import Pool as ThreadPool
 
 
@@ -135,12 +136,14 @@ def sendRequest(url_protocol, url_ip, url_port, api_name, api_version, path, acc
 
 
 '''
-    This method will return a random integer between zero and ten.
+    This method will return a random integer between zero and eight.
     Highly biased for returning zero.
 '''
 def randomSleepTime():
-    int_list = [0,0,0,0,0,0,1,0,0,2,0,3,2,0,0,4,0,5,0,0,0,5,0,2,0,10,0,0,0,0,1,0,0,0,0,0]
-    return int_list[random.randint(0, len(int_list)-1)]
+    min = 0
+    max = 8
+    exp = 5
+    return math.floor(min + (max - min) * pow(random.random(), exp))
 
 
 '''
