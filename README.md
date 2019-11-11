@@ -25,29 +25,34 @@ The attack tool will attack WSO2 API Manager throughout a user specified time. A
 ## Prerequisites
 1. Install Java 7 or 8 (https://www.oracle.com/technetwork/java/javase/downloads/index.html).
 
-1. Download and install WSO2 API Manager version 2.6.0 (https://wso2.com/api-management/).
+2. Download and install WSO2 API Manager version 2.6.0 (https://wso2.com/api-management/).
 
-1. Install Python 3.6 or higher.
+3. Install Python 3.6 or higher.
 
-1. Install pip version 3 if not already installed.
+4. Install pip version 3 if not already installed.
 
-1. Install required python packages by running the following command in the project home directory.
+5. Install required python packages by running the following command in the project home directory.
    - `$ sudo pip install -r requirement.txt`
 
-1. Download and install Apache jmeter version 5.1.1 or higher (http://jmeter.apache.org/download_jmeter.cgi).
+6. Download and install Apache jmeter version 5.1.1 or higher (http://jmeter.apache.org/download_jmeter.cgi).
 
-1. Add following two packages to the `<JMETER_HOME>/lib` folder.
+7. Add following two packages to the `<JMETER_HOME>/lib` folder.
    - Download and add apache ivy (https://ant.apache.org/ivy/download.cgi)
    - Add attack tool helper package (can be found from `<TOOL_HOME>/resources/jars/attack-tool-helpers.jar`)
 
-1. Verify that all configurations are set for the traffic and attack scripts.
+8. Verify that all configurations are set for the traffic and attack scripts.
+
+9. By default, access tokens get expired after 60 minutes time interval. So if you are planning to simulate a traffic for more than 1 hour duration, please configure WSO2 API Manager and APIM Traffic Tool as below.
+   - Set the value of `<UserAccessTokenDefaultValidityPeriod>` element in the `<API-M_HOME>/repository/conf/identity/identity.xml` file as appropriate. It is recommended to set user access token validity period to at least `36000` for testing environments ([more on access tokens](https://docs.wso2.com/display/AM260/Working+with+Access+Tokens)).
+   - Set the value of `token_validity_period` as appropriate in the `<TOOL_HOME>/config/traffic-tool.yaml` file. It is recommended to set `token_validity_period` to `-1` for testing environments.
+
 
 ## Configuring the Tool
 Default configurations for WSO2 API Manager and default scenario are given in all the config files. If you are running WSO2 API Manager on different configurations or using the tool for a custom scenario, you can change the tool configurations as stated below. All configuration files are in the `<TOOL_HOME>/config` folder.
 
 1. Add your jmeter path in the `<TOOL_HOME>/config/user-settings.yaml` file.
 
-1. Enter correct API Manager version (please state as `2.6` or `3.0`), endpoints, protocol type, host ip and ports of WSO2 API Manager in the `<TOOL_HOME>/config/apim.yaml` file (Default ports and details can be found at https://docs.wso2.com/display/AM260/Default+Product+Ports).
+2. Enter correct API Manager version (please state as `2.6` or `3.0`), endpoints, protocol type, host ip and ports of WSO2 API Manager in the `<TOOL_HOME>/config/apim.yaml` file (Default ports and details can be found at https://docs.wso2.com/display/AM260/Default+Product+Ports).
 
    ```
    Endpoints for WSO2 API Manager 2.6.0
@@ -71,7 +76,7 @@ Default configurations for WSO2 API Manager and default scenario are given in al
    delete_user: /services/RemoteUserStoreManagerService.RemoteUserStoreManagerServiceHttpsSoap11Endpoint
    ```
 
-1. Add details of each API (name, context, version, resources) under apis section in `<TOOL_HOME>/config/apim.yaml` file.
+3. Add details of each API (name, context, version, resources) under apis section in `<TOOL_HOME>/config/apim.yaml` file.
 
    ```
    Example Usage
@@ -92,7 +97,7 @@ Default configurations for WSO2 API Manager and default scenario are given in al
           path: menu
    ```
 
-1. Configure the `<TOOL_HOME>/config/traffic-tool.yaml` file as stated below (Configurations for the traffic script).
+4. Configure the `<TOOL_HOME>/config/traffic-tool.yaml` file as stated below (Configurations for the traffic script).
    - Enter throttling tier, api visibility, production and sandbox endpoints for the APIs under api section (APIs are created using these configurations).
    - Enter payload to send with POST requests when simulating a normal traffic under api section.
    - Enter throttling tier and token validity period for the applications under application section (Applications are created using these configurations).
@@ -107,7 +112,7 @@ Default configurations for WSO2 API Manager and default scenario are given in al
       
         > It is recommended to set `heavy_traffic` to `false` in model training and testing environments to have a better training for attacks.
 
-1. Configure the `<TOOL_HOME>/config/attack-tool.yaml` file as stated below (Configurations for the attack script).
+5. Configure the `<TOOL_HOME>/config/attack-tool.yaml` file as stated below (Configurations for the attack script).
    - Modify **protocol**,**ip address** and **port** of the host using `api_host` section.
    - Append, modify or remove user agents from the list under `user_agents` section.
    - Set the attack duration in seconds using `attack_duration`. (Note: For DOS and DDOS attacks, attack duration is defined per API) 
@@ -278,24 +283,24 @@ In stolen token attacks, the attackers invoke APIs with access tokens that are s
 ## Adding Custom APIM Scenario
 Adding a custom API Manager scenario is little bit tricky task. As for the current version of the APIM Traffic Tool, you have to configure a set of files in order to invoke for a custom scenario. First you have to think and design a real world API access pattern which is similar to the example scenario given. Then follow below steps to change scenario data files. Default scenario files are at `<TOOL_HOME>/lib/traffic-tool/data/scenario/scenario_example/data/` directory. You can add a new folder named as your scenario_name to the `/scenario` folder and add a `/data` folder containing following files. Line seperator for all csv files is the new line character ('\n').
 
-1. api_creation.csv
+1. `api_creation.csv` : 
 Enter details of APIs (API name, description, context and a tag). Delimiter for csv is the comma(',').
 
-1. api_creation_swagger.csv
+2. `api_creation_swagger.csv` : 
 Provide swagger definitions of all the APIs seperated by new line character ('\n').
 
-1. app_creation.csv
+3. `app_creation.csv` : 
 Enter details of applications (Application name and description). Delimiter for csv is the dollar sign and a space('$<space>').
 
-1. app_api_subscription_admin.csv
+4. `app_api_subscription_admin.csv` : 
 Enter all application-api combinations which the subscriptions should happen. Give application name and API name seperated by a comma (',').
 
-1. api_invoke_scenario.csv
+5. `api_invoke_scenario.csv` : 
 This file should be prepared according to your invoke scenario. Each row is for a different user type in the scenario table. A row in the file is in the following format. '$' sign is used as the delimiter. You can add any number of patterns to the list in the format `[no_of_users,http_method,no_of_requests,resource_path]`.
 
    `<application_name>$[[pattern_1],[pattern_2]]`
 
-1. user_generation.csv
+6. `user_generation.csv` : 
 This file contains the user details in the following format. Delimiter for csv is two dollar signs and a space ($$<space>).
 
    `<username>, <password>, <first_name>, <last_name>, <organization>, <country>, <email>, <no(land)>, <no(mobile)>, <IM>, <url>`
@@ -304,5 +309,5 @@ This file contains the user details in the following format. Delimiter for csv i
 
    `$ ./traffic-tool.sh user_details`
 
-1. user_app_pattern.csv
+7. `user_app_pattern.csv` : 
 Above generated users should be distributed among applications inorder to generate access tokens. This file contains all username-application_name combinations seperated by a new line character ('\n'). Csv delimiter is the comma (',').
