@@ -1,21 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<!-- Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
-
-WSO2 Inc. licenses this file to you under the Apache License,
-Version 2.0 (the "License"); you may not use this file except
-in compliance with the License.
-You may obtain a copy of the License at
-
-http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing,
-software distributed under the License is distributed on an
-"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-KIND, either express or implied. See the License for the
-specific language governing permissions and limitations
-under the License. -->
-
 <jmeterTestPlan version="1.2" properties="5.0" jmeter="5.1.1 r1855137">
   <hashTree>
     <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="DDOS Attack" enabled="true">
@@ -133,7 +116,7 @@ props.put(&quot;apiList&quot;,apiList);
 
 
 //Defining column names in the data set
-String logString = &quot;TimeStamp,URL,Connection,Authorization,accept,client-ip,x-forwarded-for,Content-Type,Host,Response Code,User-agent\n&quot;;
+String logString = &quot;TimeStamp,URL,Method,Connection,Authorization,accept,client-ip,x-forwarded-for,Content-Type,Host,Response Code,User-agent\n&quot;;
 File dataSetCSV = new File(baseDir + &quot;/../../../../dataset/attack/DDOS.csv&quot; );
 FileWriter fw = new FileWriter(dataSetCSV,false);
 fw.write(logString);
@@ -711,6 +694,7 @@ HTTPSampleResult previousResult = (HTTPSampleResult)ctx.getPreviousResult();
 
 def headers = previousResult.getRequestHeaders().split(&quot;\n&quot;);
 def responseCode = previousResult.getResponseCode();
+def httpMethod = previousResult.getHTTPMethod();
 
 // Forming the csv string
 String dataString = &quot;&quot;;
@@ -718,23 +702,23 @@ String userAgent;
 String timeStamp = new java.text.SimpleDateFormat(&quot;MM/dd/yyyy h:mm:ss a&quot;).format(new Date());
 String url = previousResult.getUrlAsString();
 
-dataString += timeStamp + &quot;,&quot;
-dataString += url + &quot;,&quot;
+dataString = String.format(&quot;%s,%s,%s,&quot;,timeStamp,url,httpMethod);
 for (header in headers)
 {
 	values = header.split(&quot;: &quot;);
-	if(values[0].equals(&quot;User-Agent&quot;))
+	
+	if(values[0].equals(&quot;Connection&quot;) || values[0].startsWith(&quot;Authorization&quot;) || values[0].equals(&quot;accept&quot;) || values[0].equals(&quot;client-ip&quot;) || 
+	values[0].equals(&quot;x-forwarded-for&quot;) || values[0].equals(&quot;Content-Type&quot;) || values[0].equals(&quot;Host&quot;))
+	{
+		dataString += values[1] + &quot;,&quot; ;
+	}
+	else if(values[0].equals(&quot;User-Agent&quot;))
 	{
 		userAgent = values[1];
-		continue;
 	}
-	dataString += values[1] + &quot;,&quot; ;
-	//log.info(header.toString())
+	
 }
-
-dataString += responseCode + &quot;,&quot;;
-dataString += userAgent;
-dataString += &quot;\n&quot;;
+dataString += String.format(&quot;%s,%s\n&quot;,responseCode,userAgent);
 
 //writing the string to DDOS.csv
 baseDir = props.get(&quot;baseDir&quot;);
