@@ -1,4 +1,3 @@
-/lib/traffic-tool/data/runtime_data/
 /lib/traffic-tool/data/scenario/scenario_example/api_invoke_key_secret.csv
 /lib/traffic-tool/data/scenario/scenario_example/api_invoke_tokens.csv
 /lib/traffic-tool/data/scenario/scenario_example/token_ip_cookie.csv
