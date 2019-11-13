@@ -139,10 +139,6 @@ FileWriter fw = new FileWriter(dataSetCSV,false);
 fw.write(logString);
 fw.close();
 
-
-//log.info(vars.get(&quot;userAgents&quot;).toString());
-//log.info(gatewayProtocol)
-//log.info( scenario_base_path );
 </stringProp>
             <stringProp name="TestPlan.comments">Parse configurations, instantiate API and User objects </stringProp>
           </JSR223PreProcessor>
@@ -188,10 +184,6 @@ for (api in apiList)
 	i++;
 }
 
-
-//log.info(vars.get(&quot;userAgents&quot;).toString());
-//log.info(gatewayProtocol)
-//log.info( scenario_base_path );
 </stringProp>
               <stringProp name="scriptLanguage">groovy</stringProp>
             </JSR223PreProcessor>
@@ -206,7 +198,7 @@ for (api in apiList)
           <stringProp name="script">long attackDurationPerAPI = Integer.parseInt(props.get(&quot;attackDurationPerApi&quot;));
 long currentTime = System.currentTimeMillis();
 long stopTime = currentTime + attackDurationPerAPI.intValue() * 1000;
-vars.put(&quot;TestStopTime&quot;,&quot;&quot;+stopTime);</stringProp>
+vars.put(&quot;TestStopTime&quot;,&quot;&quot; + stopTime);</stringProp>
           <stringProp name="TestPlan.comments">Setting the attack duration</stringProp>
         </JSR223Sampler>
         <hashTree/>
@@ -271,18 +263,13 @@ vars.put(&quot;currentAPIVersion&quot;,currentAPI.getVersion());
 vars.putObject(&quot;currentAPIUsers&quot;,currentAPI.getUserList())
 vars.putObject(&quot;currentAPIResources&quot;,currentAPI.getResources())
 
-//Random rand = new Random();
-// Selecting a random user per API for DOS attack
-//def users = currentAPI.getUserList();
-//User randomUser = users.get(rand.nextInt(users.size()))
-
+// Adding user details as Jmeter variables
 vars.put(&quot;randomUserIP&quot;,currentAPI.getSingleUser().getIp());
 vars.put(&quot;randomUserCookie&quot;,currentAPI.getSingleUser().getCookie());
 vars.put(&quot;randomUserToken&quot;,currentAPI.getSingleUser().getToken());
 vars.put(&quot;randomUserApiName&quot;,currentAPI.getSingleUser().getApiName());
 
-//def userAgents = vars.getObject(&quot;userAgents&quot;);
-//vars.putObject(&quot;currentUserAgents&quot;,userAgents)
+
 </stringProp>
             <stringProp name="TestPlan.comments">Process the API data for the ForEach Controller / Selecting a random user per API for the DOS attack</stringProp>
           </JSR223Sampler>
@@ -358,9 +345,6 @@ def currentApiResources = vars.getObject(&quot;currentAPIResources&quot;);
 def randomResource = currentApiResources.get(rand2.nextInt(currentApiResources.size()));
 vars.put(&quot;currentAPIResourceMethod&quot;,randomResource.get(&quot;method&quot;).toString());
 vars.put(&quot;currentAPIResourcePath&quot;,randomResource.get(&quot;path&quot;).toString());
-//int duration = vars.get(&quot;attackDurationPerApi&quot;)
-//log.info(randomUserAgent.toString());
-//log.info((vars.get(&quot;currentAPIResourceMethod&quot;)))
 
 // path parameter for delete request
 def path = rand.nextInt(10000);
