@@ -43,7 +43,7 @@ The attack tool will attack WSO2 API Manager throughout a user specified time. A
 8. Verify that all configurations are set for the traffic and attack scripts.
 
 9. By default, access tokens get expired after 60 minutes time interval. So if you are planning to simulate a traffic for more than 1 hour duration, please configure WSO2 API Manager and APIM Traffic Tool as below.
-   - Set the value of `<UserAccessTokenDefaultValidityPeriod>` element in the `<API-M_HOME>/repository/conf/identity/identity.xml` file as appropriate. It is recommended to set user access token validity period to at least `36000` for testing environments ([more on access tokens](https://docs.wso2.com/display/AM260/Working+with+Access+Tokens)).
+   - Set the value of `<UserAccessTokenDefaultValidityPeriod>` element in the `<APIM_HOME>/repository/conf/identity/identity.xml` file as appropriate. It is recommended to set user access token validity period to at least `36000` for testing environments ([more on access tokens](https://docs.wso2.com/display/AM260/Working+with+Access+Tokens)).
    - Set the value of `token_validity_period` as appropriate in the `<TOOL_HOME>/config/traffic-tool.yaml` file. It is recommended to set `token_validity_period` to `-1` for testing environments.
 
 
@@ -170,9 +170,6 @@ API consumers require access tokens in order to access resources. Run the shell 
 ```
 $ ./traffic-tool.sh 3
 ```
-> By default, access tokens get expired after 60 minutes time interval. So if you are planning to simulate a traffic for more than 1 hour duration, please configure WSO2 API Manager and APIM Traffic Tool as below.
->   1. Set the value of `<UserAccessTokenDefaultValidityPeriod>` element in the `<API-M_HOME>/repository/conf/identity/identity.xml` file as appropriate. It is recommended to set user access token validity period to at least `36000` for testing environments ([more on access tokens](https://docs.wso2.com/display/AM260/Working+with+Access+Tokens)).
->   1. Set the value of `token_validity_period` as appropriate in the `<TOOL_HOME>/config/traffic-tool.yaml` file. It is recommended to set `token_validity_period` to `-1` for testing environments.
 
 #### 4. Generate the Traffic Dataset without Invoking
 Traffic tool will allow you to generate an API invoking traffic without actually invoking the APIs. Run the shell script with the argument 4. You will be prompted for a filename. Enter the filename without a file extension(without .txt, .csv, etc) and the output or the dataset will be saved in dataset/generated-traffic/filename.csv directory.
