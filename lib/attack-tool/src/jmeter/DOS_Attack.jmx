@@ -748,7 +748,7 @@ fw.close();</stringProp>
             <stringProp name="script">long attackDurationPerAPI = Integer.parseInt(props.get(&quot;attackDurationPerApi&quot;));
 long currentTime = System.currentTimeMillis();
 long stopTime = currentTime + attackDurationPerAPI.intValue() * 1000;
-vars.put(&quot;TestStopTime&quot;,&quot;&quot;+stopTime);</stringProp>
+vars.put(&quot;TestStopTime&quot;,&quot;&quot;+ stopTime);</stringProp>
             <stringProp name="TestPlan.comments">Resetting the timer after an attack on API finishes.</stringProp>
           </JSR223Sampler>
           <hashTree/>
