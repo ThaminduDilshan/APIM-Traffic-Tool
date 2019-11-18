@@ -85,8 +85,8 @@ def execute_scenario(scenario):
                 break
             response = util_methods.send_simple_request(request_path, method, token, random_ip, random_cookie, random_user_agent, payload=random_payload)
 
-            request_string = "{},{},{},{},{},{},{}".format(datetime.now(), request_path, method, token, random_ip, random_cookie, response.status_code)
-            util_methods.log(dataset_path, request_string, "a")
+            request_info = "{},{},{},{},{},{},{}".format(datetime.now(), request_path, method, token, random_ip, random_cookie, response.status_code)
+            util_methods.log(dataset_path, request_info, "a")
 
             print("Request sent with token: %s" % token, flush=True)
 
