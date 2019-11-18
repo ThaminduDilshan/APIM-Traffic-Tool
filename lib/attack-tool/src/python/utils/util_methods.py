@@ -1,4 +1,3 @@
-
 # Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 #
 # WSO2 Inc. licenses this file to you under the Apache License,
@@ -18,11 +17,9 @@
 import json
 import math
 import os
-import time
 from collections import defaultdict
-from datetime import datetime
 import random
-
+from datetime import datetime
 import requests
 # disabling warnings
 import urllib3
@@ -31,6 +28,10 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
 def generate_random_json():
+    """
+    Generates a random json string
+    :return: A random json string
+    """
     temp = defaultdict()
     for i in range(random.randint(0, 10)):
         temp[generate_random_string(random.randint(0, 10))] = generate_random_string(random.randint(0, 10))
@@ -53,10 +54,10 @@ def generate_random_string(size):
 
 def log(path, data, mode):
     """
-    logs the data in the given path
-    :param path: path to the log file
-    :param data: data to be logged
-    :param mode: mode to open the log file (ex: w, w+, a)
+    writes the data to a file in the given path
+    :param path: file path
+    :param data: data to be written
+    :param mode: mode to open the file (ex: w, w+, a)
 
     """
     temp_path = os.path.abspath(os.path.join(__file__, path))
@@ -66,13 +67,20 @@ def log(path, data, mode):
 
 def send_simple_request(request_path, method, token, ip, cookie, user_agent, path_params=None, query_params=None, payload=None):
     """
-    Send HTTP/HTTPS requests to a given API with the data in the DOSAttackData class
-    :param num:
-    :return: response code or done
+    Sending a http request using the given parameters
+    :param request_path: path used to send the request
+    :param method: The request method
+    :param token: An access token to be included in the header
+    :param ip: An IP address to be included in the header
+    :param cookie: An user cookie to be included in the header
+    :param user_agent: An user agent to be included in the header
+    :param path_params: If there are any path parameters, default value is none
+    :param query_params: If there are any query parameters, default value is none
+    :param payload: If there is a payload to be attached to the request body, default value is none
+    :return: A response object
     """
 
-    code = 0
-
+    # append query/path parameters
     if path_params is not None:
         request_path += "/{}".format(path_params)
     elif query_params is not None:
@@ -92,6 +100,7 @@ def send_simple_request(request_path, method, token, ip, cookie, user_agent, pat
         'Authorization': 'Bearer {}'.format(token),
         'Content-Type': 'application/json'
     }
+    # default response object
     r = requests.Response()
 
     try:
@@ -108,9 +117,22 @@ def send_simple_request(request_path, method, token, ip, cookie, user_agent, pat
 
         return r
 
-    except Exception as e:
-        print(str(e))
+    except requests.exceptions.RequestException as e:
+        attack_tool_log_path = "../../../../../../logs/attack-tool.log"
+        msg_string = "[Error] {} - Request Failure\n\t {}".format(datetime.now(), str(e))
+        log(attack_tool_log_path, msg_string, "a")
 
 
-def generate_biased_random(min, max, exp):
-    return math.floor(min + (max - min) * pow(random.random(), exp))
+def generate_biased_random(minimum, maximum, exp):
+    """
+    Generates a random number with a bias to either minimum or maximum.
+    :param minimum: Lower limit of number generation
+    :param maximum: Upper limit of number generation
+    :param exp: exp = 0 : number is the maximum number
+                0 < exp < 1 : number is closer to maximum;
+                exp = 1 : number is unbiased;
+                exp > 1 : number is closer to minimum;
+
+    :return: A biased random number
+    """
+    return math.floor(minimum + (maximum - minimum) * pow(random.random(), exp))
