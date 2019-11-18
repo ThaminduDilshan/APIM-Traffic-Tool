@@ -100,6 +100,7 @@ def send_simple_request(request_path, method, token, ip, cookie, user_agent, pat
         'Authorization': 'Bearer {}'.format(token),
         'Content-Type': 'application/json'
     }
+
     # default response object
     r = requests.Response()
 
