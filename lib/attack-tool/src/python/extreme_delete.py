@@ -29,6 +29,10 @@ from utils.util_methods import generate_random_string
 
 
 def request_handler(i):
+    """
+    Handle the requests
+    :return: None
+    """
     global attack_duration, protocol, host, port, payloads, user_agents, api_list, dataset_path
 
     up_time = datetime.now() - start_time
