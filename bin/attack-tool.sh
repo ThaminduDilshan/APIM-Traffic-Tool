@@ -14,14 +14,16 @@ func_help() {
 # function to start a dos attack
 func_DOS() {
   JMPATH=$(cat "$(pwd)"/../config/user-settings.yaml | shyaml get-value path_variables.jmeter)
-  $JMPATH/jmeter -n -t "$(pwd)"'/../lib/attack-tool/src/jmeter/DOS_Attack.jmx' -l "$(pwd)"/../logs/jmeter-results-attack_tool.log -j "$(pwd)"/../logs/jmeter-attack_tool.log
+  PROCESSES=$(cat "$(pwd)"/../config/attack-tool.yaml | shyaml get-value general_config.number_of_processes)
+  $JMPATH/jmeter -n -t "$(pwd)"'/../lib/attack-tool/src/jmeter/DOS_Attack.jmx' -JThreads=$PROCESSES -l "$(pwd)"/../logs/jmeter-results-attack_tool.log -j "$(pwd)"/../logs/jmeter-attack_tool.log
   echo "DOS attack finished. See 'logs/attack-shell.log' for details"
 }
 
 # function to start a ddos attack
 func_DDOS() {
   JMPATH=$(cat "$(pwd)"/../config/user-settings.yaml | shyaml get-value path_variables.jmeter)
-  $JMPATH/jmeter -n -t "$(pwd)"'/../lib/attack-tool/src/jmeter/DDOS_Attack.jmx' -l "$(pwd)"/../logs/jmeter-results-attack_tool.log -j "$(pwd)"/../logs/jmeter-attack_tool.log
+  PROCESSES=$(cat "$(pwd)"/../config/attack-tool.yaml | shyaml get-value general_config.number_of_processes)
+  $JMPATH/jmeter -n -t "$(pwd)"'/../lib/attack-tool/src/jmeter/DDOS_Attack.jmx' -JThreads=$PROCESSES -l "$(pwd)"/../logs/jmeter-results-attack_tool.log -j "$(pwd)"/../logs/jmeter-attack_tool.log
   echo "DDOS attack finished. See 'logs/attack-shell.log' for details"
 }
 
