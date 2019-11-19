@@ -109,6 +109,7 @@ if __name__ == '__main__':
     attack_duration = attack_config['general_config']['attack_duration']
     payloads = attack_config['general_config']['payloads']
     user_agents = attack_config['general_config']['user_agents']
+    process_count = attack_config['general_config']['number_of_processes']
 
     # Recording column names in the dataset csv file
     dataset_path = "../../../../../../dataset/attack/stolen_token.csv"
@@ -122,7 +123,7 @@ if __name__ == '__main__':
     print(log_string)
     util_methods.log(attack_tool_log_path, log_string, "a")
 
-    process_pool = Pool(processes=20)
+    process_pool = Pool(processes=process_count)
 
     # Executing scenarios until the attack duration elapses
     while True:

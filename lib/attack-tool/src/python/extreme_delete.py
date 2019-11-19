@@ -79,6 +79,7 @@ if __name__ == '__main__':
     scenario_name = attack_config['general_config']['scenario']
     payloads = attack_config['general_config']['payloads']
     user_agents = attack_config['general_config']['user_agents']
+    process_count = attack_config['general_config']['number_of_processes']
 
     # reading api configuration from apim.yaml
     apis = config['apis']
@@ -109,7 +110,7 @@ if __name__ == '__main__':
     util_methods.log(attack_tool_log_path, log_string, "a")
     util_methods.log(dataset_path, "Timestamp, Request path, Method,Access Token, IP Address, Cookie, Response Code", "w")
 
-    process_pool = Pool(processes=20)
+    process_pool = Pool(processes=process_count)
 
     # Executing scenarios until the attack duration elapses
     while True:

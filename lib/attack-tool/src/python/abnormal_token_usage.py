@@ -81,6 +81,7 @@ if __name__ == '__main__':
     attack_duration = attack_config['general_config']['attack_duration']
     payloads = attack_config['general_config']['payloads']
     user_agents = attack_config['general_config']['user_agents']
+    process_count = attack_config['general_config']['number_of_processes']
     max_request_multiplier = attack_config['attacks']['abnormal_token_usage']['max_request_scalar']
     min_request_multiplier = attack_config['attacks']['abnormal_token_usage']['min_request_scalar']
 
@@ -95,7 +96,7 @@ if __name__ == '__main__':
     attack_tool_log_path = "../../../../../../logs/attack-tool.log"
     util_methods.log(attack_tool_log_path, log_string, "a")
 
-    process_pool = Pool(processes=20)
+    process_pool = Pool(processes=process_count)
 
     # Executing scenarios until the attack duration elapses
     while True:
