@@ -60,37 +60,33 @@ under the License. -->
 import org.yaml.snakeyaml.Yaml;
 import org.apache.jmeter.services.FileServer;
 import tools.User;
-import tools.API
+import tools.API;
 
-String baseDir = FileServer.getFileServer().getBaseDir()
+String baseDir = FileServer.getFileServer().getBaseDir();
 
-Yaml ymlparser = new Yaml()
+Yaml ymlparser = new Yaml();
 
 //Main config data
-Map config = ymlparser.load((baseDir+&quot;/../../../../config/apim.yaml&quot; as File).text)
-Map managementConsole = config.find{it.key==&quot;management_console&quot;}?.value
-String gatewayProtocol = managementConsole.find{it.key==&quot;protocol&quot;}?.value
-String gatewayHost = managementConsole.find{it.key==&quot;host&quot;}?.value
-String gatewayServeletPort = managementConsole.find{it.key==&quot;servlet_transport_port_https&quot;}?.value
-String gatewayServeletPortHTTP = managementConsole.find{it.key==&quot;servlet_transport_port_http&quot;}?.value
-Map apiManager = config.find{it.key==&quot;api_manager&quot;}?.value
-String nioPtTransportPort = apiManager.find{it.key==&quot;nio_pt_transport_port&quot;}?.value
-List apis = config.find{it.key==&quot;apis&quot;}?.value
+Map config = ymlparser.load((baseDir + &quot;/../../../../config/apim.yaml&quot; as File).text);
+List apis = config.find{it.key==&quot;apis&quot;}?.value;
 
 //attack tool configurations
-Map attackConfig = ymlparser.load((baseDir+&quot;/../../../../config/attack-tool.yaml&quot; as File).text)
-Map generalConfig = attackConfig.find{it.key==&quot;general_config&quot;}?.value
-List userAgents = generalConfig.find{it.key==&quot;user_agents&quot;}?.value
-String attackDurationPerApi = generalConfig.find{it.key==&quot;attack_duration&quot;}?.value
-Map dosConfig = attackConfig.find{it.key==&quot;DOS_attack&quot;}?.value
-String scenarioName = generalConfig.find{it.key==&quot;scenario&quot;}?.value
-List postData = generalConfig.find{it.key==&quot;payloads&quot;}?.value
+Map attackConfig = ymlparser.load((baseDir + &quot;/../../../../config/attack-tool.yaml&quot; as File).text);
+Map generalConfig = attackConfig.find{it.key==&quot;general_config&quot;}?.value;
+Map apiHost = generalConfig.find{it.key==&quot;api_host&quot;}?.value;
+String gatewayProtocol = apiHost.find{it.key==&quot;protocol&quot;}?.value;
+String gatewayHost = apiHost.find{it.key==&quot;ip&quot;}?.value;
+String nioPtTransportPort = apiHost.find{it.key==&quot;port&quot;}?.value;
+List userAgents = generalConfig.find{it.key==&quot;user_agents&quot;}?.value;
+String attackDurationPerApi = generalConfig.find{it.key==&quot;attack_duration&quot;}?.value;
+String scenarioName = generalConfig.find{it.key==&quot;scenario&quot;}?.value;
+List postData = generalConfig.find{it.key==&quot;payloads&quot;}?.value;
+
 
 //Parsing user ips,tokens and cookies
-File csvfile = new File(baseDir + &quot;/../../../traffic-tool/data/scenario/&quot; + scenarioName + &quot;/token_ip_cookie.csv&quot; )
-List lines =csvfile.readLines()
-int i = 1;
-ArrayList userList = new ArrayList()
+File csvfile = new File(baseDir + &quot;/../../../traffic-tool/data/scenario/&quot; + scenarioName + &quot;/token_ip_cookie.csv&quot; );
+List lines =csvfile.readLines();
+ArrayList userList = new ArrayList();
 for(line in lines)
 {
 	String[] userData = line.split(&quot;,&quot;);
@@ -98,23 +94,21 @@ for(line in lines)
 	//ip,cookie,token,apiname
 	User tempUser = new User(userData[2],userData[3],userData[0],userData[1]);
 	userList.add(tempUser);
-	i++;
-
+	
 }
 
 //Creating API instances
-ArrayList apiList = new ArrayList()
-i = 1;
+ArrayList apiList = new ArrayList();
 Random rand = new Random();
 for(api in apis)
 {
 	API temp = new API(api[&quot;name&quot;],api[&quot;context&quot;],api[&quot;version&quot;].toString(),api[&quot;resources&quot;]);
+	// filter users subcribed to the API from the user list
 	temp.buildUserList(userList);
 	// Selecting a random user per API for DOS attack
 	def users = temp.getUserList();
 	User randomUser = users.get(rand.nextInt(users.size()))
 	temp.setSingleUser(randomUser);
-	i++;
 	apiList.add(temp);
 }
 
@@ -123,7 +117,6 @@ for(api in apis)
 props.put(&quot;baseDir&quot;,baseDir);
 props.put(&quot;gatewayProtocol&quot;, gatewayProtocol);
 props.put(&quot;gatewayHost&quot;, gatewayHost);
-props.put(&quot;gatewayServeletPort&quot;, gatewayServeletPort);
 props.put(&quot;nioPtTransportPort&quot;, nioPtTransportPort);
 props.put(&quot;userAgents&quot;,userAgents);
 props.put(&quot;postData&quot;,postData);
@@ -707,17 +700,19 @@ def headers = previousResult.getRequestHeaders().split(&quot;\n&quot;);
 def responseCode = previousResult.getResponseCode();
 def httpMethod = previousResult.getHTTPMethod();
 
-// Forming the csv string
+// Preparing the data string to be written on to the dataset csv
 String dataString = &quot;&quot;;
 String userAgent;
 String timeStamp = new java.text.SimpleDateFormat(&quot;MM/dd/yyyy h:mm:ss a&quot;).format(new Date());
 String url = previousResult.getUrlAsString();
 
+
 dataString = String.format(&quot;%s,%s,%s,&quot;,timeStamp,url,httpMethod);
 for (header in headers)
 {
 	values = header.split(&quot;: &quot;);
-	
+
+	// seperating required headers from the request headers array.
 	if(values[0].equals(&quot;Connection&quot;) || values[0].startsWith(&quot;Authorization&quot;) || values[0].equals(&quot;accept&quot;) || values[0].equals(&quot;client-ip&quot;) || 
 	values[0].equals(&quot;x-forwarded-for&quot;) || values[0].equals(&quot;Content-Type&quot;) || values[0].equals(&quot;Host&quot;))
 	{
