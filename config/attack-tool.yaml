@@ -25,8 +25,8 @@ general_config:
   # Attack duration in seconds. In DOS/DDOS attacks this duration will be per API
   attack_duration: 75
 
-  # Number of processes used to achieve concurrency
-  number_of_processes: 20
+  # Number of processes or threads used to achieve concurrency
+  number_of_processes: 50
 
   # Scenario name
   scenario: scenario_example
