@@ -92,7 +92,7 @@ def log(tag, write_string):
 '''
     This method will send http requests to the given address: GET, POST only
 '''
-def sendRequest(url_protocol, url_ip, url_port, api_name, api_version, path, access_token, method, user_ip, cookie, app_name, username):
+def sendRequest(url_protocol, url_ip, url_port, api_name, api_version, path, access_token, method, user_ip, cookie, app_name, username,user_agent):
     url = "{}://{}:{}/{}/{}/{}".format(url_protocol, url_ip, url_port, api_name, api_version, path)
     headers = {
         'accept': 'application/json',
@@ -100,7 +100,8 @@ def sendRequest(url_protocol, url_ip, url_port, api_name, api_version, path, acc
         'Authorization': 'Bearer {}'.format(access_token),
         'client-ip': '{}'.format(user_ip),
         'x-forwarded-for': '{}'.format(user_ip),
-        'cookie': '{}'.format(cookie)
+        'cookie': '{}'.format(cookie),
+        'User-Agent': user_agent
     }
     code = None
     res_txt = ""
@@ -128,7 +129,8 @@ def sendRequest(url_protocol, url_ip, url_port, api_name, api_version, path, acc
     # write data to files
     write_string = ""
 
-    write_string = str(datetime.now()) + "," + api_name + "," + access_token + "," + user_ip + "," + cookie + "," + api_name+"/"+api_version+"/"+path + "," + method + "," + str(code) + "\n"
+    # user agent is wrapped around quotes because there are commas in the user agent and they clash with the commas in csv file
+    write_string = str(datetime.now()) + "," + api_name + "," + access_token + "," + user_ip + "," + cookie + "," + api_name+"/"+api_version+"/"+path + "," + method + "," + str(code) +",\"" + user_agent +"\"\n"
     with open(abs_path+'/../../../../dataset/traffic/{}'.format(filename), 'a+') as file:
         file.write(write_string)
 
@@ -163,10 +165,11 @@ def runInvoker(scenario_row):
     cookie = scenario_row[7]
     app_name = scenario_row[8]
     username = scenario_row[9]
+    user_agent = scenario_row[10]
 
     for i in range(no_of_requests):
         try:
-            res_code, res_txt = sendRequest(host_protocol, host_ip, host_port, api_name, api_version, path, access_token, method, user_ip, cookie, app_name, username)
+            res_code, res_txt = sendRequest(host_protocol, host_ip, host_port, api_name, api_version, path, access_token, method, user_ip, cookie, app_name, username,user_agent)
             if heavy_traffic != 'true':
                 time.sleep(randomSleepTime())
         except:
@@ -192,7 +195,7 @@ def runInvoker(scenario_row):
 loadConfig()
 
 with open(abs_path+'/../../../../dataset/traffic/{}'.format(filename), 'w') as file:
-    file.write("timestamp,api,access_token,ip_address,cookie,invoke_path,http_method,response_code\n")
+    file.write("timestamp,api,access_token,ip_address,cookie,invoke_path,http_method,response_code,user agent\n")
 
 # load and set the scenario pool
 scenario_pool = pickle.load(open(abs_path+"/../../data/runtime_data/user_scenario_pool.sav", "rb"))
