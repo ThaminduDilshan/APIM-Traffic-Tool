@@ -16,6 +16,7 @@
 
 import os
 import random
+import sys
 import time
 from datetime import datetime
 from multiprocessing.dummy import Pool
@@ -56,7 +57,7 @@ def request_handler(i):
 
         response = util_methods.send_simple_request(request_path, method, token, ip, cookie, random_user_agent, path_params=path_param)
 
-        request_info = "{},{},{},{},{},{},{}".format(datetime.now(), request_path, method, token, ip, cookie, response.status_code)
+        request_info = "{},{},{},{},{},{},{},\"{}\"".format(datetime.now(), request_path, method, token, ip, cookie, response.status_code, random_user_agent)
         util_methods.log(dataset_path, request_info, "a")
 
         print("Request sent with token: %s" % token, flush=True)
@@ -105,6 +106,13 @@ if __name__ == '__main__':
     util_methods.log(dataset_path, "Timestamp, Request path, Method,Access Token, IP Address, Cookie, Response Code", "w")
 
     attack_tool_log_path = "../../../../../../logs/attack-tool.log"
+
+    if len(api_list) == 0:
+        error_string = "[ERROR] {} - There are no APIs with DELETE endpoints".format(datetime.now())
+        print(error_string)
+        util_methods.log(attack_tool_log_path,error_string,"a")
+        sys.exit()
+
     log_string = "[INFO] {} - Extreme delete attack started ".format(start_time)
     print(log_string)
     util_methods.log(attack_tool_log_path, log_string, "a")
