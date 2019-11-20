@@ -45,9 +45,9 @@ def execute_scenario(scenario):
         method = scenario[5]
         ip = scenario[6]
         cookie = scenario[7]
+        user_agent = scenario[10]
 
         request_path = "{}://{}:{}/{}/{}/{}".format(protocol, host, port, context, version, resource_path)
-        random_user_agent = random.choice(user_agents)
         random_payload = random.choice(payloads)
 
         # sending requests until the request target achieved or attack duration elapses
@@ -56,9 +56,9 @@ def execute_scenario(scenario):
             if up_time.seconds >= attack_duration:
                 break
 
-            response = util_methods.send_simple_request(request_path, method, token, ip, cookie, random_user_agent, payload=random_payload)
+            response = util_methods.send_simple_request(request_path, method, token, ip, cookie, user_agent, payload=random_payload)
 
-            request_info = "{},{},{},{},{},{},{}".format(datetime.now(), request_path, method, token, ip, cookie, response.status_code)
+            request_info = "{},{},{},{},{},{},{},\"{}\"".format(datetime.now(), request_path, method, token, ip, cookie, response.status_code,user_agent)
             util_methods.log(dataset_path, request_info, "a")
 
             # sleep the process for a random period of time between 0 and 3 seconds but biased to 0
