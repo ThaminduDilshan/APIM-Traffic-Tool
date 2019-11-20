@@ -38,7 +38,7 @@ The attack tool will attack WSO2 API Manager throughout a user specified time. A
 
 7. Add following two packages to the `<JMETER_HOME>/lib` folder.
    - Download and add apache ivy (https://ant.apache.org/ivy/download.cgi)
-   - Add attack tool helper package (can be found from `<TOOL_HOME>/resources/jars/attack-tool-helpers.jar`)
+   - Add attack tool helper package (can be found from `<TOOL_HOME>/resources/add-on/attack-tool-helpers.jar`)
 
 8. Verify that all configurations are set for the traffic and attack scripts.
 
@@ -115,11 +115,13 @@ Default configurations for WSO2 API Manager and default scenario are given in al
 5. Configure the `<TOOL_HOME>/config/attack-tool.yaml` file as stated below (Configurations for the attack script).
    - Modify **protocol**,**ip address** and **port** of the host using `api_host` section.
    - Append, modify or remove user agents from the list under `user_agents` section.
-   - Set the attack duration in seconds using `attack_duration`. (Note: For DOS and DDOS attacks, attack duration is defined per API) 
+   - Set the attack duration in seconds using `attack_duration`. (Note: For DOS and DDOS attacks, attack duration is defined per API)
+   - Configure the concurrency using `number_of_processes`. 
    - Enter the name of the scenario for `scenario`.
    - Append, modify or remove payloads from the list under `payloads` section. These payloads are used in the bodies of **POST**,**PUT** and **PATCH** requests.
    - Set minimum and maximum request scalars under `abnormal_token_usage`. These will be used to scale the normal traffic inorder to generate attack traffic for simulating abnormal token usage attack.
-   
+    
+ > It is recommended to add `setenv.sh` script in the `<TOOL_HOME>/resources/add-on` directory to the `<JMETER_HOME>/bin` directory in order to increase the heap size in JMeter if you are simulating DOS or DDOS attacks with heavy concurrency.   
 ## Using the Traffic Tool
 To use the traffic tool run the following command with the desired argument in a command line inside the `<TOOL_HOME>/bin` folder. To list down available options and their command line arguments, just run the command with the flag `-h`.
 
