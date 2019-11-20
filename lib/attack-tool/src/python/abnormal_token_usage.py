@@ -21,28 +21,28 @@ import time
 import yaml
 from datetime import datetime
 from utils import util_methods
-import ipaddress
 import random
 from utils.util_methods import generate_biased_random
 
 
-def handler_scenario(scenario):
+def execute_scenario(scenario):
     """
-    Execute scenarios from the scenario pool
+    Execute scenarios from the scenario pool to simulate abnormal token usage
     :param scenario: A list containing a scenario
     :return: none
     """
-    global attack_duration, protocol, host, port, payloads, user_agents, start_time, max_request_multiplier, min_request_multiplier,dataset_path
-    up_time = datetime.now() - start_time
-    if up_time.seconds < attack_duration:
+    global attack_duration, protocol, host, port, payloads, user_agents, start_time, max_request_multiplier, min_request_multiplier, dataset_path
 
+    up_time = datetime.now() - start_time
+
+    if up_time.seconds < attack_duration:
+        # multiply normal request count by a random value between user defined min and max value
+        request_target = scenario[0] * random.randint(min_request_multiplier, max_request_multiplier)
         context = scenario[1]
         version = scenario[2]
         resource_path = scenario[3]
         token = scenario[4]
         method = scenario[5]
-        request_target = scenario[0] * random.randint(min_request_multiplier, max_request_multiplier)
-        current_requests = 0
         ip = scenario[6]
         cookie = scenario[7]
 
@@ -50,59 +50,65 @@ def handler_scenario(scenario):
         random_user_agent = random.choice(user_agents)
         random_payload = random.choice(payloads)
 
+        # sending requests until the request target achieved or attack duration elapses
         for i in range(request_target):
             up_time = datetime.now() - start_time
             if up_time.seconds >= attack_duration:
                 break
+
             response = util_methods.send_simple_request(request_path, method, token, ip, cookie, random_user_agent, payload=random_payload)
-            request_string = "{},{},{},{},{},{},{}".format(datetime.now(), request_path, method, token, ip, cookie, response.status_code)
-            util_methods.log(dataset_path, request_string, "a")
 
+            request_info = "{},{},{},{},{},{},{}".format(datetime.now(), request_path, method, token, ip, cookie, response.status_code)
+            util_methods.log(dataset_path, request_info, "a")
+
+            # sleep the process for a random period of time between 0 and 3 seconds but biased to 0
             time.sleep(generate_biased_random(0, 3, 2))
-            current_requests += 1
 
 
+# Program Execution
 if __name__ == '__main__':
 
     with open(os.path.abspath(os.path.join(__file__, "../../../../traffic-tool/data/runtime_data/user_scenario_pool.sav")), "rb") as scenario_file:
         scenario_pool = pickle.load(scenario_file, )
 
-    with open(os.path.abspath(os.path.join(__file__, "../../../../../config/apim.yaml")), "r") as config_file:
-        config = yaml.load(config_file, Loader=yaml.FullLoader)
-
     with open(os.path.abspath(os.path.join(__file__, "../../../../../config/attack-tool.yaml")), "r") as attack_config_file:
         attack_config = yaml.load(attack_config_file, Loader=yaml.FullLoader)
 
-    # configurations
+    # Reading configurations from attack-tool.yaml
     protocol = attack_config['general_config']['api_host']['protocol']
     host = attack_config['general_config']['api_host']['ip']
     port = attack_config['general_config']['api_host']['port']
     attack_duration = attack_config['general_config']['attack_duration']
     payloads = attack_config['general_config']['payloads']
     user_agents = attack_config['general_config']['user_agents']
+    process_count = attack_config['general_config']['number_of_processes']
     max_request_multiplier = attack_config['attacks']['abnormal_token_usage']['max_request_scalar']
     min_request_multiplier = attack_config['attacks']['abnormal_token_usage']['min_request_scalar']
 
     start_time = datetime.now()
-    attack_tool_log_path = "../../../../../../logs/attack-tool.log"
+
+    # Recording column names in the dataset csv file
     dataset_path = "../../../../../../dataset/attack/abnormal_token.csv"
+    util_methods.log(dataset_path, "Timestamp, Request path, Method,Access Token, IP Address, Cookie, Response Code", "w")
 
     log_string = "[INFO] {} - Abnormal token usage attack started ".format(start_time)
     print(log_string)
+    attack_tool_log_path = "../../../../../../logs/attack-tool.log"
     util_methods.log(attack_tool_log_path, log_string, "a")
-    util_methods.log(dataset_path, "Timestamp, Request path, Method,Access Token, IP Address, Cookie, Response Code", "w")
 
-    pool = Pool(processes=20)
+    process_pool = Pool(processes=process_count)
 
+    # Executing scenarios until the attack duration elapses
     while True:
         time_elapsed = datetime.now() - start_time
         if time_elapsed.seconds >= attack_duration:
-            log_string = "[INFO] {} - Attack terminated successfully. Time elapsed: {} minutes".format(datetime.now(),time_elapsed.seconds / 60.0)
+            log_string = "[INFO] {} - Attack terminated successfully. Time elapsed: {} minutes".format(datetime.now(), time_elapsed.seconds / 60.0)
             print(log_string)
             util_methods.log(attack_tool_log_path, log_string, "a")
             break
         else:
-            pool.map(handler_scenario, scenario_pool)
+            process_pool.map(execute_scenario, scenario_pool)
 
-    pool.close()
-    pool.join()
+    # closes the process pool and wait for the processes to finish
+    process_pool.close()
+    process_pool.join()
