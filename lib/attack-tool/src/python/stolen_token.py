@@ -13,7 +13,7 @@
 # KIND, either express or implied. See the License for the
 # specific language governing permissions and limitations
 # under the License.
-
+import sys
 from multiprocessing.dummy import Pool
 import os
 import pickle
@@ -96,11 +96,20 @@ def execute_scenario(scenario):
 
 # Program Execution
 if __name__ == '__main__':
-    with open(os.path.abspath(os.path.join(__file__, "../../../../traffic-tool/data/runtime_data/user_scenario_pool.sav")), "rb") as scenario_file:
-        scenario_pool = pickle.load(scenario_file, )
 
-    with open(os.path.abspath(os.path.join(__file__, "../../../../../config/attack-tool.yaml")), "r") as attack_config_file:
-        attack_config = yaml.load(attack_config_file, Loader=yaml.FullLoader)
+    attack_tool_log_path = "../../../../../../logs/attack-tool.log"
+
+    try:
+        with open(os.path.abspath(os.path.join(__file__, "../../../../traffic-tool/data/runtime_data/user_scenario_pool.sav")), "rb") as scenario_file:
+            scenario_pool = pickle.load(scenario_file, )
+
+        with open(os.path.abspath(os.path.join(__file__, "../../../../../config/attack-tool.yaml")), "r") as attack_config_file:
+            attack_config = yaml.load(attack_config_file, Loader=yaml.FullLoader)
+    except FileNotFoundError as ex:
+        error_string = "[ERROR] {} - {}: \'{}\'".format(datetime.now(), ex.strerror, ex.filename)
+        print(error_string)
+        util_methods.log(attack_tool_log_path, error_string, "a")
+        sys.exit()
 
     # Reading configurations from attack-tool.yaml
     protocol = attack_config['general_config']['api_host']['protocol']
@@ -118,7 +127,6 @@ if __name__ == '__main__':
     used_ips = []
     start_time = datetime.now()
 
-    attack_tool_log_path = "../../../../../../logs/attack-tool.log"
     log_string = "[INFO] {} - Stolen token attack started ".format(start_time)
     print(log_string)
     util_methods.log(attack_tool_log_path, log_string, "a")
