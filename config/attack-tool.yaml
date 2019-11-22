@@ -23,7 +23,10 @@ general_config:
     - Opera/9.80 (Windows NT 5.2; U; ru) Presto/2.5.22 Version/10.51
 
   # Attack duration in seconds. In DOS/DDOS attacks this duration will be per API
-  attack_duration: 60
+  attack_duration: 75
+
+  # Number of processes or threads used to achieve concurrency
+  number_of_processes: 50
 
   # Scenario name
   scenario: scenario_example

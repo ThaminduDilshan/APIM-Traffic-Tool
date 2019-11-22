@@ -80,9 +80,9 @@ def genTimeList(starttime, no_of_invokes:int):
 '''
     This method will write the invoke request data to a file
 '''
-def writeInvokeData(timestamp, api_name, api_version, path, access_token, method, user_ip, cookie, app_name, username):
+def writeInvokeData(timestamp, api_name, api_version, path, access_token, method, user_ip, cookie, app_name, username,user_agent):
     code = '200'
-    write_string = str(timestamp) + "," + api_name + "," + access_token + "," + user_ip + "," + cookie + "," + api_name+"/"+api_version+"/"+path + "," + method + "," + str(code) + "\n"
+    write_string = str(timestamp) + "," + api_name + "," + access_token + "," + user_ip + "," + cookie + "," + api_name+"/"+api_version+"/"+path + "," + method + "," + str(code) +",\"" + user_agent +"\"\n"
 
     with open(abs_path+'/../../../../dataset/generated-traffic/{}'.format(filename), 'a+') as file:
         file.write(write_string)
@@ -104,6 +104,7 @@ def genInvokeData(starttime, scenario_row):
     cookie = scenario_row[7]
     app_name = scenario_row[8]
     username = scenario_row[9]
+    user_agent = scenario_row[10]
 
     # time stamps
     simultaneous_requests = random.randint(0, no_of_requests)
@@ -112,14 +113,14 @@ def genInvokeData(starttime, scenario_row):
 
     # simulate scenario
     for i in range(simultaneous_requests):
-        writeInvokeData(simultaneous_timestamp, api_name, api_version, path, access_token, method, user_ip, cookie, app_name, username)
+        writeInvokeData(simultaneous_timestamp, api_name, api_version, path, access_token, method, user_ip, cookie, app_name, username,user_agent)
         current_data_points += 1
         if current_data_points >= no_of_data_points:
             return True
 
     for i in range(no_of_requests-simultaneous_requests):
         timestamp = str(time_stamps.pop(0))
-        writeInvokeData(timestamp, api_name, api_version, path, access_token, method, user_ip, cookie, app_name, username)
+        writeInvokeData(timestamp, api_name, api_version, path, access_token, method, user_ip, cookie, app_name, username,user_agent)
         current_data_points += 1
         if current_data_points >= no_of_data_points:
             return True
@@ -133,8 +134,9 @@ def genInvokeData(starttime, scenario_row):
 
 loadConfig()
 
+# user agent is wrapped around quotes because there are commas in the user agent and they clash with the commas in csv file
 with open(abs_path+'/../../../../dataset/generated-traffic/{}'.format(filename), 'w') as file:
-    file.write("timestamp,api,access_token,ip_address,cookie,invoke_path,http_method,response_code\n")
+    file.write("timestamp,api,access_token,ip_address,cookie,invoke_path,http_method,response_code,user agent\n")
 
 scenario_pool = pickle.load(open(abs_path+"/../../data/runtime_data/user_scenario_pool.sav", "rb"))
 script_starttime = dt.now()

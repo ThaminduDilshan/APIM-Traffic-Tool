@@ -5,8 +5,8 @@
 WSO2 Inc. licenses this file to you under the Apache License,
 Version 2.0 (the "License"); you may not use this file except
 in compliance with the License.
-You may obtain a copy of the License at
 
+You may obtain a copy of the License at
 http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing,
@@ -60,37 +60,33 @@ under the License. -->
 import org.yaml.snakeyaml.Yaml;
 import org.apache.jmeter.services.FileServer;
 import tools.User;
-import tools.API
+import tools.API;
 
-String baseDir = FileServer.getFileServer().getBaseDir()
+String baseDir = FileServer.getFileServer().getBaseDir();
 
-Yaml ymlparser = new Yaml()
+Yaml ymlparser = new Yaml();
 
 //Main config data
-Map config = ymlparser.load((baseDir+&quot;/../../../../config/apim.yaml&quot; as File).text)
-Map managementConsole = config.find{it.key==&quot;management_console&quot;}?.value
-String gatewayProtocol = managementConsole.find{it.key==&quot;protocol&quot;}?.value
-String gatewayHost = managementConsole.find{it.key==&quot;host&quot;}?.value
-String gatewayServeletPort = managementConsole.find{it.key==&quot;servlet_transport_port_https&quot;}?.value
-String gatewayServeletPortHTTP = managementConsole.find{it.key==&quot;servlet_transport_port_http&quot;}?.value
-Map apiManager = config.find{it.key==&quot;api_manager&quot;}?.value
-String nioPtTransportPort = apiManager.find{it.key==&quot;nio_pt_transport_port&quot;}?.value
-List apis = config.find{it.key==&quot;apis&quot;}?.value
+Map config = ymlparser.load((baseDir + &quot;/../../../../config/apim.yaml&quot; as File).text);
+List apis = config.find{it.key==&quot;apis&quot;}?.value;
 
 //attack tool configurations
-Map attackConfig = ymlparser.load((baseDir+&quot;/../../../../config/attack-tool.yaml&quot; as File).text)
-Map generalConfig = attackConfig.find{it.key==&quot;general_config&quot;}?.value
-List userAgents = generalConfig.find{it.key==&quot;user_agents&quot;}?.value
-String attackDurationPerApi = generalConfig.find{it.key==&quot;attack_duration&quot;}?.value
-Map dosConfig = attackConfig.find{it.key==&quot;DOS_attack&quot;}?.value
-String scenarioName = generalConfig.find{it.key==&quot;scenario&quot;}?.value
-List postData = generalConfig.find{it.key==&quot;payloads&quot;}?.value
+Map attackConfig = ymlparser.load((baseDir + &quot;/../../../../config/attack-tool.yaml&quot; as File).text);
+Map generalConfig = attackConfig.find{it.key==&quot;general_config&quot;}?.value;
+Map apiHost = generalConfig.find{it.key==&quot;api_host&quot;}?.value;
+String gatewayProtocol = apiHost.find{it.key==&quot;protocol&quot;}?.value;
+String gatewayHost = apiHost.find{it.key==&quot;ip&quot;}?.value;
+String nioPtTransportPort = apiHost.find{it.key==&quot;port&quot;}?.value;
+List userAgents = generalConfig.find{it.key==&quot;user_agents&quot;}?.value;
+String attackDurationPerApi = generalConfig.find{it.key==&quot;attack_duration&quot;}?.value;
+String scenarioName = generalConfig.find{it.key==&quot;scenario&quot;}?.value;
+List postData = generalConfig.find{it.key==&quot;payloads&quot;}?.value;
+
 
 //Parsing user ips,tokens and cookies
-File csvfile = new File(baseDir + &quot;/../../../traffic-tool/data/scenario/&quot; + scenarioName + &quot;/token_ip_cookie.csv&quot; )
-List lines =csvfile.readLines()
-int i = 1;
-ArrayList userList = new ArrayList()
+File csvfile = new File(baseDir + &quot;/../../../traffic-tool/data/scenario/&quot; + scenarioName + &quot;/token_ip_cookie.csv&quot; );
+List lines =csvfile.readLines();
+ArrayList userList = new ArrayList();
 for(line in lines)
 {
 	String[] userData = line.split(&quot;,&quot;);
@@ -98,23 +94,21 @@ for(line in lines)
 	//ip,cookie,token,apiname
 	User tempUser = new User(userData[2],userData[3],userData[0],userData[1]);
 	userList.add(tempUser);
-	i++;
-
+	
 }
 
 //Creating API instances
-ArrayList apiList = new ArrayList()
-i = 1;
+ArrayList apiList = new ArrayList();
 Random rand = new Random();
 for(api in apis)
 {
 	API temp = new API(api[&quot;name&quot;],api[&quot;context&quot;],api[&quot;version&quot;].toString(),api[&quot;resources&quot;]);
+	// filter users subcribed to the API from the user list
 	temp.buildUserList(userList);
 	// Selecting a random user per API for DOS attack
 	def users = temp.getUserList();
 	User randomUser = users.get(rand.nextInt(users.size()))
 	temp.setSingleUser(randomUser);
-	i++;
 	apiList.add(temp);
 }
 
@@ -123,7 +117,6 @@ for(api in apis)
 props.put(&quot;baseDir&quot;,baseDir);
 props.put(&quot;gatewayProtocol&quot;, gatewayProtocol);
 props.put(&quot;gatewayHost&quot;, gatewayHost);
-props.put(&quot;gatewayServeletPort&quot;, gatewayServeletPort);
 props.put(&quot;nioPtTransportPort&quot;, nioPtTransportPort);
 props.put(&quot;userAgents&quot;,userAgents);
 props.put(&quot;postData&quot;,postData);
@@ -133,16 +126,12 @@ props.put(&quot;apiList&quot;,apiList);
 
 
 //Defining column names in the data set
-String logString = &quot;TimeStamp,URL,Connection,Authorization,accept,client-ip,x-forwarded-for,Content-Type,Host,Response Code,User-agent\n&quot;;
+String logString = &quot;TimeStamp,URL,Method,Connection,Authorization,accept,client-ip,x-forwarded-for,Content-Type,Host,Response Code,User-agent\n&quot;;
 File dataSetCSV = new File(baseDir + &quot;/../../../../dataset/attack/DOS.csv&quot; );
 FileWriter fw = new FileWriter(dataSetCSV,false);
 fw.write(logString);
 fw.close();
 
-
-//log.info(vars.get(&quot;userAgents&quot;).toString());
-//log.info(gatewayProtocol)
-//log.info( scenario_base_path );
 </stringProp>
             <stringProp name="TestPlan.comments">Parse configurations, instantiate API and User objects </stringProp>
           </JSR223PreProcessor>
@@ -155,7 +144,7 @@ fw.close();
           <boolProp name="LoopController.continue_forever">false</boolProp>
           <stringProp name="LoopController.loops">1</stringProp>
         </elementProp>
-        <stringProp name="ThreadGroup.num_threads">100</stringProp>
+        <stringProp name="ThreadGroup.num_threads">${__P(Threads,100)}</stringProp>
         <stringProp name="ThreadGroup.ramp_time">1</stringProp>
         <boolProp name="ThreadGroup.scheduler">false</boolProp>
         <stringProp name="ThreadGroup.duration"></stringProp>
@@ -188,10 +177,6 @@ for (api in apiList)
 	i++;
 }
 
-
-//log.info(vars.get(&quot;userAgents&quot;).toString());
-//log.info(gatewayProtocol)
-//log.info( scenario_base_path );
 </stringProp>
               <stringProp name="scriptLanguage">groovy</stringProp>
             </JSR223PreProcessor>
@@ -206,7 +191,7 @@ for (api in apiList)
           <stringProp name="script">long attackDurationPerAPI = Integer.parseInt(props.get(&quot;attackDurationPerApi&quot;));
 long currentTime = System.currentTimeMillis();
 long stopTime = currentTime + attackDurationPerAPI.intValue() * 1000;
-vars.put(&quot;TestStopTime&quot;,&quot;&quot;+stopTime);</stringProp>
+vars.put(&quot;TestStopTime&quot;,&quot;&quot; + stopTime);</stringProp>
           <stringProp name="TestPlan.comments">Setting the attack duration</stringProp>
         </JSR223Sampler>
         <hashTree/>
@@ -271,18 +256,13 @@ vars.put(&quot;currentAPIVersion&quot;,currentAPI.getVersion());
 vars.putObject(&quot;currentAPIUsers&quot;,currentAPI.getUserList())
 vars.putObject(&quot;currentAPIResources&quot;,currentAPI.getResources())
 
-//Random rand = new Random();
-// Selecting a random user per API for DOS attack
-//def users = currentAPI.getUserList();
-//User randomUser = users.get(rand.nextInt(users.size()))
-
+// Adding user details as Jmeter variables
 vars.put(&quot;randomUserIP&quot;,currentAPI.getSingleUser().getIp());
 vars.put(&quot;randomUserCookie&quot;,currentAPI.getSingleUser().getCookie());
 vars.put(&quot;randomUserToken&quot;,currentAPI.getSingleUser().getToken());
 vars.put(&quot;randomUserApiName&quot;,currentAPI.getSingleUser().getApiName());
 
-//def userAgents = vars.getObject(&quot;userAgents&quot;);
-//vars.putObject(&quot;currentUserAgents&quot;,userAgents)
+
 </stringProp>
             <stringProp name="TestPlan.comments">Process the API data for the ForEach Controller / Selecting a random user per API for the DOS attack</stringProp>
           </JSR223Sampler>
@@ -358,9 +338,6 @@ def currentApiResources = vars.getObject(&quot;currentAPIResources&quot;);
 def randomResource = currentApiResources.get(rand2.nextInt(currentApiResources.size()));
 vars.put(&quot;currentAPIResourceMethod&quot;,randomResource.get(&quot;method&quot;).toString());
 vars.put(&quot;currentAPIResourcePath&quot;,randomResource.get(&quot;path&quot;).toString());
-//int duration = vars.get(&quot;attackDurationPerApi&quot;)
-//log.info(randomUserAgent.toString());
-//log.info((vars.get(&quot;currentAPIResourceMethod&quot;)))
 
 // path parameter for delete request
 def path = rand.nextInt(10000);
@@ -721,30 +698,33 @@ HTTPSampleResult previousResult = (HTTPSampleResult)ctx.getPreviousResult();
 
 def headers = previousResult.getRequestHeaders().split(&quot;\n&quot;);
 def responseCode = previousResult.getResponseCode();
+def httpMethod = previousResult.getHTTPMethod();
 
-// Forming the csv string
+// Preparing the data string to be written on to the dataset csv
 String dataString = &quot;&quot;;
 String userAgent;
-String timeStamp = new java.text.SimpleDateFormat(&quot;MM/dd/yyyy h:mm:ss a&quot;).format(new Date());
+String timeStamp = new java.text.SimpleDateFormat(&quot;yyyy-MM-dd H:mm:ss.S&quot;).format(new Date());
 String url = previousResult.getUrlAsString();
 
-dataString += timeStamp + &quot;,&quot;
-dataString += url + &quot;,&quot;
+
+dataString = String.format(&quot;%s,%s,%s,&quot;,timeStamp,url,httpMethod);
 for (header in headers)
 {
 	values = header.split(&quot;: &quot;);
-	if(values[0].equals(&quot;User-Agent&quot;))
+
+	// seperating required headers from the request headers array.
+	if(values[0].equals(&quot;Connection&quot;) || values[0].startsWith(&quot;Authorization&quot;) || values[0].equals(&quot;accept&quot;) || values[0].equals(&quot;client-ip&quot;) || 
+	values[0].equals(&quot;x-forwarded-for&quot;) || values[0].equals(&quot;Content-Type&quot;) || values[0].equals(&quot;Host&quot;))
+	{
+		dataString += values[1] + &quot;,&quot; ;
+	}
+	else if(values[0].equals(&quot;User-Agent&quot;))
 	{
 		userAgent = values[1];
-		continue;
 	}
-	dataString += values[1] + &quot;,&quot; ;
-	//log.info(header.toString())
+	
 }
-
-dataString += responseCode + &quot;,&quot;;
-dataString += userAgent;
-dataString += &quot;\n&quot;;
+dataString += String.format(&quot;%s,\&quot;%s\&quot;\n&quot;,responseCode,userAgent);
 
 //writing the string to DOS.csv
 baseDir = props.get(&quot;baseDir&quot;);
@@ -763,7 +743,7 @@ fw.close();</stringProp>
             <stringProp name="script">long attackDurationPerAPI = Integer.parseInt(props.get(&quot;attackDurationPerApi&quot;));
 long currentTime = System.currentTimeMillis();
 long stopTime = currentTime + attackDurationPerAPI.intValue() * 1000;
-vars.put(&quot;TestStopTime&quot;,&quot;&quot;+stopTime);</stringProp>
+vars.put(&quot;TestStopTime&quot;,&quot;&quot;+ stopTime);</stringProp>
             <stringProp name="TestPlan.comments">Resetting the timer after an attack on API finishes.</stringProp>
           </JSR223Sampler>
           <hashTree/>
