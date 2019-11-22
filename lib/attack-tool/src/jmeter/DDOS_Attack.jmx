@@ -691,7 +691,7 @@ def httpMethod = previousResult.getHTTPMethod();
 // Preparing the data string to be written on to the dataset csv
 String dataString = &quot;&quot;;
 String userAgent;
-String timeStamp = new java.text.SimpleDateFormat(&quot;MM/dd/yyyy h:mm:ss a&quot;).format(new Date());
+String timeStamp = new java.text.SimpleDateFormat(&quot;yyyy-MM-dd H:mm:ss.S&quot;).format(new Date());
 String url = previousResult.getUrlAsString();
 
 dataString = String.format(&quot;%s,%s,%s,&quot;,timeStamp,url,httpMethod);
@@ -711,7 +711,7 @@ for (header in headers)
 	}
 	
 }
-dataString += String.format(&quot;%s,%s\n&quot;,responseCode,userAgent);
+dataString += String.format(&quot;%s,\&quot;%s\&quot;\n&quot;,responseCode,userAgent);
 
 //writing the string to DDOS.csv
 baseDir = props.get(&quot;baseDir&quot;);

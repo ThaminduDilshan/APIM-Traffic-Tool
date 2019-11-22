@@ -13,7 +13,7 @@
 # KIND, either express or implied. See the License for the
 # specific language governing permissions and limitations
 # under the License.
-
+import sys
 from multiprocessing.dummy import Pool
 import os
 import pickle
@@ -45,9 +45,9 @@ def execute_scenario(scenario):
         method = scenario[5]
         ip = scenario[6]
         cookie = scenario[7]
+        user_agent = scenario[10]
 
         request_path = "{}://{}:{}/{}/{}/{}".format(protocol, host, port, context, version, resource_path)
-        random_user_agent = random.choice(user_agents)
         random_payload = random.choice(payloads)
 
         # sending requests until the request target achieved or attack duration elapses
@@ -56,9 +56,9 @@ def execute_scenario(scenario):
             if up_time.seconds >= attack_duration:
                 break
 
-            response = util_methods.send_simple_request(request_path, method, token, ip, cookie, random_user_agent, payload=random_payload)
+            response = util_methods.send_simple_request(request_path, method, token, ip, cookie, user_agent, payload=random_payload)
 
-            request_info = "{},{},{},{},{},{},{}".format(datetime.now(), request_path, method, token, ip, cookie, response.status_code)
+            request_info = "{},{},{},{},{},{},{},\"{}\"".format(datetime.now(), request_path, method, token, ip, cookie, response.status_code, user_agent)
             util_methods.log(dataset_path, request_info, "a")
 
             # sleep the process for a random period of time between 0 and 3 seconds but biased to 0
@@ -68,11 +68,19 @@ def execute_scenario(scenario):
 # Program Execution
 if __name__ == '__main__':
 
-    with open(os.path.abspath(os.path.join(__file__, "../../../../traffic-tool/data/runtime_data/user_scenario_pool.sav")), "rb") as scenario_file:
-        scenario_pool = pickle.load(scenario_file, )
+    attack_tool_log_path = "../../../../../../logs/attack-tool.log"
 
-    with open(os.path.abspath(os.path.join(__file__, "../../../../../config/attack-tool.yaml")), "r") as attack_config_file:
-        attack_config = yaml.load(attack_config_file, Loader=yaml.FullLoader)
+    try:
+        with open(os.path.abspath(os.path.join(__file__, "../../../../traffic-tool/data/runtime_data/user_scenario_pool.sav")), "rb") as scenario_file:
+            scenario_pool = pickle.load(scenario_file, )
+
+        with open(os.path.abspath(os.path.join(__file__, "../../../../../config/attack-tool.yaml")), "r") as attack_config_file:
+            attack_config = yaml.load(attack_config_file, Loader=yaml.FullLoader)
+    except FileNotFoundError as ex:
+        error_string = "[ERROR] {} - {}: \'{}\'".format(datetime.now(), ex.strerror, ex.filename)
+        print(error_string)
+        util_methods.log(attack_tool_log_path, error_string, "a")
+        sys.exit()
 
     # Reading configurations from attack-tool.yaml
     protocol = attack_config['general_config']['api_host']['protocol']
@@ -93,7 +101,6 @@ if __name__ == '__main__':
 
     log_string = "[INFO] {} - Abnormal token usage attack started ".format(start_time)
     print(log_string)
-    attack_tool_log_path = "../../../../../../logs/attack-tool.log"
     util_methods.log(attack_tool_log_path, log_string, "a")
 
     process_pool = Pool(processes=process_count)

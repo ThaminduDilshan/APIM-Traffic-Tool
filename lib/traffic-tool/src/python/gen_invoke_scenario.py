@@ -1,4 +1,3 @@
-
 # Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 #
 # WSO2 Inc. licenses this file to you under the Apache License,
@@ -34,28 +33,31 @@ scenario_pool = []
 fake_generator = Factory.create()
 abs_path = os.path.abspath(os.path.dirname(__file__))
 
-with open(abs_path+'/../../../../config/traffic-tool.yaml', 'r') as file:
+with open(abs_path + '/../../../../config/traffic-tool.yaml', 'r') as file:
     traffic_config = yaml.load(file, Loader=yaml.FullLoader)
 scenario_name = traffic_config['scenario_name']
-
 
 '''
     This method will write the given log output to the log.txt file
 '''
+
+
 def log(tag, write_string):
-    with open(abs_path+'/../../../../logs/traffic-tool.log', 'a+') as file:
+    with open(abs_path + '/../../../../logs/traffic-tool.log', 'a+') as file:
         file.write("[{}] ".format(tag) + str(datetime.now()) + ": " + write_string + "\n")
 
 
 '''
     This method will return an integer slightly varied to the given median
 '''
+
+
 def varySlightly(median, no_of_users):
-    lower_bound = int(median) - int(int(no_of_users)/2)
-    upper_bound = int(median) + int(int(no_of_users)/2)
+    lower_bound = int(median) - int(int(no_of_users) / 2)
+    upper_bound = int(median) + int(int(no_of_users) / 2)
     if lower_bound <= 0:
         lower_bound = 1
-    req_count = random.randint(lower_bound,upper_bound)
+    req_count = random.randint(lower_bound, upper_bound)
 
     return req_count
 
@@ -63,6 +65,8 @@ def varySlightly(median, no_of_users):
 '''
     This method will return a randomly generated ipv4 address
 '''
+
+
 def ipGen():
     return fake_generator.ipv4()
 
@@ -70,24 +74,28 @@ def ipGen():
 '''
     This method will return a randomly generated cookie
 '''
+
+
 def getCookie():
     lettersAndDigits = string.ascii_lowercase + string.digits
     cookie = 'JSESSIONID='
-    cookie += ''.join( random.choice(lettersAndDigits) for ch in range(31) )
+    cookie += ''.join(random.choice(lettersAndDigits) for ch in range(31))
     return cookie
 
 
 '''
     This method will return a list of unique ipv4 addresses
 '''
-def genUniqueIPList(count:int):
+
+
+def genUniqueIPList(count: int):
     ip_list = []
     for ip in range(count):
         ip_list.append(ipGen())
 
     unique_list = list(set(ip_list))
 
-    while( len(unique_list) != len(ip_list) ):
+    while (len(unique_list) != len(ip_list)):
         diff = len(ip_list) - len(unique_list)
 
         for i in range(diff):
@@ -100,14 +108,16 @@ def genUniqueIPList(count:int):
 '''
     This method will return a list of unique cookies
 '''
-def genUniqueCookieList(count:int):
+
+
+def genUniqueCookieList(count: int):
     cookie_list = []
     for cookie in range(count):
         cookie_list.append(getCookie())
 
     unique_list = list(set(cookie_list))
 
-    while( len(unique_list) != len(cookie_list) ):
+    while (len(unique_list) != len(cookie_list)):
         diff = len(cookie_list) - len(unique_list)
 
         for i in range(diff):
@@ -124,7 +134,7 @@ def genUniqueCookieList(count:int):
 '''
 
 # generate a set of ips and cookies for each user
-with open(abs_path+'/../../data/scenario/{}/data/user_generation.csv'.format(scenario_name)) as file:
+with open(abs_path + '/../../data/scenario/{}/data/user_generation.csv'.format(scenario_name)) as file:
     userlist = file.read().split('\n')
 
     ip_list = genUniqueIPList(len(userlist))
@@ -132,20 +142,25 @@ with open(abs_path+'/../../data/scenario/{}/data/user_generation.csv'.format(sce
 
     for user in userlist:
         username = user.split('$$ ')[0]
-        user_ip.update( {username: ip_list.pop()} )
-        user_cookie.update( {username: cookie_list.pop()} )
+        user_ip.update({username: ip_list.pop()})
+        user_cookie.update({username: cookie_list.pop()})
 
 # update dictionary for apps and their users
-with open(abs_path+'/../../data/scenario/{}/data/app_creation.csv'.format(scenario_name)) as file:
+with open(abs_path + '/../../data/scenario/{}/data/app_creation.csv'.format(scenario_name)) as file:
     appList = file.read().split('\n')
 
     for app in appList:
         if app != "":
             appName = app.split('$ ')[0]
-            users_apps.update( {appName: []} )
+            users_apps.update({appName: []})
+
+# Reading config from traffic-tool.yaml
+with open(abs_path + '/../../../../config/traffic-tool.yaml') as config_file:
+    configurations = yaml.load(config_file, Loader=yaml.FullLoader)
+    user_agents = configurations['user_agents']
 
 # set ips with username, access tokens and append to relevant lists
-with open(abs_path+'/../../data/scenario/{}/api_invoke_tokens.csv'.format(scenario_name)) as file:
+with open(abs_path + '/../../data/scenario/{}/api_invoke_tokens.csv'.format(scenario_name)) as file:
     user_token = csv.reader(file)
 
     for row in user_token:
@@ -154,11 +169,14 @@ with open(abs_path+'/../../data/scenario/{}/api_invoke_tokens.csv'.format(scenar
         token = row[2]
         ip = user_ip.get(username)
         cookie = user_cookie.get(username)
+        user_agent = random.choice(user_agents)
 
-        (users_apps[app_name]).append([username,token,ip,cookie])
+        (users_apps[app_name]).append([username, token, ip, cookie,user_agent])
+
+
 
 # generate scenario data according to the script and append to the pool
-with open(abs_path+'/../../data/scenario/{}/data/api_invoke_scenario.csv'.format(scenario_name)) as file:
+with open(abs_path + '/../../data/scenario/{}/data/api_invoke_scenario.csv'.format(scenario_name)) as file:
     scenario_data = csv.reader(file, delimiter='$')
 
     for row in scenario_data:
@@ -180,9 +198,9 @@ with open(abs_path+'/../../data/scenario/{}/data/api_invoke_scenario.csv'.format
             api_version = "1"
             full_path = api_name + "/" + api_version + "/" + path + "/"
 
-            for user in users:              # user[username,token,ip,cookie]
+            for user in users:  # user[username,token,ip,cookie,user_agent]
                 no_of_requests = varySlightly(call_median, user_count)
-                scenario_pool.append([no_of_requests, api_name, "1", path, user[1], method, user[2], user[3], app_name, user[0]])
+                scenario_pool.append([no_of_requests, api_name, "1", path, user[1], method, user[2], user[3], app_name, user[0],user[4]])
 
 # save scenario data
 write_str = "access_token,api_name,ip_address,user_cookie\n"
@@ -194,11 +212,11 @@ for row in scenario_pool:
     user_cookie = row[7]
     write_str += access_token + ',' + api_name + ',' + ip_address + ',' + user_cookie + "\n"
 
-with open(abs_path+'/../../data/scenario/{}/token_ip_cookie.csv'.format(scenario_name), 'w') as file:
+with open(abs_path + '/../../data/scenario/{}/token_ip_cookie.csv'.format(scenario_name), 'w') as file:
     file.write(write_str)
 
 # saving scenario pool to a pickle file
-pickle.dump(scenario_pool, open(abs_path+"/../../data/runtime_data/user_scenario_pool.sav", "wb"))
+pickle.dump(scenario_pool, open(abs_path + "/../../data/runtime_data/user_scenario_pool.sav", "wb"))
 
 log("INFO", "User scenario distribution generated successfully")
 print("User scenario distribution generated successfully")
