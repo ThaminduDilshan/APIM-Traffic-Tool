@@ -14,7 +14,7 @@ apim_endpoints:
 # api manager management console ports and configurations
 management_console:
   protocol: https
-  host: 172.17.0.1
+  host: 10.100.8.30 #172.17.0.1
   servlet_transport_port_https: 9443
   servlet_transport_port_http: 9763
 
@@ -23,20 +23,19 @@ api_manager:
 
 # details of APIs in the scenario
 apis:
-#  - name: news
-#    context: news
-#    version: 1
-#    resources:
-#     - method: GET
-#       path: menu
+  - name: news
+    context: news
+    version: 1
+    resources:
+      - method: GET
+        path: menu
 
-
-#  - name: places
-#    context: places
-#    version: 1
-#    resources:
-#      - method: GET
-#        path: menu
+  - name: places
+    context: places
+    version: 1
+    resources:
+      - method: GET
+        path: menu
 
   - name: payment
     context: payment
@@ -67,7 +66,6 @@ apis:
       - method: DELETE
         path: order
 
-
   - name: cricket
     context: cricket
     version: 1
@@ -77,3 +75,66 @@ apis:
       - method: DELETE
         path: order
 
+
+
+# details of APIs in the scenario
+# apis:
+#   - name: news
+#     context: dtvla1179/API/Communication
+#     version: 1.0
+#     resources:
+#       - method: POST
+#         path: communicationMessage/in
+#
+#   - name: places
+#     context: dtvla1179/API/ProductInventoryManagementGetProducts
+#     version: 2.0
+#     resources:
+#       - method: GET
+#         path: productsCategory
+#
+#   - name: payment
+#     context: dtvla1179/API/ProductOrdering
+#     version: 4.0
+#     resources:
+#       - method: GET
+#         path: productOffering
+#
+#   - name: map
+#     context: ProductOrdering/tiab-enroll-voucher
+#     version: 1.0.0
+#     resources:
+#       - method: POST
+#         path: registerAndEnrollByVoucher
+#
+#   - name: weather
+#     context: pldtglobalcorp/tiab-gtacinf
+#     version: 1.0.0
+#     resources:
+#       - method: POST
+#         path: getAccountInfo
+#
+#   - name: cricket
+#     context: somosinc/preprod/routelink
+#     version: v1
+#     resources:
+#       - method: GET
+#         path: refreshToken
+#
+#   - name: news
+#     context: somosinc/routelink
+#     version: v1
+#     resources:
+#       - method: GET
+#         path: download
+#       - method: GET
+#         path: refreshToken
+#
+#   - name: places
+#     context: somosinc/routelink
+#     version: v2
+#     resources:
+#       - method: GET
+#         path: download
+#       - method: GET
+#         path: refreshToken

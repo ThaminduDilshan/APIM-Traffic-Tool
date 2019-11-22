@@ -1,0 +1,152 @@
+invoke_scenario:
+  - app_name: Online Shopping
+    no_of_users: 5
+    time_pattern: pattern1
+    api_calls:
+      - api: news
+        method: GET
+        no_of_requests: 1
+
+      - api: places
+        method: GET
+        no_of_requests: 2
+
+  - app_name: Online Shopping
+    no_of_users: 20
+    time_pattern: pattern3
+    api_calls:
+      - api: news
+        method: GET
+        no_of_requests: 30
+
+      - api: places
+        method: GET
+        no_of_requests: 20
+
+      - api: payment
+        method: GET
+        no_of_requests: 6
+
+      - api: payment
+        method: POST
+        no_of_requests: 3
+
+  - app_name: Online Shopping
+    no_of_users: 5
+    time_pattern: pattern4
+    api_calls:
+      - api: news
+        method: GET
+        no_of_requests: 10
+
+      - api: places
+        method: GET
+        no_of_requests: 15
+
+      - api: payment
+        method: GET
+        no_of_requests: 8
+
+      - api: payment
+        method: POST
+        no_of_requests: 4
+
+  - app_name: Online Shopping
+    no_of_users: 10
+    time_pattern: pattern4
+    api_calls:
+      - api: news
+        method: GET
+        no_of_requests: 50
+
+      - api: places
+        method: GET
+        no_of_requests: 30
+
+  - app_name: Taxi
+    no_of_users: 20
+    time_pattern: pattern1
+    api_calls:
+      - api: map
+        method: GET
+        no_of_requests: 2
+
+      - api: places
+        method: GET
+        no_of_requests: 1
+
+      - api: weather
+        method: GET
+        no_of_requests: 2
+
+  - app_name: Taxi
+    no_of_users: 40
+    time_pattern: pattern2
+    api_calls:
+      - api: map
+        method: GET
+        no_of_requests: 50
+
+      - api: places
+        method: GET
+        no_of_requests: 20
+
+      - api: weather
+        method: GET
+        no_of_requests: 20
+
+  - app_name: Taxi
+    no_of_users: 10
+    time_pattern: pattern4
+    api_calls:
+      - api: map
+        method: GET
+        no_of_requests: 50
+
+      - api: places
+        method: GET
+        no_of_requests: 20
+
+      - api: weather
+        method: GET
+        no_of_requests: 20
+
+      - api: payment
+        method: GET
+        no_of_requests: 16
+
+      - api: payment
+        method: POST
+        no_of_requests: 8
+
+  - app_name: CricScore
+    no_of_users: 5
+    time_pattern: pattern5
+    api_calls:
+      - api: news
+        method: GET
+        no_of_requests: 2
+
+      - api: cricket
+        method: GET
+        no_of_requests: 5
+
+  - app_name: CricScore
+    no_of_users: 35
+    time_pattern: pattern3
+    api_calls:
+      - api: news
+        method: GET
+        no_of_requests: 40
+
+      - api: cricket
+        method: GET
+        no_of_requests: 70
+
+
+time_patterns:
+  pattern1: 3600
+  pattern2: 0,1,0,0,2,0,5,0,1,0,10,0,15,0,20,15,1800,0,1,0,0,0,2,1,0,1,0,0,15,0,10,0,20
+  pattern3: 0,1,0,0,2,0,5,0,1,0,10,0,15,0,20,15,600,0,1,0,0,0,2,1,600,0,1,0,0,15,0,10,0,20
+  pattern4: 0,1,0,0,2,0,10,0,15,0,0,20,600,0,1,0,2,1,0,10,20,0,30,0,900,0,1,0,10,0,20,1800,0,1,0,10,0,20,600,0,0,10,0,30,300,0,0,1,10,0,20,1800,0,1,0,20,300,0,10,0,30,1,1
+  pattern5: 1800,300,500

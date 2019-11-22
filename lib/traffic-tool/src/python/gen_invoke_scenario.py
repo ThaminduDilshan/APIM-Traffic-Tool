@@ -26,17 +26,27 @@ from datetime import datetime
 
 # Variables
 scenario_name = None
+apis = None
+invoke_scenario = None
 user_ip = {}
 user_cookie = {}
 users_apps = {}
 scenario_pool = []
+existing_no_of_user_combinations = 0         # to validate the user count
+total_no_of_user_combinations = 0
 
 fake_generator = Factory.create()
+
+# setup configurations
 abs_path = os.path.abspath(os.path.dirname(__file__))
 
 with open(abs_path+'/../../../../config/traffic-tool.yaml', 'r') as file:
     traffic_config = yaml.load(file, Loader=yaml.FullLoader)
 scenario_name = traffic_config['scenario_name']
+
+with open(abs_path+'/../../../../config/apim.yaml', 'r') as file:
+    apim_config = yaml.load(file, Loader=yaml.FullLoader)
+apis = apim_config['apis']
 
 
 '''
@@ -45,6 +55,22 @@ scenario_name = traffic_config['scenario_name']
 def log(tag, write_string):
     with open(abs_path+'/../../../../logs/traffic-tool.log', 'a+') as file:
         file.write("[{}] ".format(tag) + str(datetime.now()) + ": " + write_string + "\n")
+
+
+'''
+    This method will return the invoke path for a given api and http method
+'''
+def getPath(api_name, method):
+    global apis
+
+    for api in apis:
+        if api.get('name') == api_name:
+            context = str(api.get('context'))
+            version = str(api.get('version'))
+            resources = api.get('resources')
+            for resource in resources:
+                if resource.get('method') == method:
+                    return context + '/' + version + '/' + str(resource.get('path'))
 
 
 '''
@@ -81,40 +107,22 @@ def getCookie():
     This method will return a list of unique ipv4 addresses
 '''
 def genUniqueIPList(count:int):
-    ip_list = []
-    for ip in range(count):
-        ip_list.append(ipGen())
+    ip_list = set()
+    while len(ip_list) != count:
+        ip_list.add(ipGen())
 
-    unique_list = list(set(ip_list))
-
-    while( len(unique_list) != len(ip_list) ):
-        diff = len(ip_list) - len(unique_list)
-
-        for i in range(diff):
-            unique_list.append(ipGen())
-        unique_list = list(set(unique_list))
-
-    return unique_list
+    return list(ip_list)
 
 
 '''
     This method will return a list of unique cookies
 '''
 def genUniqueCookieList(count:int):
-    cookie_list = []
-    for cookie in range(count):
-        cookie_list.append(getCookie())
+    cookie_list = set()
+    while len(cookie_list) != count:
+        cookie_list.add(getCookie())
 
-    unique_list = list(set(cookie_list))
-
-    while( len(unique_list) != len(cookie_list) ):
-        diff = len(cookie_list) - len(unique_list)
-
-        for i in range(diff):
-            unique_list.append(getCookie())
-        unique_list = list(set(unique_list))
-
-    return unique_list
+    return list(cookie_list)
 
 
 '''
@@ -125,7 +133,7 @@ def genUniqueCookieList(count:int):
 
 # generate a set of ips and cookies for each user
 with open(abs_path+'/../../data/scenario/{}/data/user_generation.csv'.format(scenario_name)) as file:
-    userlist = file.read().split('\n')
+    userlist = file.readlines()
 
     ip_list = genUniqueIPList(len(userlist))
     cookie_list = genUniqueCookieList(len(userlist))
@@ -137,7 +145,7 @@ with open(abs_path+'/../../data/scenario/{}/data/user_generation.csv'.format(sce
 
 # update dictionary for apps and their users
 with open(abs_path+'/../../data/scenario/{}/data/app_creation.csv'.format(scenario_name)) as file:
-    appList = file.read().split('\n')
+    appList = file.readlines()
 
     for app in appList:
         if app != "":
@@ -156,33 +164,39 @@ with open(abs_path+'/../../data/scenario/{}/api_invoke_tokens.csv'.format(scenar
         cookie = user_cookie.get(username)
 
         (users_apps[app_name]).append([username,token,ip,cookie])
+        existing_no_of_user_combinations += 1
 
 # generate scenario data according to the script and append to the pool
-with open(abs_path+'/../../data/scenario/{}/data/api_invoke_scenario.csv'.format(scenario_name)) as file:
-    scenario_data = csv.reader(file, delimiter='$')
+with open(abs_path+'/../../data/scenario/{}/data/invoke_scenario.yaml'.format(scenario_name)) as file:
+    invoke_scenario = yaml.load(file, Loader=yaml.FullLoader)
+scenario_data = invoke_scenario['invoke_scenario']
 
-    for row in scenario_data:
-        app_name = row[0]
-        invokes = row[1]
-        invokes = invokes.strip('][').split("],[")
+for item in scenario_data:
+    app_name = item.get('app_name')
+    user_count = int(item.get('no_of_users'))
+    time_pattern = item.get('time_pattern')
+    invokes = item.get('api_calls')
 
-        user_count = int(invokes[0].split(',')[0])
-        users = []
-        for i in range(user_count):
-            users.append(users_apps.get(app_name).pop())
+    # check whether the user count is valid (not more than the created number of users)
+    total_no_of_user_combinations += user_count
+    if total_no_of_user_combinations > existing_no_of_user_combinations:
+        # invalid no of users (cannot execute the scenario)
+        log("ERROR", "Invalid number of user count declared in 'invoke_scenario.yaml'. Expected {} users. Found {} or more.".format(existing_no_of_user_combinations, total_no_of_user_combinations))
+        raise ArithmeticError("Invalid number of user count declared in 'invoke_scenario.yaml'. Expected {} users. Found {} or more.".format(existing_no_of_user_combinations, total_no_of_user_combinations))
+
+    users = []
+    for i in range(user_count):
+        users.append(users_apps.get(app_name).pop())
 
         for invoke in invokes:
-            row2 = invoke.split(',')
-            api_name = row2[1]
-            method = row2[2]
-            call_median = int(row2[3])
-            path = row2[4]
-            api_version = "1"
-            full_path = api_name + "/" + api_version + "/" + path + "/"
+            api_name = invoke.get('api')
+            method = invoke.get('method')
+            call_median = int(invoke.get('no_of_requests'))
+            full_path = getPath(api_name, method)
 
             for user in users:              # user[username,token,ip,cookie]
                 no_of_requests = varySlightly(call_median, user_count)
-                scenario_pool.append([no_of_requests, api_name, "1", path, user[1], method, user[2], user[3], app_name, user[0]])
+                scenario_pool.append([no_of_requests, api_name, full_path, user[1], method, user[2], user[3], app_name, user[0], time_pattern])
 
 # save scenario data
 write_str = "access_token,api_name,ip_address,user_cookie\n"
