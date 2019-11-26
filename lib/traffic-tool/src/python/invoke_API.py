@@ -30,7 +30,8 @@ import yaml
 import os
 import json
 import math
-from multiprocessing.dummy import Pool as ThreadPool
+# from multiprocessing.dummy import Pool as ThreadPool
+from multiprocessing import Pool
 
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -51,6 +52,7 @@ host_port = None
 heavy_traffic = None
 scenario_name = None
 post_data = None
+# time_patterns = None
 
 script_starttime = None
 scenario_pool = []
@@ -66,7 +68,7 @@ abs_path = os.path.abspath(os.path.dirname(__file__))
     This method will load and set the configuration data
 '''
 def loadConfig():
-    global no_of_processes, max_connection_refuse_count, host_protocol, host_ip, host_port, heavy_traffic, scenario_name, post_data
+    global no_of_processes, max_connection_refuse_count, host_protocol, host_ip, host_port, heavy_traffic, scenario_name, post_data #, time_patterns
 
     with open(abs_path+'/../../../../config/traffic-tool.yaml', 'r') as file:
         traffic_config = yaml.load(file, Loader=yaml.FullLoader)
@@ -80,6 +82,11 @@ def loadConfig():
     scenario_name = traffic_config['scenario_name']
     post_data = traffic_config['api']['payload']
 
+    # with open(abs_path+'/../../data/scenario/{}/data/invoke_scenario.yaml'.format(scenario_name)) as file:
+    #     invoke_scenario = yaml.load(file, Loader=yaml.FullLoader)
+    #
+    # time_patterns = invoke_scenario['time_patterns']
+
 
 '''
     This method will write the given log output to the log.txt file
@@ -92,8 +99,8 @@ def log(tag, write_string):
 '''
     This method will send http requests to the given address: GET, POST only
 '''
-def sendRequest(url_protocol, url_ip, url_port, api_name, api_version, path, access_token, method, user_ip, cookie, app_name, username,user_agent):
-    url = "{}://{}:{}/{}/{}/{}".format(url_protocol, url_ip, url_port, api_name, api_version, path)
+def sendRequest(url_protocol, url_ip, url_port, path, access_token, method, user_ip, cookie, app_name, username, user_agent):
+    url = "{}://{}:{}/{}".format(url_protocol, url_ip, url_port, path)
     headers = {
         'accept': 'application/json',
         'Content-Type': 'application/json',
@@ -101,7 +108,7 @@ def sendRequest(url_protocol, url_ip, url_port, api_name, api_version, path, acc
         'client-ip': '{}'.format(user_ip),
         'x-forwarded-for': '{}'.format(user_ip),
         'cookie': '{}'.format(cookie),
-        'User-Agent': user_agent
+        'User-Agent': '{}'.format(user_agent)
     }
     code = None
     res_txt = ""
@@ -118,7 +125,7 @@ def sendRequest(url_protocol, url_ip, url_port, api_name, api_version, path, acc
             res_txt = response.text
         else:
             code = '400'
-            res_txt = 'Invalid type!'
+            res_txt = 'Invalid type'
     except ConnectionRefusedError:
         log("ERROR", "HTTP Connection Refused!")
         code = '404'
@@ -130,7 +137,7 @@ def sendRequest(url_protocol, url_ip, url_port, api_name, api_version, path, acc
     write_string = ""
 
     # user agent is wrapped around quotes because there are commas in the user agent and they clash with the commas in csv file
-    write_string = str(datetime.now()) + "," + api_name + "," + access_token + "," + user_ip + "," + cookie + "," + api_name+"/"+api_version+"/"+path + "," + method + "," + str(code) +",\"" + user_agent +"\"\n"
+    write_string = str(datetime.now()) + "," + user_ip + "," + access_token + "," + method + "," + path + "," + cookie + ",\"" + user_agent + "\"," + str(code) + "\n"
     with open(abs_path+'/../../../../dataset/traffic/{}'.format(filename), 'a+') as file:
         file.write(write_string)
 
@@ -157,19 +164,46 @@ def runInvoker(scenario_row):
 
     no_of_requests = scenario_row[0] - random.randint(0, scenario_row[0])
     api_name = scenario_row[1]
-    api_version = scenario_row[2]
-    path = scenario_row[3]
-    access_token = scenario_row[4]
-    method = scenario_row[5]
-    user_ip = scenario_row[6]
-    cookie = scenario_row[7]
-    app_name = scenario_row[8]
-    username = scenario_row[9]
-    user_agent = scenario_row[10]
+    path = scenario_row[2]
+    access_token = scenario_row[3]
+    method = scenario_row[4]
+    user_ip = scenario_row[5]
+    cookie = scenario_row[6]
+    app_name = scenario_row[7]
+    username = scenario_row[8]
+    user_agent = scenario_row[9]
+    # time_pattern = scenario_row[10]
+
+    # time_pattern = time_patterns.get(time_pattern)
+    # if type(time_pattern) is str:
+    #     time_pattern = [int(t) for t in time_pattern.split(',')]
+    # else:
+    #     time_pattern = [time_pattern]
+
+    # while True:
+    #     up_time = datetime.now() - script_starttime
+    #
+    #     if up_time.seconds >= script_runtime:
+    #         active_processes -= 1
+    #         break
+    #
+    #     for t in time_pattern:
+    #         up_time = datetime.now() - script_starttime
+    #
+    #         print(up_time.seconds, script_runtime, up_time.seconds >= script_runtime)
+    #
+    #         if up_time.seconds >= script_runtime:
+    #             active_processes -= 1
+    #             break
+    #
+    #         if heavy_traffic != 'true':
+    #             time.sleep(t)
+    #
+    #         #print('path: ', path, '\t|\tsleep time: ', t)
 
     for i in range(no_of_requests):
         try:
-            res_code, res_txt = sendRequest(host_protocol, host_ip, host_port, api_name, api_version, path, access_token, method, user_ip, cookie, app_name, username,user_agent)
+            res_code, res_txt = sendRequest(host_protocol, host_ip, host_port, path, access_token, method, user_ip, cookie, app_name, username, user_agent)
             if heavy_traffic != 'true':
                 time.sleep(randomSleepTime())
         except:
@@ -195,7 +229,7 @@ def runInvoker(scenario_row):
 loadConfig()
 
 with open(abs_path+'/../../../../dataset/traffic/{}'.format(filename), 'w') as file:
-    file.write("timestamp,api,access_token,ip_address,cookie,invoke_path,http_method,response_code,user agent\n")
+    file.write("timestamp,ip_address,access_token,http_method,invoke_path,cookie,user_agent,response_code\n")
 
 # load and set the scenario pool
 scenario_pool = pickle.load(open(abs_path+"/../../data/runtime_data/user_scenario_pool.sav", "rb"))
@@ -206,7 +240,8 @@ random.shuffle(scenario_pool)
 # record script starttime
 script_starttime = datetime.now()
 
-pool = ThreadPool(no_of_processes)
+# pool = ThreadPool(no_of_processes)
+pool = Pool(no_of_processes)
 
 print("[INFO] Scenario loaded successfully. Wait {} minutes to complete the script!".format(str(script_runtime/60)))
 log("INFO", "Scenario loaded successfully. Wait {} minutes to complete the script!".format(str(script_runtime/60)))

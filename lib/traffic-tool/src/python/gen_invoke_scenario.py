@@ -22,17 +22,23 @@ from faker import Factory
 import yaml
 import os
 from datetime import datetime
+import ipaddress
+import pandas as pd
 
 # Variables
 scenario_name = None
+ip_dataset_name = None
 apis = None
 invoke_scenario = None
+user_country = {}
 user_ip = {}
 user_cookie = {}
 users_apps = {}
 scenario_pool = []
 existing_no_of_user_combinations = 0         # to validate the user count
 total_no_of_user_combinations = 0
+used_ips = []
+ip_dataset = None
 
 fake_generator = Factory.create()
 
@@ -47,6 +53,10 @@ user_agents = traffic_config['user_agents']
 with open(abs_path+'/../../../../config/apim.yaml', 'r') as file:
     apim_config = yaml.load(file, Loader=yaml.FullLoader)
 apis = apim_config['apis']
+
+with open(abs_path+'/../../../../config/user-settings.yaml', 'r') as file:
+    user_settings = yaml.load(file, Loader=yaml.FullLoader)
+ip_dataset_name = user_settings['resources']['ip_database']
 
 
 '''
@@ -87,10 +97,26 @@ def varySlightly(median, no_of_users):
 
 
 '''
-    This method will return a randomly generated ipv4 address
+    This method will return a randomly generated ipv4 address for a given country
 '''
-def ipGen():
-    return fake_generator.ipv4()
+def ipGen(country):
+    global used_ips, ip_dataset
+
+    ip_range = ip_dataset.loc[ip_dataset['country_name'] == country][['ip_from', 'ip_to']]
+    if len(ip_range) > 0:
+        ip_decs = ip_range.sample(n=1).values[0]
+
+        random.seed()
+        MAX_IPV4 = ipaddress.IPv4Address._ALL_ONES
+        temp_ip = ipaddress.IPv4Address._string_from_ip_int(random.randint(ip_decs[0], ip_decs[1]))
+        while temp_ip in used_ips:
+            temp_ip = ipaddress.IPv4Address._string_from_ip_int(random.randint(ip_decs[0], ip_decs[1]))
+
+        used_ips.append(temp_ip)
+        return temp_ip
+
+    else:
+        return fake_generator.ipv4()
 
 
 '''
@@ -101,17 +127,6 @@ def getCookie():
     cookie = 'JSESSIONID='
     cookie += ''.join(random.choice(lettersAndDigits) for ch in range(31))
     return cookie
-
-
-'''
-    This method will return a list of unique ipv4 addresses
-'''
-def genUniqueIPList(count:int):
-    ip_list = set()
-    while len(ip_list) != count:
-        ip_list.add(ipGen())
-
-    return list(ip_list)
 
 
 '''
@@ -131,40 +146,41 @@ def genUniqueCookieList(count:int):
     output folders: lib/traffic-tool/data/scenario/ and lib/traffic-tool/data/runtime_data/
 '''
 
+# read and load the ip database
+ip_dataset = pd.read_csv(abs_path+'/../../../../resources/libraries/{}'.format(ip_dataset_name))
+
 # generate a set of ips and cookies for each user
 with open(abs_path+'/../../data/scenario/{}/data/user_generation.csv'.format(scenario_name)) as file:
     userlist = file.readlines()
 
-    ip_list = genUniqueIPList(len(userlist))
     cookie_list = genUniqueCookieList(len(userlist))
 
     for user in userlist:
         username = user.split('$$ ')[0]
-        user_ip.update({username: ip_list.pop()})
+        country = user.split('$$ ')[5]
+        user_country.update({username: country})
+        user_ip.update({username: ipGen(country)})
         user_cookie.update({username: cookie_list.pop()})
 
-# update dictionary for apps and their users
-with open(abs_path+'/../../data/scenario/{}/data/app_creation.csv'.format(scenario_name)) as file:
-    appList = file.readlines()
+# read user token csv file
+user_token = pd.read_csv(abs_path + '/../../data/scenario/{}/api_invoke_tokens.csv'.format(scenario_name))
 
-    for app in appList:
-        if app != "":
-            appName = app.split('$ ')[0]
-            users_apps.update({appName: []})
+# filter out unique app names and prepare dictionary
+appNames = user_token.drop_duplicates(subset=['app_name'], keep='first')[['app_name']]
+
+for row in appNames.itertuples():
+    users_apps.update({row.app_name: []})
 
 # set ips with username, access tokens and append to relevant lists
-with open(abs_path + '/../../data/scenario/{}/api_invoke_tokens.csv'.format(scenario_name)) as file:
-    user_token = csv.reader(file)
-
-    for row in user_token:
-        username = row[0]
-        app_name = row[1]
-        token = row[2]
-        ip = user_ip.get(username)
-        cookie = user_cookie.get(username)
-        user_agent = random.choice(user_agents)
-        (users_apps[app_name]).append([username, token, ip, cookie, user_agent])
-        existing_no_of_user_combinations += 1
+for row in user_token.itertuples():
+    username = row.username
+    app_name = row.app_name
+    token = row.access_token
+    ip = user_ip.get(username)
+    cookie = user_cookie.get(username)
+    user_agent = random.choice(user_agents)
+    (users_apps[app_name]).append([username, token, ip, cookie, user_agent])
+    existing_no_of_user_combinations += 1
 
 # generate scenario data according to the script and append to the pool
 with open(abs_path+'/../../data/scenario/{}/data/invoke_scenario.yaml'.format(scenario_name)) as file:
@@ -174,7 +190,7 @@ scenario_data = invoke_scenario['invoke_scenario']
 for item in scenario_data:
     app_name = item.get('app_name')
     user_count = int(item.get('no_of_users'))
-    time_pattern = item.get('time_pattern')
+    # time_pattern = item.get('time_pattern')
     invokes = item.get('api_calls')
 
     # check whether the user count is valid (not more than the created number of users)
@@ -196,7 +212,8 @@ for item in scenario_data:
 
         for user in users:  # user[username,token,ip,cookie,user_agent]
             no_of_requests = varySlightly(call_median, user_count)
-            scenario_pool.append([no_of_requests, api_name, full_path, user[1], method, user[2], user[3], app_name, user[0], user[4], time_pattern])
+            scenario_pool.append([no_of_requests, api_name, full_path, user[1], method, user[2], user[3], app_name, user[0], user[4]])
+            # scenario_pool.append([no_of_requests, api_name, full_path, user[1], method, user[2], user[3], app_name, user[0], user[4], time_pattern])
 
 # save scenario data
 write_str = "access_token,api_name,ip_address,user_cookie\n"
