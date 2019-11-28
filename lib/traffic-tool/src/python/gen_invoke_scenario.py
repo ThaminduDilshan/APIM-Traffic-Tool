@@ -235,7 +235,6 @@ with open(abs_path + '/../../data/scenario/{}/token_ip_cookie.csv'.format(scenar
 
 # saving scenario pool to a pickle file
 pickle.dump(scenario_pool, open(abs_path + "/../../data/runtime_data/scenario_pool.sav", "wb"))
-pickle.dump(scenario_distribution, open(abs_path + "/../../data/runtime_data/user_scenario_distribution.sav", "wb"))
 
 log("INFO", "User scenario distribution generated successfully")
 print("User scenario distribution generated successfully")

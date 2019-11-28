@@ -1,4 +1,3 @@
-
 # Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 #
 # WSO2 Inc. licenses this file to you under the Apache License,
@@ -44,7 +43,6 @@ filename = args.filename + ".csv"
 script_runtime = args.runtime * 60       # in seconds
 
 # Variables
-no_of_processes = None
 max_connection_refuse_count = None
 host_protocol = None
 host_ip = None
@@ -67,12 +65,11 @@ abs_path = os.path.abspath(os.path.dirname(__file__))
     This method will load and set the configuration data
 '''
 def loadConfig():
-    global no_of_processes, max_connection_refuse_count, host_protocol, host_ip, host_port, heavy_traffic, scenario_name, post_data, time_patterns
+    global max_connection_refuse_count, host_protocol, host_ip, host_port, heavy_traffic, scenario_name, post_data, time_patterns
 
     with open(abs_path+'/../../../../config/traffic-tool.yaml', 'r') as file:
         traffic_config = yaml.load(file, Loader=yaml.FullLoader)
 
-    no_of_processes = int(traffic_config['tool_config']['no_of_processes'])
     max_connection_refuse_count = int(traffic_config['tool_config']['max_connection_refuse_count'])
     heavy_traffic = str(traffic_config['tool_config']['heavy_traffic']).lower()
     host_protocol = traffic_config['api_host']['protocol']
