@@ -34,7 +34,8 @@ user_country = {}
 user_ip = {}
 user_cookie = {}
 users_apps = {}
-scenario_pool = []
+scenario_pool = {}
+scenario_distribution = []
 existing_no_of_user_combinations = 0         # to validate the user count
 total_no_of_user_combinations = 0
 used_ips = []
@@ -182,6 +183,10 @@ for row in user_token.itertuples():
     (users_apps[app_name]).append([username, token, ip, cookie, user_agent])
     existing_no_of_user_combinations += 1
 
+    if username not in scenario_pool:
+        scenario_pool.update({username: {}})
+    scenario_pool.get(username).update({app_name: []})
+
 # generate scenario data according to the script and append to the pool
 with open(abs_path+'/../../data/scenario/{}/data/invoke_scenario.yaml'.format(scenario_name)) as file:
     invoke_scenario = yaml.load(file, Loader=yaml.FullLoader)
@@ -190,7 +195,7 @@ scenario_data = invoke_scenario['invoke_scenario']
 for item in scenario_data:
     app_name = item.get('app_name')
     user_count = int(item.get('no_of_users'))
-    # time_pattern = item.get('time_pattern')
+    time_pattern = item.get('time_pattern')
     invokes = item.get('api_calls')
 
     # check whether the user count is valid (not more than the created number of users)
@@ -212,13 +217,13 @@ for item in scenario_data:
 
         for user in users:  # user[username,token,ip,cookie,user_agent]
             no_of_requests = varySlightly(call_median, user_count)
-            scenario_pool.append([no_of_requests, api_name, full_path, user[1], method, user[2], user[3], app_name, user[0], user[4]])
-            # scenario_pool.append([no_of_requests, api_name, full_path, user[1], method, user[2], user[3], app_name, user[0], user[4], time_pattern])
+            scenario_pool.get(user[0]).get(app_name).append([no_of_requests, api_name, full_path, user[1], method, user[2], user[3], user[4], time_pattern])
+            scenario_distribution.append([no_of_requests, api_name, full_path, user[1], method, user[2], user[3], app_name, user[0], user[4]])
 
 # save scenario data
 write_str = "access_token,api_name,ip_address,user_cookie\n"
 
-for row in scenario_pool:
+for row in scenario_distribution:
     api_name = row[1]
     access_token = row[4]
     ip_address = row[6]
@@ -229,7 +234,8 @@ with open(abs_path + '/../../data/scenario/{}/token_ip_cookie.csv'.format(scenar
     file.write(write_str)
 
 # saving scenario pool to a pickle file
-pickle.dump(scenario_pool, open(abs_path + "/../../data/runtime_data/user_scenario_pool.sav", "wb"))
+pickle.dump(scenario_pool, open(abs_path + "/../../data/runtime_data/scenario_pool.sav", "wb"))
+pickle.dump(scenario_distribution, open(abs_path + "/../../data/runtime_data/user_scenario_distribution.sav", "wb"))
 
 log("INFO", "User scenario distribution generated successfully")
 print("User scenario distribution generated successfully")

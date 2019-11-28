@@ -59,7 +59,7 @@ func_gen_tokens() {
   SCENARIONAME=$(cat "$(pwd)"/../config/traffic-tool.yaml | shyaml get-value scenario_name)
   JMPATH=$(cat "$(pwd)"/../config/user-settings.yaml | shyaml get-value path_variables.jmeter)
 
-  if [ -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/app_creation.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/user_app_pattern.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/api_invoke_key_secret.csv ];
+  if [ -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/app_creation.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/user_app_pattern.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/api_invoke_key_secret.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/invoke_scenario.yaml ];
   then
     rm -f "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/api_invoke_tokens.csv
     $JMPATH/jmeter -n -t "$(pwd)"'/../lib/traffic-tool/src/jmeter/generate_token_list.jmx' -l "$(pwd)"/../logs/jmeter-results-traffic_tool.log -j "$(pwd)"/../logs/jmeter-traffic_tool.log
@@ -82,7 +82,7 @@ func_gen_tokens() {
 
 # function to generate traffic data without invoking APIs
 func_gen_invoke_data() {
-  if [ -e "$(pwd)"/../lib/traffic-tool/data/runtime_data/user_scenario_pool.sav ];
+  if [ -e "$(pwd)"/../lib/traffic-tool/data/runtime_data/scenario_pool.sav ];
   then
     echo "Enter filename (without file extension):"
     read FILENAME
@@ -101,14 +101,14 @@ func_gen_invoke_data() {
       exit 1
     fi
   else
-    echo "Missing 'user_scenario_pool.sav' file"
+    echo "Missing 'scenario_pool.sav' file"
     exit 1
   fi
 }
 
 # function to simulate a traffic on APIM
 func_traffic() {
-  if [ -e "$(pwd)"/../lib/traffic-tool/data/runtime_data/user_scenario_pool.sav ];
+  if [ -e "$(pwd)"/../lib/traffic-tool/data/runtime_data/scenario_pool.sav ];
   then
     echo "Enter filename (without file extension): "
     read FILENAME
@@ -117,10 +117,12 @@ func_traffic() {
     chmod +x "$(pwd)"/../lib/traffic-tool/src/python/invoke_API.py
 
     if command -v python3 &>/dev/null; then
+      rm -f "$(pwd)"/../lib/traffic-tool/data/runtime_data/traffic_processes.pid
       nohup python3 "$(pwd)"/../lib/traffic-tool/src/python/invoke_API.py $FILENAME $EXECTIME >> "$(pwd)"/../logs/traffic-shell.log 2>&1 &
       echo $! > "$(pwd)"/../data/traffic_tool.pid
       echo "Traffic tool started. Wait $EXECTIME minutes to complete the script"
     elif command -v python &>/dev/null; then
+      rm -f "$(pwd)"/../lib/traffic-tool/data/runtime_data/traffic_processes.pid
       nohup python "$(pwd)"/../lib/traffic-tool/src/python/invoke_API.py $FILENAME $EXECTIME >> "$(pwd)"/../logs/traffic-shell.log 2>&1 &
       echo $! > "$(pwd)"/../data/traffic_tool.pid
       echo "Traffic tool started. Wait $EXECTIME minutes to complete the script"
@@ -129,7 +131,7 @@ func_traffic() {
       exit 1
     fi
   else
-    echo "Missing 'user_scenario_pool.sav' file"
+    echo "Missing 'scenario_pool.sav' file"
     exit 1
   fi
 }
@@ -145,6 +147,11 @@ func_stop_traffic() {
     if [ $? -eq 0 ];
     then
       kill -9 $PID
+
+      while IFS= read -r subPID; do
+        kill -9 $subPID
+      done < "$(pwd)"/../lib/traffic-tool/data/runtime_data/traffic_processes.pid
+
       if [ $? -eq 0 ];
       then
           echo "Traffic Tool Stopped Successfully"
@@ -154,6 +161,7 @@ func_stop_traffic() {
     fi
   fi
   > "$(pwd)"/../data/traffic_tool.pid
+  > "$(pwd)"/../lib/traffic-tool/data/runtime_data/traffic_processes.pid
 }
 
 # function to generate random user details, generate user distribution, create example scenario, generate access tokens
@@ -170,7 +178,7 @@ func_all() {
   if command -v python3 &>/dev/null; then
     python3 "$(pwd)"/../lib/traffic-tool/src/python/gen_user_details.py 1
 
-    if [ -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/api_creation.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/api_creation_swagger.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/app_creation.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/app_api_subscription_admin.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/user_generation.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/user_app_pattern.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/api_invoke_scenario.csv ];
+    if [ -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/api_creation.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/api_creation_swagger.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/app_creation.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/app_api_subscription_admin.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/user_generation.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/user_app_pattern.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/invoke_scenario.yaml ];
     then
       rm -f "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/api_invoke_key_secret.csv
       $JMPATH/jmeter -n -t "$(pwd)"'/../lib/traffic-tool/src/jmeter/create_api_scenario.jmx' -l "$(pwd)"/../logs/jmeter-results-traffic_tool.log -j "$(pwd)"/../logs/jmeter-traffic_tool.log
@@ -184,6 +192,7 @@ func_all() {
 
       if [ -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/api_invoke_tokens.csv ];
       then
+        rm -f "$(pwd)"/../lib/traffic-tool/data/runtime_data/traffic_processes.pid
         chmod +x "$(pwd)"/../lib/traffic-tool/src/python/invoke_API.py
         nohup python3 "$(pwd)"/../lib/traffic-tool/src/python/invoke_API.py $FILENAME $EXECTIME >> "$(pwd)"/../logs/traffic-shell.log 2>&1 &
         echo $! > "$(pwd)"/../data/traffic_tool.pid
@@ -199,7 +208,7 @@ func_all() {
   elif command -v python &>/dev/null; then
     python "$(pwd)"/../lib/traffic-tool/src/python/gen_user_details.py 1
 
-    if [ -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/api_creation.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/api_creation_swagger.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/app_creation.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/app_api_subscription_admin.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/user_generation.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/user_app_pattern.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/api_invoke_scenario.csv ];
+    if [ -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/api_creation.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/api_creation_swagger.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/app_creation.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/app_api_subscription_admin.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/user_generation.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/user_app_pattern.csv -a -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/data/invoke_scenario.yaml ];
     then
       rm -f "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/api_invoke_key_secret.csv
       $JMPATH/jmeter -n -t "$(pwd)"'/../lib/traffic-tool/src/jmeter/create_api_scenario.jmx' -l "$(pwd)"/../logs/jmeter-results-traffic_tool.log -j "$(pwd)"/../logs/jmeter-traffic_tool.log
@@ -213,6 +222,7 @@ func_all() {
 
       if [ -e "$(pwd)"/../lib/traffic-tool/data/scenario/$SCENARIONAME/api_invoke_tokens.csv ];
       then
+        rm -f "$(pwd)"/../lib/traffic-tool/data/runtime_data/traffic_processes.pid
         chmod +x "$(pwd)"/../lib/traffic-tool/src/python/invoke_API.py
         nohup python "$(pwd)"/../lib/traffic-tool/src/python/invoke_API.py $FILENAME $EXECTIME >> "$(pwd)"/../logs/traffic-shell.log 2>&1 &
         echo $! > "$(pwd)"/../data/traffic_tool.pid

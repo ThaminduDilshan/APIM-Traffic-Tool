@@ -30,8 +30,8 @@ import yaml
 import os
 import json
 import math
-# from multiprocessing.dummy import Pool as ThreadPool
-from multiprocessing import Pool
+from multiprocessing import Process, Value
+import numpy as np
 
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -52,12 +52,11 @@ host_port = None
 heavy_traffic = None
 scenario_name = None
 post_data = None
-# time_patterns = None
+time_patterns = None
 
 script_starttime = None
-scenario_pool = []
-connection_refuse_count = 0
-active_processes = 0
+scenario_pool = {}
+connection_refuse_count = Value('i', 0)
 process_pool = []
 
 fake_generator = Factory.create()
@@ -68,7 +67,7 @@ abs_path = os.path.abspath(os.path.dirname(__file__))
     This method will load and set the configuration data
 '''
 def loadConfig():
-    global no_of_processes, max_connection_refuse_count, host_protocol, host_ip, host_port, heavy_traffic, scenario_name, post_data #, time_patterns
+    global no_of_processes, max_connection_refuse_count, host_protocol, host_ip, host_port, heavy_traffic, scenario_name, post_data, time_patterns
 
     with open(abs_path+'/../../../../config/traffic-tool.yaml', 'r') as file:
         traffic_config = yaml.load(file, Loader=yaml.FullLoader)
@@ -82,10 +81,10 @@ def loadConfig():
     scenario_name = traffic_config['scenario_name']
     post_data = traffic_config['api']['payload']
 
-    # with open(abs_path+'/../../data/scenario/{}/data/invoke_scenario.yaml'.format(scenario_name)) as file:
-    #     invoke_scenario = yaml.load(file, Loader=yaml.FullLoader)
-    #
-    # time_patterns = invoke_scenario['time_patterns']
+    with open(abs_path+'/../../data/scenario/{}/data/invoke_scenario.yaml'.format(scenario_name)) as file:
+        invoke_scenario = yaml.load(file, Loader=yaml.FullLoader)
+
+    time_patterns = invoke_scenario['time_patterns']
 
 
 '''
@@ -126,12 +125,9 @@ def sendRequest(url_protocol, url_ip, url_port, path, access_token, method, user
         else:
             code = '400'
             res_txt = 'Invalid type'
-    except ConnectionRefusedError:
-        log("ERROR", "HTTP Connection Refused!")
-        code = '404'
     except Exception as e:
         log("ERROR", str(e))
-        code = '404'
+        code = '521'
 
     # write data to files
     write_string = ""
@@ -145,78 +141,59 @@ def sendRequest(url_protocol, url_ip, url_port, path, access_token, method, user
 
 
 '''
-    This method will return a random integer between zero and eight.
-    Highly biased for returning zero.
-'''
-def randomSleepTime():
-    min = 0
-    max = 8
-    exp = 5
-    return math.floor(min + (max - min) * pow(random.random(), exp))
-
-
-'''
     This method will take a given invoke scenario and execute it.
     Supposed to be executed from a process.
 '''
-def runInvoker(scenario_row):
-    global connection_refuse_count, script_starttime, script_runtime, active_processes
+def runInvoker(username, user_scenario, connection_refuse_count):
+    global script_starttime, script_runtime
 
-    no_of_requests = scenario_row[0] - random.randint(0, scenario_row[0])
-    api_name = scenario_row[1]
-    path = scenario_row[2]
-    access_token = scenario_row[3]
-    method = scenario_row[4]
-    user_ip = scenario_row[5]
-    cookie = scenario_row[6]
-    app_name = scenario_row[7]
-    username = scenario_row[8]
-    user_agent = scenario_row[9]
-    # time_pattern = scenario_row[10]
+    appNames = list(user_scenario.keys())
+    it = 0
 
-    # time_pattern = time_patterns.get(time_pattern)
-    # if type(time_pattern) is str:
-    #     time_pattern = [int(t) for t in time_pattern.split(',')]
-    # else:
-    #     time_pattern = [time_pattern]
+    while(True):
+        app_name = appNames[random.randint(0,len(appNames)-1)]
+        app_scenario_list = user_scenario.get(app_name)
+        time_pattern = None
 
-    # while True:
-    #     up_time = datetime.now() - script_starttime
-    #
-    #     if up_time.seconds >= script_runtime:
-    #         active_processes -= 1
-    #         break
-    #
-    #     for t in time_pattern:
-    #         up_time = datetime.now() - script_starttime
-    #
-    #         print(up_time.seconds, script_runtime, up_time.seconds >= script_runtime)
-    #
-    #         if up_time.seconds >= script_runtime:
-    #             active_processes -= 1
-    #             break
-    #
-    #         if heavy_traffic != 'true':
-    #             time.sleep(t)
-    #
-    #         #print('path: ', path, '\t|\tsleep time: ', t)
+        for scenario in app_scenario_list:
+            no_of_requests = scenario[0] - random.randint(0, scenario[0])
+            api_name = scenario[1]
+            path = scenario[2]
+            access_token = scenario[3]
+            method = scenario[4]
+            user_ip = scenario[5]
+            cookie = scenario[6]
+            user_agent = scenario[7]
 
-    for i in range(no_of_requests):
-        try:
-            res_code, res_txt = sendRequest(host_protocol, host_ip, host_port, path, access_token, method, user_ip, cookie, app_name, username, user_agent)
-            if heavy_traffic != 'true':
-                time.sleep(randomSleepTime())
-        except:
-            connection_refuse_count += 1
-            if connection_refuse_count > max_connection_refuse_count:
-                log("ERROR", "Terminating the process due to maximum no of connection refuses!")
-                active_processes -= 1
-                sys.exit()
+            if time_pattern == None:
+                time_pattern = scenario[8]
+                time_pattern = time_patterns.get(time_pattern)
+                if type(time_pattern) is str:
+                    time_pattern = [int(t) for t in time_pattern.split(',')]
+                else:
+                    time_pattern = [time_pattern]
+
+            for i in range(no_of_requests):
+                up_time = datetime.now() - script_starttime
+                if up_time.seconds >= script_runtime:
+                    break
+
+                try:
+                    res_code, res_txt = sendRequest(host_protocol, host_ip, host_port, path, access_token, method, user_ip, cookie, app_name, username, user_agent)
+                    if res_code == '521':
+                        connection_refuse_count.value += 1
+                    if heavy_traffic != 'true':
+                        time.sleep(time_pattern[it%len(time_pattern)])
+                    it += 1
+                except Exception as e:
+                    log('ERROR', str(e))
+                    connection_refuse_count.value += 1
 
         up_time = datetime.now() - script_starttime
         if up_time.seconds >= script_runtime:
-            active_processes -= 1
             break
+        else:
+            time.sleep(abs(int(np.random.normal() * 10)))
 
 
 '''
@@ -232,28 +209,47 @@ with open(abs_path+'/../../../../dataset/traffic/{}'.format(filename), 'w') as f
     file.write("timestamp,ip_address,access_token,http_method,invoke_path,cookie,user_agent,response_code\n")
 
 # load and set the scenario pool
-scenario_pool = pickle.load(open(abs_path+"/../../data/runtime_data/user_scenario_pool.sav", "rb"))
-
-# shuffle the pool
-random.shuffle(scenario_pool)
+scenario_pool = pickle.load(open(abs_path+"/../../data/runtime_data/scenario_pool.sav", "rb"))
 
 # record script starttime
 script_starttime = datetime.now()
 
-# pool = ThreadPool(no_of_processes)
-pool = Pool(no_of_processes)
+processes_list = []
+
+# create and start a process for each user
+for key_uname, val_scenario in scenario_pool.items():
+    process = Process(target=runInvoker, args=(key_uname, val_scenario, connection_refuse_count))
+    process.daemon = False
+    processes_list.append(process)
+    process.start()
+
+    with open(abs_path+'/../../data/runtime_data/traffic_processes.pid', 'a+') as file:
+        file.write(str(process.pid)+'\n')
 
 print("[INFO] Scenario loaded successfully. Wait {} minutes to complete the script!".format(str(script_runtime/60)))
 log("INFO", "Scenario loaded successfully. Wait {} minutes to complete the script!".format(str(script_runtime/60)))
 
 while True:
     time_elapsed = datetime.now() - script_starttime
+
     if time_elapsed.seconds >= script_runtime:
+        for process in processes_list:
+            process.terminate()
+        with open(abs_path+'/../../data/runtime_data/traffic_processes.pid', 'w') as file:
+            file.write('')
+
         print("[INFO] Script terminated successfully. Time elapsed: {} minutes".format(time_elapsed.seconds/60.0))
         log("INFO", "Script terminated successfully. Time elapsed: {} minutes".format(time_elapsed.seconds/60.0))
         break
-    else:
-        pool.map(runInvoker, scenario_pool)
 
-pool.close()
-pool.join()
+    elif connection_refuse_count.value > max_connection_refuse_count:
+        for process in processes_list:
+            process.terminate()
+        with open(abs_path+'/../../data/runtime_data/traffic_processes.pid', 'w') as file:
+            file.write('')
+        print("[ERROR] Terminating the program due to maximum no of connection refuses!")
+        log("ERROR", "Terminating the program due to maximum no of connection refuses!")
+        break
+
+    else:
+        pass
