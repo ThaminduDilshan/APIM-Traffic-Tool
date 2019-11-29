@@ -22,6 +22,7 @@ from datetime import datetime
 from multiprocessing.dummy import Pool
 
 import pandas as pd
+import requests
 import yaml
 
 from utils import util_methods
@@ -54,13 +55,14 @@ def request_handler(i):
         ip = random_user[2]
         cookie = random_user[3]
         path_param = generate_random_string(10)
-
-        response = util_methods.send_simple_request(request_path, method, token, ip, cookie, random_user_agent, path_params=path_param)
-
-        request_info = "{},{},{},{},{},{},{},\"{}\"".format(datetime.now(), request_path, method, token, ip, cookie, response.status_code, random_user_agent)
-        util_methods.log(dataset_path, request_info, "a")
-
-        print("Request sent with token: %s" % token, flush=True)
+        try:
+            response = util_methods.send_simple_request(request_path, method, token, ip, cookie, random_user_agent, path_params=path_param)
+            request_info = "{},{},{},{},{},{},{},\"{}\"".format(datetime.now(), request_path, method, token, ip, cookie, response.status_code, random_user_agent)
+            util_methods.log(dataset_path, request_info, "a")
+        except requests.exceptions.RequestException:
+            msg_string = "[Error] {} - Request Failure\n\t {}".format(datetime.now(), str(ex))
+            print(msg_string)
+            util_methods.log(attack_tool_log_path, msg_string, "a")
 
 
 # Program Execution

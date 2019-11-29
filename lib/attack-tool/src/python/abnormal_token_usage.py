@@ -18,6 +18,8 @@ from multiprocessing.dummy import Pool
 import os
 import pickle
 import time
+
+import requests
 import yaml
 from datetime import datetime
 from utils import util_methods
@@ -55,11 +57,14 @@ def execute_scenario(scenario):
             up_time = datetime.now() - start_time
             if up_time.seconds >= attack_duration:
                 break
-
-            response = util_methods.send_simple_request(request_path, method, token, ip, cookie, user_agent, payload=random_payload)
-
-            request_info = "{},{},{},{},{},{},{},\"{}\"".format(datetime.now(), request_path, method, token, ip, cookie, response.status_code, user_agent)
-            util_methods.log(dataset_path, request_info, "a")
+            try:
+                response = util_methods.send_simple_request(request_path, method, token, ip, cookie, user_agent, payload=random_payload)
+                request_info = "{},{},{},{},{},{},{},\"{}\"".format(datetime.now(), request_path, method, token, ip, cookie, response.status_code, user_agent)
+                util_methods.log(dataset_path, request_info, "a")
+            except requests.exceptions.RequestException:
+                msg_string = "[Error] {} - Request Failure\n\t {}".format(datetime.now(), str(ex))
+                print(msg_string)
+                util_methods.log(attack_tool_log_path, msg_string, "a")
 
             # sleep the process for a random period of time between 0 and 3 seconds but biased to 0
             time.sleep(generate_biased_random(0, 3, 2))
