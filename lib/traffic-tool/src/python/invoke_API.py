@@ -42,7 +42,7 @@ args = parser.parse_args()
 filename = args.filename + ".csv"
 script_runtime = args.runtime * 60       # in seconds
 
-# Variables
+# variables
 max_connection_refuse_count = None
 host_protocol = None
 host_ip = None
@@ -78,10 +78,10 @@ def loadConfig():
     scenario_name = traffic_config['scenario_name']
     post_data = traffic_config['api']['payload']
 
-    with open(abs_path+'/../../data/scenario/{}/data/invoke_scenario.yaml'.format(scenario_name)) as file:
-        invoke_scenario = yaml.load(file, Loader=yaml.FullLoader)
+    with open(abs_path+'/../../data/access_pattern/invoke_patterns.yaml') as file:
+        invoke_patterns = yaml.load(file, Loader=yaml.FullLoader)
 
-    time_patterns = invoke_scenario['time_patterns']
+    time_patterns = invoke_patterns['time_patterns']
 
 
 '''
@@ -200,13 +200,24 @@ def runInvoker(username, user_scenario, connection_refuse_count):
 '''
 
 # load and set tool configurations
-loadConfig()
+try:
+    loadConfig()
+except FileNotFoundError as e:
+    log('ERROR', '{}: {}'.format(e.strerror, e.filename))
+    sys.exit()
+except Exception as e:
+    log('ERROR', '{}'.format(str(e)))
+    sys.exit()
 
 with open(abs_path+'/../../../../dataset/traffic/{}'.format(filename), 'w') as file:
     file.write("timestamp,ip_address,access_token,http_method,invoke_path,cookie,user_agent,response_code\n")
 
-# load and set the scenario pool
-scenario_pool = pickle.load(open(abs_path+"/../../data/runtime_data/scenario_pool.sav", "rb"))
+try:
+    # load and set the scenario pool
+    scenario_pool = pickle.load(open(abs_path+"/../../data/runtime_data/scenario_pool.sav", "rb"))
+except FileNotFoundError as e:
+    log('ERROR', '{}: {}'.format(e.strerror, e.filename))
+    sys.exit()
 
 # record script starttime
 script_starttime = datetime.now()

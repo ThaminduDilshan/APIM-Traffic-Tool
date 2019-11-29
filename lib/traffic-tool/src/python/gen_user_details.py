@@ -15,18 +15,14 @@
 # specific language governing permissions and limitations
 # under the License.
 
-'''
-This python script will generate 100 random person data and write them to a file named 'user_generation.csv'. Csv file format is as below.
-<username>, <password>, <first_name>, <last_name>, <organization>, <country>, <email>, <no(land)>, <no(mobile)>, <IM>, <url>
-delimiter : '$$ '
-'''
-
 
 import rstr
 from faker import Faker
 import argparse
 import os
 import yaml
+from datetime import datetime
+import sys
 
 # global variables
 faker = Faker()
@@ -35,13 +31,25 @@ scenario_name = None
 no_of_users = 0
 abs_path = os.path.abspath(os.path.dirname(__file__))
 
-with open(abs_path+'/../../../../config/traffic-tool.yaml', 'r') as file:
-    traffic_config = yaml.load(file, Loader=yaml.FullLoader)
-scenario_name = traffic_config['scenario_name']
-no_of_users = int(traffic_config['tool_config']['no_of_users'])
+# load and set configurations
+try:
+    with open(abs_path+'/../../../../config/traffic-tool.yaml', 'r') as file:
+        traffic_config = yaml.load(file, Loader=yaml.FullLoader)
+    scenario_name = traffic_config['scenario_name']
+    no_of_users = int(traffic_config['tool_config']['no_of_users'])
+
+    if no_of_users <= 0:
+        print('[ERROR] {} gen_user_details.py: Invalid user count: {}'.format(str(datetime.now()), str(no_of_users)))
+        sys.exit()
+
+except FileNotFoundError as e:
+    print('[ERROR] {} gen_user_details.py: {}: {}'.format(str(datetime.now()), e.strerror, e.filename))
+    sys.exit()
 
 
-# get username and password for a given user (username and password are considered as the same)
+'''
+    This function will return a username and password for a given user (username and password are considered as the same)
+'''
 def genUnPw(firstname:str, num:int):
     username = firstname.lower() + str(num)
     if len(username) < 5:
@@ -50,7 +58,9 @@ def genUnPw(firstname:str, num:int):
     return username
 
 
-# generate random user data
+'''
+    This function will generate random user details (for a single user)
+'''
 def generateUser(num:int):
     user = []
     firstname = faker.first_name()
@@ -70,7 +80,9 @@ def generateUser(num:int):
     return user
 
 
-# create app name, username pattern according to the scenario
+'''
+    This function will generate app name, username pattern according to the scenario
+'''
 def app_userScenario():
     finalArr = []
     finalStr = ""
@@ -114,10 +126,14 @@ def app_userScenario():
     file.write(finalStr)
     file.close()
 
-    print('User app pattern generation successful!')
+    print('[INFO] {}: User app pattern generation successful!'.format(str(datetime.now())))
 
 
-# generate given number of users and write data to a csv file ('$$ ' is used as delimiter)
+'''
+    This function will generate given number of users and write data to a csv file
+    data format: <username>, <password>, <first_name>, <last_name>, <organization>, <country>, <email>, <no(land)>, <no(mobile)>, <IM>, <url>
+    delimiter : '$$ '
+'''
 def genUsersCSV():
     csvString = ""
     for i in range(no_of_users):
@@ -129,7 +145,7 @@ def genUsersCSV():
     file = open(abs_path+'/../../data/scenario/{}/data/user_generation.csv'.format(scenario_name), 'w')
     file.write(csvString)
     file.close()
-    print('User generation successful!')
+    print('[INFO] {}: User generation successful!'.format(str(datetime.now())))
 
 
 # execute
@@ -143,4 +159,4 @@ elif args.option == 1:
     genUsersCSV()
     app_userScenario()
 else:
-    print("Invalid argument value {}!".format(args.option))
+    print("[INFO] {}: Invalid argument value {}!".format(str(datetime.now()), args.option))
