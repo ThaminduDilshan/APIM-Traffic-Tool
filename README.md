@@ -295,10 +295,10 @@ Enter all application-api combinations which the subscriptions should happen. Gi
 
 5. `invoke_scenario.yaml` : 
 This file should be prepared according to your invoke scenario. Each record under `invoke_scenario` is for a different user type in the scenario table.
-   - app_name: Name of the application to be invoked
-   - no_of_users: No of users for the considered scenario
-   - time_pattern: Invoke pattern for the user type. Time patterns can be added to `<TOOL_HOME>/lib/traffic-tool/data/access_pattern/invoke_patterns.yaml` file.
-   - api_calls: api name, http method and no of requests from the user type.
+   - `app_name`: Name of the application to be invoked
+   - `no_of_users`: No of users for the considered scenario
+   - `time_pattern`: Invoke pattern for the user type. Time patterns can be added to `<TOOL_HOME>/lib/traffic-tool/data/access_pattern/invoke_patterns.yaml` file as a comma seperated list.
+   - `api_calls`: api name, http method and no of requests from the user type.
 
    ```
    Example Usage
