@@ -89,10 +89,12 @@ func_gen_invoke_data() {
     chmod +x "$(pwd)"/../lib/traffic-tool/src/python/gen_invoke_data.py
 
     if command -v python3 &>/dev/null; then
+      rm -f "$(pwd)"/../lib/traffic-tool/data/runtime_data/traffic_processes.pid
       nohup python3 "$(pwd)"/../lib/traffic-tool/src/python/gen_invoke_data.py $FILENAME >> "$(pwd)"/../logs/traffic-shell.log 2>&1 &
       echo $! > "$(pwd)"/../data/traffic_tool.pid
       echo "Data generation script started"
     elif command -v python &>/dev/null; then
+      rm -f "$(pwd)"/../lib/traffic-tool/data/runtime_data/traffic_processes.pid
       nohup python "$(pwd)"/../lib/traffic-tool/src/python/gen_invoke_data.py $FILENAME >> "$(pwd)"/../logs/traffic-shell.log 2>&1 &
       echo $! > "$(pwd)"/../data/traffic_tool.pid
       echo "Data generation script started"

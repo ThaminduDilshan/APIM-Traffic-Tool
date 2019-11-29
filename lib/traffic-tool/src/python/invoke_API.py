@@ -20,7 +20,6 @@ import string
 import requests
 import time
 from datetime import datetime
-from faker import Factory
 import sys
 import argparse
 import urllib3
@@ -48,7 +47,6 @@ host_protocol = None
 host_ip = None
 host_port = None
 heavy_traffic = None
-scenario_name = None
 post_data = None
 time_patterns = None
 
@@ -57,15 +55,14 @@ scenario_pool = {}
 connection_refuse_count = Value('i', 0)
 process_pool = []
 
-fake_generator = Factory.create()
 abs_path = os.path.abspath(os.path.dirname(__file__))
 
 
 '''
-    This method will load and set the configuration data
+    This function will load and set the configuration data
 '''
 def loadConfig():
-    global max_connection_refuse_count, host_protocol, host_ip, host_port, heavy_traffic, scenario_name, post_data, time_patterns
+    global max_connection_refuse_count, host_protocol, host_ip, host_port, heavy_traffic, post_data, time_patterns
 
     with open(abs_path+'/../../../../config/traffic-tool.yaml', 'r') as file:
         traffic_config = yaml.load(file, Loader=yaml.FullLoader)
@@ -75,7 +72,6 @@ def loadConfig():
     host_protocol = traffic_config['api_host']['protocol']
     host_ip = traffic_config['api_host']['ip']
     host_port = traffic_config['api_host']['port']
-    scenario_name = traffic_config['scenario_name']
     post_data = traffic_config['api']['payload']
 
     with open(abs_path+'/../../data/access_pattern/invoke_patterns.yaml') as file:
@@ -85,7 +81,7 @@ def loadConfig():
 
 
 '''
-    This method will write the given log output to the log.txt file
+    This function will write the given log output to the log.txt file
 '''
 def log(tag, write_string):
     with open(abs_path+'/../../../../logs/traffic-tool.log', 'a+') as file:
@@ -93,13 +89,15 @@ def log(tag, write_string):
 
 
 '''
-    This method will send http requests to the given address: GET, POST only
+    This function will send http requests to the given address: GET, POST only
 '''
 def sendRequest(url_protocol, url_ip, url_port, path, access_token, method, user_ip, cookie, app_name, username, user_agent):
     url = "{}://{}:{}/{}".format(url_protocol, url_ip, url_port, path)
+    accept = 'application/json'
+    content_type = 'application/json'
     headers = {
-        'accept': 'application/json',
-        'Content-Type': 'application/json',
+        'accept': '{}'.format(accept),
+        'Content-Type': '{}'.format(content_type),
         'Authorization': 'Bearer {}'.format(access_token),
         'client-ip': '{}'.format(user_ip),
         'x-forwarded-for': '{}'.format(user_ip),
@@ -130,7 +128,8 @@ def sendRequest(url_protocol, url_ip, url_port, path, access_token, method, user
     write_string = ""
 
     # user agent is wrapped around quotes because there are commas in the user agent and they clash with the commas in csv file
-    write_string = str(datetime.now()) + "," + user_ip + "," + access_token + "," + method + "," + path + "," + cookie + ",\"" + user_agent + "\"," + str(code) + "\n"
+    write_string = str(datetime.now()) + "," + user_ip + "," + access_token + "," + method + "," + path + "," + cookie + "," + accept + "," + content_type + "," + user_ip + ",\"" + user_agent + "\"," + str(code) + "\n"
+
     with open(abs_path+'/../../../../dataset/traffic/{}'.format(filename), 'a+') as file:
         file.write(write_string)
 
@@ -138,7 +137,7 @@ def sendRequest(url_protocol, url_ip, url_port, path, access_token, method, user
 
 
 '''
-    This method will take a given invoke scenario and execute it.
+    This function will take a given invoke scenario and execute it.
     Supposed to be executed from a process.
 '''
 def runInvoker(username, user_scenario, connection_refuse_count):
@@ -210,7 +209,7 @@ except Exception as e:
     sys.exit()
 
 with open(abs_path+'/../../../../dataset/traffic/{}'.format(filename), 'w') as file:
-    file.write("timestamp,ip_address,access_token,http_method,invoke_path,cookie,user_agent,response_code\n")
+    file.write("timestamp,ip_address,access_token,http_method,invoke_path,cookie,accept,content_type,x_forwarded_for,user_agent,response_code\n")
 
 try:
     # load and set the scenario pool
