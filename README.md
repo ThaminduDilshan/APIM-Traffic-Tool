@@ -32,20 +32,19 @@ The attack tool will attack WSO2 API Manager throughout a user specified time. A
 4. Install pip version 3 if not already installed.
 
 5. Install required python packages by running the following command in the project home directory.
-   - `$ sudo pip install -r requirement.txt`
+   - `$ pip install -r requirement.txt`
 
 6. Download and install Apache jmeter version 5.1.1 or higher (http://jmeter.apache.org/download_jmeter.cgi).
 
 7. Add following two packages to the `<JMETER_HOME>/lib` folder.
-   - Download and add apache ivy (https://ant.apache.org/ivy/download.cgi)
+   - Download and add apache ivy jar file (https://ant.apache.org/ivy/download.cgi)
    - Add attack tool helper package (can be found from `<TOOL_HOME>/resources/add-on/attack-tool-helpers.jar`)
 
-8. Verify that all configurations are set for the traffic and attack scripts.
-
-9. By default, access tokens get expired after 60 minutes time interval. So if you are planning to simulate a traffic for more than 1 hour duration, please configure WSO2 API Manager and APIM Traffic Tool as below.
+8. By default, access tokens get expired after 60 minutes time interval. So if you are planning to simulate a traffic for more than 1 hour duration, please configure WSO2 API Manager and APIM Traffic Tool as below.
    - Set the value of `<UserAccessTokenDefaultValidityPeriod>` element in the `<APIM_HOME>/repository/conf/identity/identity.xml` file as appropriate. It is recommended to set user access token validity period to at least `36000` for testing environments ([more on access tokens](https://docs.wso2.com/display/AM260/Working+with+Access+Tokens)).
    - Set the value of `token_validity_period` as appropriate in the `<TOOL_HOME>/config/traffic-tool.yaml` file. It is recommended to set `token_validity_period` to `-1` for testing environments.
 
+9. Verify that all configurations are set for the traffic and attack scripts as mentioned below.
 
 ## Configuring the Tool
 Default configurations for WSO2 API Manager and default scenario are given in all the config files. If you are running WSO2 API Manager on different configurations or using the tool for a custom scenario, you can change the tool configurations as stated below. All configuration files are in the `<TOOL_HOME>/config` folder.
@@ -55,7 +54,7 @@ Default configurations for WSO2 API Manager and default scenario are given in al
 2. Enter correct API Manager version (please state as `2.6` or `3.0`), endpoints, protocol type, host ip and ports of WSO2 API Manager in the `<TOOL_HOME>/config/apim.yaml` file (Default ports and details can be found at https://docs.wso2.com/display/AM260/Default+Product+Ports).
 
    ```
-   Endpoints for WSO2 API Manager 2.6.0
+   Default Endpoints for WSO2 API Manager 2.6.0
 
    token_registration_endpoint: /client-registration/v0.14/register
    token_endpoint: /token
@@ -65,7 +64,7 @@ Default configurations for WSO2 API Manager and default scenario are given in al
    user_signup: /store/site/blocks/user/sign-up/ajax/user-add.jag
    delete_user: /services/RemoteUserStoreManagerService.RemoteUserStoreManagerServiceHttpsSoap11Endpoint
 
-   Endpoints for WSO2 API Manager 3.0.0
+   Default Endpoints for WSO2 API Manager 3.0.0
 
    token_registration_endpoint: /client-registration/v0.15/register
    token_endpoint: /token
@@ -105,7 +104,7 @@ Default configurations for WSO2 API Manager and default scenario are given in al
    - Enter scenario name in front of scenario_name section. If you are using the default scenario, scenario_name is `scenario_example`.
    - Enter protocol type, ip address and port of an hosted API under api_host section.
    - Configure tool_config section as to the following definitions.
-      - `no_of_processes`: No of processes to be used for the API invoking
+      - `no_of_users`: No of users to be created in wso2 carbon. Traffic will be simulated for these users.
       - `max_connection_refuse_count`: Maximum number of connection refuse count allowed. Traffic tool will stop after the given number of connection refuses.
       - `no_of_data_points`: No of data points or requests to be generated when generating the traffic data without invoking.
       - `heavy_traffic`: If you want to simulate a heavy traffic, set this value as `true`. Otherwise set it to `false`.
@@ -125,7 +124,7 @@ Default configurations for WSO2 API Manager and default scenario are given in al
 ## Using the Traffic Tool
 To use the traffic tool run the following command with the desired argument in a command line inside the `<TOOL_HOME>/bin` folder. To list down available options and their command line arguments, just run the command with the flag `-h`.
 
-`$ ./traffic-tool.sh argument_number`
+`$ ./traffic-tool.sh argument`
 
 ```
 $ ./traffic-tool.sh -h
@@ -294,17 +293,36 @@ Enter details of applications (Application name and description). Delimiter for 
 4. `app_api_subscription_admin.csv` : 
 Enter all application-api combinations which the subscriptions should happen. Give application name and API name seperated by a comma (',').
 
-5. `api_invoke_scenario.csv` : 
-This file should be prepared according to your invoke scenario. Each row is for a different user type in the scenario table. A row in the file is in the following format. '$' sign is used as the delimiter. You can add any number of patterns to the list in the format `[no_of_users,http_method,no_of_requests,resource_path]`.
+5. `invoke_scenario.yaml` : 
+This file should be prepared according to your invoke scenario. Each record under `invoke_scenario` is for a different user type in the scenario table.
+   - app_name: Name of the application to be invoked
+   - no_of_users: No of users for the considered scenario
+   - time_pattern: Invoke pattern for the user type. Time patterns can be added to `<TOOL_HOME>/lib/traffic-tool/data/access_pattern/invoke_patterns.yaml` file.
+   - api_calls: api name, http method and no of requests from the user type.
 
-   `<application_name>$[[pattern_1],[pattern_2]]`
+   ```
+   Example Usage
+
+   invoke_scenario:
+     - app_name: Online Shopping
+       no_of_users: 5
+       time_pattern: pattern1
+       api_calls:
+         - api: news
+           method: GET
+           no_of_requests: 1
+
+         - api: places
+           method: GET
+           no_of_requests: 2
+   ```
 
 6. `user_generation.csv` : 
 This file contains the user details in the following format. Delimiter for csv is two dollar signs and a space ($$<space>).
 
    `<username>, <password>, <first_name>, <last_name>, <organization>, <country>, <email>, <no(land)>, <no(mobile)>, <IM>, <url>`
 
-   This file can be generated for 100 random users by running the following command.
+   This file can be generated for given number of random users by running the following command.
 
    `$ ./traffic-tool.sh user_details`
 
