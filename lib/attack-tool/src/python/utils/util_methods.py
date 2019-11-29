@@ -61,6 +61,7 @@ def log(path, data, mode):
 
     """
     temp_path = os.path.abspath(os.path.join(__file__, path))
+
     with open(temp_path, mode) as file:
         file.write(data + "\n")
 
@@ -103,7 +104,9 @@ def send_simple_request(request_path, method, token, ip, cookie, user_agent, pat
 
     # default response object
     r = requests.Response()
+    r.status_code = 405
 
+    attack_tool_log_path = "../../../../../../logs/attack-tool.log"
     try:
         if method == 'GET':
             r = requests.get(url=request_path, headers=header_data, timeout=(15, 30), verify=False)
@@ -117,11 +120,14 @@ def send_simple_request(request_path, method, token, ip, cookie, user_agent, pat
             r = requests.patch(url=request_path, headers=header_data, data=request_body, timeout=(15, 30), verify=False)
 
         return r
-
-    except requests.exceptions.RequestException as e:
-        attack_tool_log_path = "../../../../../../logs/attack-tool.log"
-        msg_string = "[Error] {} - Request Failure\n\t {}".format(datetime.now(), str(e))
+    except requests.exceptions.ConnectionError as ex:
+        msg_string = "[Error] {} - Request Failure\n{}".format(datetime.now(), str(ex))
+        print(msg_string)
         log(attack_tool_log_path, msg_string, "a")
+        r.status_code = 521
+        return r
+    except requests.exceptions.RequestException:
+        raise
 
 
 def generate_biased_random(minimum, maximum, exp):
