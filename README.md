@@ -32,20 +32,19 @@ The attack tool will attack WSO2 API Manager throughout a user specified time. A
 4. Install pip version 3 if not already installed.
 
 5. Install required python packages by running the following command in the project home directory.
-   - `$ sudo pip install -r requirement.txt`
+   - `$ pip install -r requirement.txt`
 
 6. Download and install Apache jmeter version 5.1.1 or higher (http://jmeter.apache.org/download_jmeter.cgi).
 
 7. Add following two packages to the `<JMETER_HOME>/lib` folder.
-   - Download and add apache ivy (https://ant.apache.org/ivy/download.cgi)
+   - Download and add apache ivy jar file (https://ant.apache.org/ivy/download.cgi)
    - Add attack tool helper package (can be found from `<TOOL_HOME>/resources/add-on/attack-tool-helpers.jar`)
 
-8. Verify that all configurations are set for the traffic and attack scripts.
-
-9. By default, access tokens get expired after 60 minutes time interval. So if you are planning to simulate a traffic for more than 1 hour duration, please configure WSO2 API Manager and APIM Traffic Tool as below.
+8. By default, access tokens get expired after 60 minutes time interval. So if you are planning to simulate a traffic for more than 1 hour duration, please configure WSO2 API Manager and APIM Traffic Tool as below.
    - Set the value of `<UserAccessTokenDefaultValidityPeriod>` element in the `<APIM_HOME>/repository/conf/identity/identity.xml` file as appropriate. It is recommended to set user access token validity period to at least `36000` for testing environments ([more on access tokens](https://docs.wso2.com/display/AM260/Working+with+Access+Tokens)).
    - Set the value of `token_validity_period` as appropriate in the `<TOOL_HOME>/config/traffic-tool.yaml` file. It is recommended to set `token_validity_period` to `-1` for testing environments.
 
+9. Verify that all configurations are set for the traffic and attack scripts as mentioned below.
 
 ## Configuring the Tool
 Default configurations for WSO2 API Manager and default scenario are given in all the config files. If you are running WSO2 API Manager on different configurations or using the tool for a custom scenario, you can change the tool configurations as stated below. All configuration files are in the `<TOOL_HOME>/config` folder.
@@ -55,7 +54,7 @@ Default configurations for WSO2 API Manager and default scenario are given in al
 2. Enter correct API Manager version (please state as `2.6` or `3.0`), endpoints, protocol type, host ip and ports of WSO2 API Manager in the `<TOOL_HOME>/config/apim.yaml` file (Default ports and details can be found at https://docs.wso2.com/display/AM260/Default+Product+Ports).
 
    ```
-   Endpoints for WSO2 API Manager 2.6.0
+   Default Endpoints for WSO2 API Manager 2.6.0
 
    token_registration_endpoint: /client-registration/v0.14/register
    token_endpoint: /token
@@ -65,7 +64,7 @@ Default configurations for WSO2 API Manager and default scenario are given in al
    user_signup: /store/site/blocks/user/sign-up/ajax/user-add.jag
    delete_user: /services/RemoteUserStoreManagerService.RemoteUserStoreManagerServiceHttpsSoap11Endpoint
 
-   Endpoints for WSO2 API Manager 3.0.0
+   Default Endpoints for WSO2 API Manager 3.0.0
 
    token_registration_endpoint: /client-registration/v0.15/register
    token_endpoint: /token
@@ -105,27 +104,27 @@ Default configurations for WSO2 API Manager and default scenario are given in al
    - Enter scenario name in front of scenario_name section. If you are using the default scenario, scenario_name is `scenario_example`.
    - Enter protocol type, ip address and port of an hosted API under api_host section.
    - Configure tool_config section as to the following definitions.
-      - `no_of_processes`: No of processes to be used for the API invoking
+      - `no_of_users`: No of users to be created in wso2 carbon. Traffic will be simulated for these users.
       - `max_connection_refuse_count`: Maximum number of connection refuse count allowed. Traffic tool will stop after the given number of connection refuses.
       - `no_of_data_points`: No of data points or requests to be generated when generating the traffic data without invoking.
       - `heavy_traffic`: If you want to simulate a heavy traffic, set this value as `true`. Otherwise set it to `false`.
-      
+
         > It is recommended to set `heavy_traffic` to `false` in model training and testing environments to have a better training for attacks.
 
 5. Configure the `<TOOL_HOME>/config/attack-tool.yaml` file as stated below (Configurations for the attack script).
    - Modify **protocol**,**ip address** and **port** of the host using `api_host` section.
    - Append, modify or remove user agents from the list under `user_agents` section.
    - Set the attack duration in seconds using `attack_duration`. (Note: For DOS and DDOS attacks, attack duration is defined per API)
-   - Configure the concurrency using `number_of_processes`. 
+   - Configure the concurrency using `number_of_processes`.
    - Enter the name of the scenario for `scenario`.
    - Append, modify or remove payloads from the list under `payloads` section. These payloads are used in the bodies of **POST**,**PUT** and **PATCH** requests.
    - Set minimum and maximum request scalars under `abnormal_token_usage`. These will be used to scale the normal traffic inorder to generate attack traffic for simulating abnormal token usage attack.
-    
+
  > It is recommended to add `setenv.sh` script in the `<TOOL_HOME>/resources/add-on` directory to the `<JMETER_HOME>/bin` directory in order to increase the heap size in JMeter if you are simulating DOS or DDOS attacks with heavy concurrency.   
 ## Using the Traffic Tool
 To use the traffic tool run the following command with the desired argument in a command line inside the `<TOOL_HOME>/bin` folder. To list down available options and their command line arguments, just run the command with the flag `-h`.
 
-`$ ./traffic-tool.sh argument_number`
+`$ ./traffic-tool.sh argument`
 
 ```
 $ ./traffic-tool.sh -h
@@ -282,31 +281,64 @@ In stolen token attacks, the attackers invoke APIs with access tokens that are s
 ## Adding Custom APIM Scenario
 Adding a custom API Manager scenario is little bit tricky task. As for the current version of the APIM Traffic Tool, you have to configure a set of files in order to invoke for a custom scenario. First you have to think and design a real world API access pattern which is similar to the example scenario given. Then follow below steps to change scenario data files. Default scenario files are at `<TOOL_HOME>/lib/traffic-tool/data/scenario/scenario_example/data/` directory. You can add a new folder named as your scenario_name to the `/scenario` folder and add a `/data` folder containing following files. Line seperator for all csv files is the new line character ('\n').
 
-1. `api_creation.csv` : 
+1. `api_creation.csv` :
 Enter details of APIs (API name, description, context and a tag). Delimiter for csv is the comma(',').
 
-2. `api_creation_swagger.csv` : 
+2. `api_creation_swagger.csv` :
 Provide swagger definitions of all the APIs seperated by new line character ('\n').
 
-3. `app_creation.csv` : 
+3. `app_creation.csv` :
 Enter details of applications (Application name and description). Delimiter for csv is the dollar sign and a space('$<space>').
 
-4. `app_api_subscription_admin.csv` : 
+4. `app_api_subscription_admin.csv` :
 Enter all application-api combinations which the subscriptions should happen. Give application name and API name seperated by a comma (',').
 
-5. `api_invoke_scenario.csv` : 
-This file should be prepared according to your invoke scenario. Each row is for a different user type in the scenario table. A row in the file is in the following format. '$' sign is used as the delimiter. You can add any number of patterns to the list in the format `[no_of_users,http_method,no_of_requests,resource_path]`.
+5. `invoke_scenario.yaml` :
+This file should be prepared according to your invoke scenario. Each record under `invoke_scenario` is for a different user type in the scenario table.
+   - `app_name`: Name of the application to be invoked
+   - `no_of_users`: No of users for the considered scenario
+   - `time_pattern`: Invoke pattern for the user type. Time patterns can be added to `<TOOL_HOME>/lib/traffic-tool/data/access_pattern/invoke_patterns.yaml` file as a comma seperated list.
+   - `api_calls`: api name, http method and no of requests from the user type.
 
-   `<application_name>$[[pattern_1],[pattern_2]]`
+   ```
+   Example Usage
 
-6. `user_generation.csv` : 
+   invoke_scenario:
+     - app_name: Online Shopping
+       no_of_users: 5
+       time_pattern: pattern1
+       api_calls:
+         - api: news
+           method: GET
+           no_of_requests: 1
+
+         - api: places
+           method: GET
+           no_of_requests: 2
+   ```
+
+6. `user_generation.csv` :
 This file contains the user details in the following format. Delimiter for csv is two dollar signs and a space ($$<space>).
 
    `<username>, <password>, <first_name>, <last_name>, <organization>, <country>, <email>, <no(land)>, <no(mobile)>, <IM>, <url>`
 
-   This file can be generated for 100 random users by running the following command.
+   This file can be generated for given number of random users by running the following command.
 
    `$ ./traffic-tool.sh user_details`
 
-7. `user_app_pattern.csv` : 
+7. `user_app_pattern.csv` :
 Above generated users should be distributed among applications inorder to generate access tokens. This file contains all username-application_name combinations seperated by a new line character ('\n'). Csv delimiter is the comma (',').
+
+## Changing API Invoke Pattern
+In this tool users are simulated through python processes. Those processes invoke and sleep according to a given time pattern. These patterns are listed in `<TOOL_HOME>/lib/traffic-tool/data/access_pattern/invoke_patterns.yaml` file. You can add more invoke patterns under `time_patterns` as comma separated integers.
+
+```
+Example Usage
+
+time_patterns:
+  pattern1: 0,100,0,2,300,500,1,2,100,400,700,1,0,0,900,30,600,1800,1800,2,400,6,100,0,0,200,100,0,100
+  pattern2: 0,1,0,0,2,0,5,0,1,0,10,0,15,0,20,15,1800,0,1,0,0,0,2,1,0,1,0,0,15,0,10,0,20
+  pattern3: 0,1,0,0,2,0,5,0,1,0,10,0,15,0,20,15,600,0,1,0,0,0,2,1,600,0,1,0,0,15,0,10,0,20
+```
+
+This product includes IP2Location LITE data available from <a href="https://www.ip2location.com">https://www.ip2location.com</a>.

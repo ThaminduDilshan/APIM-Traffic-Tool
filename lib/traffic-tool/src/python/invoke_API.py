@@ -1,4 +1,3 @@
-
 # Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 #
 # WSO2 Inc. licenses this file to you under the Apache License,
@@ -21,7 +20,6 @@ import string
 import requests
 import time
 from datetime import datetime
-from faker import Factory
 import sys
 import argparse
 import urllib3
@@ -30,7 +28,8 @@ import yaml
 import os
 import json
 import math
-from multiprocessing.dummy import Pool as ThreadPool
+from multiprocessing import Process, Value
+import numpy as np
 
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -42,47 +41,47 @@ args = parser.parse_args()
 filename = args.filename + ".csv"
 script_runtime = args.runtime * 60       # in seconds
 
-# Variables
-no_of_processes = None
+# variables
 max_connection_refuse_count = None
 host_protocol = None
 host_ip = None
 host_port = None
 heavy_traffic = None
-scenario_name = None
 post_data = None
+time_patterns = None
 
 script_starttime = None
-scenario_pool = []
-connection_refuse_count = 0
-active_processes = 0
+scenario_pool = {}
+connection_refuse_count = Value('i', 0)
 process_pool = []
 
-fake_generator = Factory.create()
 abs_path = os.path.abspath(os.path.dirname(__file__))
 
 
 '''
-    This method will load and set the configuration data
+    This function will load and set the configuration data
 '''
 def loadConfig():
-    global no_of_processes, max_connection_refuse_count, host_protocol, host_ip, host_port, heavy_traffic, scenario_name, post_data
+    global max_connection_refuse_count, host_protocol, host_ip, host_port, heavy_traffic, post_data, time_patterns
 
     with open(abs_path+'/../../../../config/traffic-tool.yaml', 'r') as file:
         traffic_config = yaml.load(file, Loader=yaml.FullLoader)
 
-    no_of_processes = int(traffic_config['tool_config']['no_of_processes'])
     max_connection_refuse_count = int(traffic_config['tool_config']['max_connection_refuse_count'])
     heavy_traffic = str(traffic_config['tool_config']['heavy_traffic']).lower()
     host_protocol = traffic_config['api_host']['protocol']
     host_ip = traffic_config['api_host']['ip']
     host_port = traffic_config['api_host']['port']
-    scenario_name = traffic_config['scenario_name']
     post_data = traffic_config['api']['payload']
+
+    with open(abs_path+'/../../data/access_pattern/invoke_patterns.yaml') as file:
+        invoke_patterns = yaml.load(file, Loader=yaml.FullLoader)
+
+    time_patterns = invoke_patterns['time_patterns']
 
 
 '''
-    This method will write the given log output to the log.txt file
+    This function will write the given log output to the log.txt file
 '''
 def log(tag, write_string):
     with open(abs_path+'/../../../../logs/traffic-tool.log', 'a+') as file:
@@ -90,18 +89,20 @@ def log(tag, write_string):
 
 
 '''
-    This method will send http requests to the given address: GET, POST only
+    This function will send http requests to the given address: GET, POST only
 '''
-def sendRequest(url_protocol, url_ip, url_port, api_name, api_version, path, access_token, method, user_ip, cookie, app_name, username,user_agent):
-    url = "{}://{}:{}/{}/{}/{}".format(url_protocol, url_ip, url_port, api_name, api_version, path)
+def sendRequest(url_protocol, url_ip, url_port, path, access_token, method, user_ip, cookie, app_name, username, user_agent):
+    url = "{}://{}:{}/{}".format(url_protocol, url_ip, url_port, path)
+    accept = 'application/json'
+    content_type = 'application/json'
     headers = {
-        'accept': 'application/json',
-        'Content-Type': 'application/json',
+        'accept': '{}'.format(accept),
+        'Content-Type': '{}'.format(content_type),
         'Authorization': 'Bearer {}'.format(access_token),
         'client-ip': '{}'.format(user_ip),
         'x-forwarded-for': '{}'.format(user_ip),
         'cookie': '{}'.format(cookie),
-        'User-Agent': user_agent
+        'User-Agent': '{}'.format(user_agent)
     }
     code = None
     res_txt = ""
@@ -118,19 +119,17 @@ def sendRequest(url_protocol, url_ip, url_port, api_name, api_version, path, acc
             res_txt = response.text
         else:
             code = '400'
-            res_txt = 'Invalid type!'
-    except ConnectionRefusedError:
-        log("ERROR", "HTTP Connection Refused!")
-        code = '404'
+            res_txt = 'Invalid type'
     except Exception as e:
         log("ERROR", str(e))
-        code = '404'
+        code = '521'
 
     # write data to files
     write_string = ""
 
     # user agent is wrapped around quotes because there are commas in the user agent and they clash with the commas in csv file
-    write_string = str(datetime.now()) + "," + api_name + "," + access_token + "," + user_ip + "," + cookie + "," + api_name+"/"+api_version+"/"+path + "," + method + "," + str(code) +",\"" + user_agent +"\"\n"
+    write_string = str(datetime.now()) + "," + user_ip + "," + access_token + "," + method + "," + path + "," + cookie + "," + accept + "," + content_type + "," + user_ip + ",\"" + user_agent + "\"," + str(code) + "\n"
+
     with open(abs_path+'/../../../../dataset/traffic/{}'.format(filename), 'a+') as file:
         file.write(write_string)
 
@@ -138,51 +137,59 @@ def sendRequest(url_protocol, url_ip, url_port, api_name, api_version, path, acc
 
 
 '''
-    This method will return a random integer between zero and eight.
-    Highly biased for returning zero.
-'''
-def randomSleepTime():
-    min = 0
-    max = 8
-    exp = 5
-    return math.floor(min + (max - min) * pow(random.random(), exp))
-
-
-'''
-    This method will take a given invoke scenario and execute it.
+    This function will take a given invoke scenario and execute it.
     Supposed to be executed from a process.
 '''
-def runInvoker(scenario_row):
-    global connection_refuse_count, script_starttime, script_runtime, active_processes
+def runInvoker(username, user_scenario, connection_refuse_count):
+    global script_starttime, script_runtime
 
-    no_of_requests = scenario_row[0] - random.randint(0, scenario_row[0])
-    api_name = scenario_row[1]
-    api_version = scenario_row[2]
-    path = scenario_row[3]
-    access_token = scenario_row[4]
-    method = scenario_row[5]
-    user_ip = scenario_row[6]
-    cookie = scenario_row[7]
-    app_name = scenario_row[8]
-    username = scenario_row[9]
-    user_agent = scenario_row[10]
+    appNames = list(user_scenario.keys())
+    it = 0
 
-    for i in range(no_of_requests):
-        try:
-            res_code, res_txt = sendRequest(host_protocol, host_ip, host_port, api_name, api_version, path, access_token, method, user_ip, cookie, app_name, username,user_agent)
-            if heavy_traffic != 'true':
-                time.sleep(randomSleepTime())
-        except:
-            connection_refuse_count += 1
-            if connection_refuse_count > max_connection_refuse_count:
-                log("ERROR", "Terminating the process due to maximum no of connection refuses!")
-                active_processes -= 1
-                sys.exit()
+    while(True):
+        app_name = appNames[random.randint(0,len(appNames)-1)]
+        app_scenario_list = user_scenario.get(app_name)
+        time_pattern = None
+
+        for scenario in app_scenario_list:
+            no_of_requests = scenario[0] - random.randint(0, scenario[0])
+            api_name = scenario[1]
+            path = scenario[2]
+            access_token = scenario[3]
+            method = scenario[4]
+            user_ip = scenario[5]
+            cookie = scenario[6]
+            user_agent = scenario[7]
+
+            if time_pattern == None:
+                time_pattern = scenario[8]
+                time_pattern = time_patterns.get(time_pattern)
+                if type(time_pattern) is str:
+                    time_pattern = [int(t) for t in time_pattern.split(',')]
+                else:
+                    time_pattern = [time_pattern]
+
+            for i in range(no_of_requests):
+                up_time = datetime.now() - script_starttime
+                if up_time.seconds >= script_runtime:
+                    break
+
+                try:
+                    res_code, res_txt = sendRequest(host_protocol, host_ip, host_port, path, access_token, method, user_ip, cookie, app_name, username, user_agent)
+                    if res_code == '521':
+                        connection_refuse_count.value += 1
+                    if heavy_traffic != 'true':
+                        time.sleep(time_pattern[it%len(time_pattern)])
+                    it += 1
+                except Exception as e:
+                    log('ERROR', str(e))
+                    connection_refuse_count.value += 1
 
         up_time = datetime.now() - script_starttime
         if up_time.seconds >= script_runtime:
-            active_processes -= 1
             break
+        else:
+            time.sleep(abs(int(np.random.normal() * 10)))
 
 
 '''
@@ -192,33 +199,64 @@ def runInvoker(scenario_row):
 '''
 
 # load and set tool configurations
-loadConfig()
+try:
+    loadConfig()
+except FileNotFoundError as e:
+    log('ERROR', '{}: {}'.format(e.strerror, e.filename))
+    sys.exit()
+except Exception as e:
+    log('ERROR', '{}'.format(str(e)))
+    sys.exit()
 
 with open(abs_path+'/../../../../dataset/traffic/{}'.format(filename), 'w') as file:
-    file.write("timestamp,api,access_token,ip_address,cookie,invoke_path,http_method,response_code,user agent\n")
+    file.write("timestamp,ip_address,access_token,http_method,invoke_path,cookie,accept,content_type,x_forwarded_for,user_agent,response_code\n")
 
-# load and set the scenario pool
-scenario_pool = pickle.load(open(abs_path+"/../../data/runtime_data/user_scenario_pool.sav", "rb"))
-
-# shuffle the pool
-random.shuffle(scenario_pool)
+try:
+    # load and set the scenario pool
+    scenario_pool = pickle.load(open(abs_path+"/../../data/runtime_data/scenario_pool.sav", "rb"))
+except FileNotFoundError as e:
+    log('ERROR', '{}: {}'.format(e.strerror, e.filename))
+    sys.exit()
 
 # record script starttime
 script_starttime = datetime.now()
 
-pool = ThreadPool(no_of_processes)
+processes_list = []
+
+# create and start a process for each user
+for key_uname, val_scenario in scenario_pool.items():
+    process = Process(target=runInvoker, args=(key_uname, val_scenario, connection_refuse_count))
+    process.daemon = False
+    processes_list.append(process)
+    process.start()
+
+    with open(abs_path+'/../../data/runtime_data/traffic_processes.pid', 'a+') as file:
+        file.write(str(process.pid)+'\n')
 
 print("[INFO] Scenario loaded successfully. Wait {} minutes to complete the script!".format(str(script_runtime/60)))
 log("INFO", "Scenario loaded successfully. Wait {} minutes to complete the script!".format(str(script_runtime/60)))
 
 while True:
     time_elapsed = datetime.now() - script_starttime
+
     if time_elapsed.seconds >= script_runtime:
+        for process in processes_list:
+            process.terminate()
+        with open(abs_path+'/../../data/runtime_data/traffic_processes.pid', 'w') as file:
+            file.write('')
+
         print("[INFO] Script terminated successfully. Time elapsed: {} minutes".format(time_elapsed.seconds/60.0))
         log("INFO", "Script terminated successfully. Time elapsed: {} minutes".format(time_elapsed.seconds/60.0))
         break
-    else:
-        pool.map(runInvoker, scenario_pool)
 
-pool.close()
-pool.join()
+    elif connection_refuse_count.value > max_connection_refuse_count:
+        for process in processes_list:
+            process.terminate()
+        with open(abs_path+'/../../data/runtime_data/traffic_processes.pid', 'w') as file:
+            file.write('')
+        print("[ERROR] Terminating the program due to maximum no of connection refuses!")
+        log("ERROR", "Terminating the program due to maximum no of connection refuses!")
+        break
+
+    else:
+        pass
