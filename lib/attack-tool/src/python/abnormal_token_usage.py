@@ -24,6 +24,7 @@ import yaml
 from datetime import datetime
 from utils import util_methods
 import random
+import numpy as np
 from utils.util_methods import generate_biased_random
 
 
@@ -48,6 +49,7 @@ def execute_scenario(scenario):
         ip = scenario[6]
         cookie = scenario[7]
         user_agent = scenario[10]
+        accept = content_type = "application/json"
 
         request_path = "{}://{}:{}/{}/{}/{}".format(protocol, host, port, context, version, resource_path)
         random_payload = random.choice(payloads)
@@ -58,16 +60,18 @@ def execute_scenario(scenario):
             if up_time.seconds >= attack_duration:
                 break
             try:
-                response = util_methods.send_simple_request(request_path, method, token, ip, cookie, user_agent, payload=random_payload)
-                request_info = "{},{},{},{},{},{},{},\"{}\"".format(datetime.now(), request_path, method, token, ip, cookie, response.status_code, user_agent)
+                response = util_methods.send_simple_request(request_path, method, token, ip, cookie, accept, content_type, user_agent, payload=random_payload)
+                request_info = "{},{},{},{},{},{},{},{},{},\"{}\",{}".format(datetime.now(), ip, token, method, request_path, cookie, accept, content_type, ip, user_agent,
+                                                                             response.status_code,
+                                                                             )
                 util_methods.log(dataset_path, request_info, "a")
             except requests.exceptions.RequestException:
                 msg_string = "[Error] {} - Request Failure\n\t {}".format(datetime.now(), str(ex))
                 print(msg_string)
                 util_methods.log(attack_tool_log_path, msg_string, "a")
 
-            # sleep the process for a random period of time between 0 and 3 seconds but biased to 0
-            time.sleep(generate_biased_random(0, 3, 2))
+            # sleep the process for a random period of time
+            time.sleep(abs(int(np.random.normal() * 10)))
 
 
 # Program Execution
@@ -102,7 +106,7 @@ if __name__ == '__main__':
 
     # Recording column names in the dataset csv file
     dataset_path = "../../../../../../dataset/attack/abnormal_token.csv"
-    util_methods.log(dataset_path, "Timestamp, Request path, Method,Access Token, IP Address, Cookie, Response Code", "w")
+    util_methods.log(dataset_path, "timestamp,ip_address,access_token,http_method,invoke_path,cookie,accept,content_type,x_forwarded_for,user_agent,response_code", "w")
 
     log_string = "[INFO] {} - Abnormal token usage attack started ".format(start_time)
     print(log_string)
