@@ -4,7 +4,7 @@ general_config:
   # details for all hosted APIs. Attack tool will invoke according to these configurations
   api_host:
     protocol: https
-    ip: 172.17.0.1
+    ip: 10.100.8.34
     port: 8243
 
   # Attack tool will randomly append one of the following user agents to the request header
@@ -23,10 +23,10 @@ general_config:
     - Opera/9.80 (Windows NT 5.2; U; ru) Presto/2.5.22 Version/10.51
 
   # Attack duration in seconds. In DOS/DDOS attacks this duration will be per API
-  attack_duration: 75
+  attack_duration: 60
 
   # Number of processes or threads used to achieve concurrency
-  number_of_processes: 50
+  number_of_processes: 100
 
   # Scenario name
   scenario: scenario_example

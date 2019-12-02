@@ -14,7 +14,7 @@ apim_endpoints:
 # api manager management console ports and configurations
 management_console:
   protocol: https
-  host: 172.17.0.1
+  host: 10.100.8.34
   servlet_transport_port_https: 9443
   servlet_transport_port_http: 9763
 
@@ -64,8 +64,8 @@ apis:
     resources:
       - method: GET
         path: menu
-      - method: DELETE
-        path: order
+#      - method: DELETE
+#        path: order
 
 
   - name: cricket
@@ -74,6 +74,6 @@ apis:
     resources:
       - method: GET
         path: menu
-      - method: DELETE
-        path: order
+#      - method: DELETE
+#        path: order
 
