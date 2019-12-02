@@ -66,7 +66,7 @@ def log(path, data, mode):
         file.write(data + "\n")
 
 
-def send_simple_request(request_path, method, token, ip, cookie, user_agent, path_params=None, query_params=None, payload=None):
+def send_simple_request(request_path, method, token, ip, cookie, accept, content_type, user_agent, path_params=None, query_params=None, payload=None):
     """
     Sending a http request using the given parameters
     :param request_path: path used to send the request
@@ -74,6 +74,8 @@ def send_simple_request(request_path, method, token, ip, cookie, user_agent, pat
     :param token: An access token to be included in the header
     :param ip: An IP address to be included in the header
     :param cookie: An user cookie to be included in the header
+    :param accept:
+    :param content_type: Content-type of the request
     :param user_agent: An user agent to be included in the header
     :param path_params: If there are any path parameters, default value is none
     :param query_params: If there are any query parameters, default value is none
@@ -94,12 +96,12 @@ def send_simple_request(request_path, method, token, ip, cookie, user_agent, pat
 
     header_data = {
         'User-Agent': user_agent,
-        'accept': 'application/json',
+        'accept': accept,
         'client-ip': '{}'.format(ip),
         'x-forwarded-for': '{}'.format(ip),
         'cookie': '{}'.format(cookie),
         'Authorization': 'Bearer {}'.format(token),
-        'Content-Type': 'application/json'
+        'Content-Type': content_type
     }
 
     # default response object
