@@ -13,8 +13,9 @@
 # KIND, either express or implied. See the License for the
 # specific language governing permissions and limitations
 # under the License.
-
+import random
 from collections import defaultdict
+
 
 # To store user details
 class User:
@@ -36,6 +37,10 @@ class API:
         self.resources = defaultdict(list)
         self.base_url = "{}://{}:{}/{}/{}".format(protocol, host, port, context, version)
         self.users = []
+        self.single_user = None
 
     def add_resource(self, method, path):
         self.resources[method].append(path)
+
+    def set_single_user(self):
+        self.single_user = random.choice(self.users)

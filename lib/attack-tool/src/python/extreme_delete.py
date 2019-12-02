@@ -43,8 +43,8 @@ def request_handler(i):
         context = api.context
         version = api.version
         resource_path = random.choice(api.resources['DELETE'])
-        random_user = random.choice(api.users)
-        token = random_user[0]
+        # random_user = random.choice(api.users)
+        random_user = api.single_user
         method = "DELETE"
         accept = content_type = "application/json"
 
@@ -53,12 +53,13 @@ def request_handler(i):
 
         request_path = "{}://{}:{}/{}/{}/{}".format(protocol, host, port, context, version, resource_path)
         random_user_agent = random.choice(user_agents)
+        token = random_user[0]
         ip = random_user[2]
         cookie = random_user[3]
         path_param = generate_random_string(10)
         try:
             response = util_methods.send_simple_request(request_path, method, token, ip, cookie, accept, content_type, random_user_agent, path_params=path_param)
-            request_info = "{},{},{},{},{},{},{},{},{},\"{}\",{}".format(datetime.now(), ip, token, method, request_path, cookie, accept, content_type, ip, random_user_agent,
+            request_info = "{},{},{},{},{}/{},{},{},{},{},\"{}\",{}".format(datetime.now(), ip, token, method, request_path,path_param, cookie, accept, content_type, ip, random_user_agent,
                                                                          response.status_code,
                                                                          )
             util_methods.log(dataset_path, request_info, "a")
@@ -106,6 +107,7 @@ if __name__ == '__main__':
     for api in apis:
         temp = API(protocol, host, port, api['context'], api['version'], api['name'])
         temp.users = user_details_groups.get_group(temp.name).values.tolist()
+        temp.set_single_user()
         for resource in api['resources']:
             temp.add_resource(resource['method'], resource['path'])
         if 'DELETE' in temp.resources.keys():
