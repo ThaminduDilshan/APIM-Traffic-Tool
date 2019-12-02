@@ -24,7 +24,7 @@ from multiprocessing.dummy import Pool
 import pandas as pd
 import requests
 import yaml
-
+import numpy as np
 from utils import util_methods
 from utils.entity_classes import API
 from utils.util_methods import generate_random_string
@@ -46,9 +46,10 @@ def request_handler(i):
         random_user = random.choice(api.users)
         token = random_user[0]
         method = "DELETE"
+        accept = content_type = "application/json"
 
-        # time.sleep(generate_biased_random(0, 10, 2))
-        time.sleep(random.randint(0, 10))
+        # sleep the process for a random period of time
+        time.sleep(abs(int(np.random.normal() * 10)))
 
         request_path = "{}://{}:{}/{}/{}/{}".format(protocol, host, port, context, version, resource_path)
         random_user_agent = random.choice(user_agents)
@@ -56,8 +57,10 @@ def request_handler(i):
         cookie = random_user[3]
         path_param = generate_random_string(10)
         try:
-            response = util_methods.send_simple_request(request_path, method, token, ip, cookie, random_user_agent, path_params=path_param)
-            request_info = "{},{},{},{},{},{},{},\"{}\"".format(datetime.now(), request_path, method, token, ip, cookie, response.status_code, random_user_agent)
+            response = util_methods.send_simple_request(request_path, method, token, ip, cookie, accept, content_type, random_user_agent, path_params=path_param)
+            request_info = "{},{},{},{},{},{},{},{},{},\"{}\",{}".format(datetime.now(), ip, token, method, request_path, cookie, accept, content_type, ip, random_user_agent,
+                                                                         response.status_code,
+                                                                         )
             util_methods.log(dataset_path, request_info, "a")
         except requests.exceptions.RequestException:
             msg_string = "[Error] {} - Request Failure\n\t {}".format(datetime.now(), str(ex))
@@ -123,7 +126,7 @@ if __name__ == '__main__':
     log_string = "[INFO] {} - Extreme delete attack started ".format(start_time)
     print(log_string)
     util_methods.log(attack_tool_log_path, log_string, "a")
-    util_methods.log(dataset_path, "Timestamp, Request path, Method,Access Token, IP Address, Cookie, Response Code", "w")
+    util_methods.log(dataset_path, "timestamp,ip_address,access_token,http_method,invoke_path,cookie,accept,content_type,x_forwarded_for,user_agent,response_code", "w")
 
     process_pool = Pool(processes=process_count)
 
