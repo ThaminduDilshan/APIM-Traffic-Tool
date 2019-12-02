@@ -109,18 +109,18 @@ Default configurations for WSO2 API Manager and default scenario are given in al
       - `max_connection_refuse_count`: Maximum number of connection refuse count allowed. Traffic tool will stop after the given number of connection refuses.
       - `no_of_data_points`: No of data points or requests to be generated when generating the traffic data without invoking.
       - `heavy_traffic`: If you want to simulate a heavy traffic, set this value as `true`. Otherwise set it to `false`.
-      
+
         > It is recommended to set `heavy_traffic` to `false` in model training and testing environments to have a better training for attacks.
 
 5. Configure the `<TOOL_HOME>/config/attack-tool.yaml` file as stated below (Configurations for the attack script).
    - Modify **protocol**,**ip address** and **port** of the host using `api_host` section.
    - Append, modify or remove user agents from the list under `user_agents` section.
    - Set the attack duration in seconds using `attack_duration`. (Note: For DOS and DDOS attacks, attack duration is defined per API)
-   - Configure the concurrency using `number_of_processes`. 
+   - Configure the concurrency using `number_of_processes`.
    - Enter the name of the scenario for `scenario`.
    - Append, modify or remove payloads from the list under `payloads` section. These payloads are used in the bodies of **POST**,**PUT** and **PATCH** requests.
    - Set minimum and maximum request scalars under `abnormal_token_usage`. These will be used to scale the normal traffic inorder to generate attack traffic for simulating abnormal token usage attack.
-    
+
  > It is recommended to add `setenv.sh` script in the `<TOOL_HOME>/resources/add-on` directory to the `<JMETER_HOME>/bin` directory in order to increase the heap size in JMeter if you are simulating DOS or DDOS attacks with heavy concurrency.   
 ## Using the Traffic Tool
 To use the traffic tool run the following command with the desired argument in a command line inside the `<TOOL_HOME>/bin` folder. To list down available options and their command line arguments, just run the command with the flag `-h`.
@@ -282,24 +282,24 @@ In stolen token attacks, the attackers invoke APIs with access tokens that are s
 ## Adding Custom APIM Scenario
 Adding a custom API Manager scenario is little bit tricky task. As for the current version of the APIM Traffic Tool, you have to configure a set of files in order to invoke for a custom scenario. First you have to think and design a real world API access pattern which is similar to the example scenario given. Then follow below steps to change scenario data files. Default scenario files are at `<TOOL_HOME>/lib/traffic-tool/data/scenario/scenario_example/data/` directory. You can add a new folder named as your scenario_name to the `/scenario` folder and add a `/data` folder containing following files. Line seperator for all csv files is the new line character ('\n').
 
-1. `api_creation.csv` : 
+1. `api_creation.csv` :
 Enter details of APIs (API name, description, context and a tag). Delimiter for csv is the comma(',').
 
-2. `api_creation_swagger.csv` : 
+2. `api_creation_swagger.csv` :
 Provide swagger definitions of all the APIs seperated by new line character ('\n').
 
-3. `app_creation.csv` : 
+3. `app_creation.csv` :
 Enter details of applications (Application name and description). Delimiter for csv is the dollar sign and a space('$<space>').
 
-4. `app_api_subscription_admin.csv` : 
+4. `app_api_subscription_admin.csv` :
 Enter all application-api combinations which the subscriptions should happen. Give application name and API name seperated by a comma (',').
 
-5. `api_invoke_scenario.csv` : 
+5. `api_invoke_scenario.csv` :
 This file should be prepared according to your invoke scenario. Each row is for a different user type in the scenario table. A row in the file is in the following format. '$' sign is used as the delimiter. You can add any number of patterns to the list in the format `[no_of_users,http_method,no_of_requests,resource_path]`.
 
    `<application_name>$[[pattern_1],[pattern_2]]`
 
-6. `user_generation.csv` : 
+6. `user_generation.csv` :
 This file contains the user details in the following format. Delimiter for csv is two dollar signs and a space ($$<space>).
 
    `<username>, <password>, <first_name>, <last_name>, <organization>, <country>, <email>, <no(land)>, <no(mobile)>, <IM>, <url>`
@@ -308,5 +308,19 @@ This file contains the user details in the following format. Delimiter for csv i
 
    `$ ./traffic-tool.sh user_details`
 
-7. `user_app_pattern.csv` : 
+7. `user_app_pattern.csv` :
 Above generated users should be distributed among applications inorder to generate access tokens. This file contains all username-application_name combinations seperated by a new line character ('\n'). Csv delimiter is the comma (',').
+
+## Changing API Invoke Pattern
+In this tool users are simulated through python processes. Those processes invoke and sleep according to a given time pattern. These patterns are listed in `<TOOL_HOME>/lib/traffic-tool/data/access_pattern/invoke_patterns.yaml` file. You can add more invoke patterns under `time_patterns` as comma separated integers.
+
+```
+Example Usage
+
+time_patterns:
+  pattern1: 0,100,0,2,300,500,1,2,100,400,700,1,0,0,900,30,600,1800,1800,2,400,6,100,0,0,200,100,0,100
+  pattern2: 0,1,0,0,2,0,5,0,1,0,10,0,15,0,20,15,1800,0,1,0,0,0,2,1,0,1,0,0,15,0,10,0,20
+  pattern3: 0,1,0,0,2,0,5,0,1,0,10,0,15,0,20,15,600,0,1,0,0,0,2,1,600,0,1,0,0,15,0,10,0,20
+```
+
+This product includes IP2Location LITE data available from <a href="https://www.ip2location.com">https://www.ip2location.com</a>.
