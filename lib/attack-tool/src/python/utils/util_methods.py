@@ -46,8 +46,10 @@ def generate_random_string(size):
     :return: a string of given size
     """
     out_str = ''
+    Range = list(range(65,90)) + list(range(97,122))
     for i in range(size):
-        a = random.randint(65, 90)
+        #a = random.randint(65, 90)
+        a = random.choice(Range)
         out_str += chr(a)
     return out_str
 
