@@ -1,21 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<!-- Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
-
-WSO2 Inc. licenses this file to you under the Apache License,
-Version 2.0 (the "License"); you may not use this file except
-in compliance with the License.
-You may obtain a copy of the License at
-
-http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing,
-software distributed under the License is distributed on an
-"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-KIND, either express or implied. See the License for the
-specific language governing permissions and limitations
-under the License. -->
-
 <jmeterTestPlan version="1.2" properties="5.0" jmeter="5.1.1 r1855137">
   <hashTree>
     <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Generate tokens" enabled="true">
@@ -97,6 +80,29 @@ props.put(&quot;apiThrottlingTier&quot;, apiThrottlingTier);
 props.put(&quot;apiVisibility&quot;, apiVisibility);
 props.put(&quot;scenarioBasePath&quot;, scenario_base_path);
 props.put(&quot;token_endpoint&quot;, token_endpoint);
+</stringProp>
+          </JSR223PreProcessor>
+          <hashTree/>
+        </hashTree>
+        <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Write header of the token file" enabled="true">
+          <stringProp name="scriptLanguage">groovy</stringProp>
+          <stringProp name="parameters"></stringProp>
+          <stringProp name="filename"></stringProp>
+          <stringProp name="cacheKey">true</stringProp>
+          <stringProp name="script">SampleResult.setIgnore();</stringProp>
+        </JSR223Sampler>
+        <hashTree>
+          <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="JSR223 PreProcessor" enabled="true">
+            <stringProp name="scriptLanguage">groovy</stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="cacheKey">true</stringProp>
+            <stringProp name="script">
+FileWriter fstream = new FileWriter(props.get(&quot;scenarioBasePath&quot;) + &quot;/api_invoke_tokens.csv&quot;, true);
+BufferedWriter out = new BufferedWriter(fstream);
+out.write(&apos;username,app_name,access_token\n&apos;);
+out.close();
+fstream.close();
 </stringProp>
           </JSR223PreProcessor>
           <hashTree/>

@@ -15,31 +15,41 @@
 # specific language governing permissions and limitations
 # under the License.
 
-'''
-This python script will generate 100 random person data and write them to a file named 'user_generation.csv'. Csv file format is as below.
-<username>, <password>, <first_name>, <last_name>, <organization>, <country>, <email>, <no(land)>, <no(mobile)>, <IM>, <url>
-delimiter : '$$ '
-'''
-
 
 import rstr
 from faker import Faker
 import argparse
 import os
 import yaml
+from datetime import datetime
+import sys
 
 # global variables
 faker = Faker()
 usernames = []
 scenario_name = None
+no_of_users = 0
 abs_path = os.path.abspath(os.path.dirname(__file__))
 
-with open(abs_path+'/../../../../config/traffic-tool.yaml', 'r') as file:
-    traffic_config = yaml.load(file, Loader=yaml.FullLoader)
-scenario_name = traffic_config['scenario_name']
+# load and set configurations
+try:
+    with open(abs_path+'/../../../../config/traffic-tool.yaml', 'r') as file:
+        traffic_config = yaml.load(file, Loader=yaml.FullLoader)
+    scenario_name = traffic_config['scenario_name']
+    no_of_users = int(traffic_config['tool_config']['no_of_users'])
+
+    if no_of_users <= 0:
+        print('[ERROR] {} gen_user_details.py: Invalid user count: {}'.format(str(datetime.now()), str(no_of_users)))
+        sys.exit()
+
+except FileNotFoundError as e:
+    print('[ERROR] {} gen_user_details.py: {}: {}'.format(str(datetime.now()), e.strerror, e.filename))
+    sys.exit()
 
 
-# get username and password for a given user (username and password are considered as the same)
+'''
+    This function will return a username and password for a given user (username and password are considered as the same)
+'''
 def genUnPw(firstname:str, num:int):
     username = firstname.lower() + str(num)
     if len(username) < 5:
@@ -48,7 +58,9 @@ def genUnPw(firstname:str, num:int):
     return username
 
 
-# generate random user data
+'''
+    This function will generate random user details (for a single user)
+'''
 def generateUser(num:int):
     user = []
     firstname = faker.first_name()
@@ -68,26 +80,43 @@ def generateUser(num:int):
     return user
 
 
-# create app name, username pattern according to the scenario
+'''
+    This function will generate app name, username pattern according to the scenario
+'''
 def app_userScenario():
     finalArr = []
     finalStr = ""
-    finalArr.append([ usernames[i]+",Online Shopping\n" for i in range(0,15) ])     # only online shopping app users
-    finalArr.append([ usernames[i]+",Taxi\n" for i in range(15,50) ])     # only taxi app users
-    finalArr.append([ usernames[i]+",CricScore\n" for i in range(50,60) ])     # only cricscore app users
 
-    finalArr.append([ usernames[i]+",Online Shopping\n" for i in range(60,70) ])  # both shopping and taxi app users
-    finalArr.append([ usernames[i]+",Taxi\n" for i in range(60,70) ])
+    individual_app_users = int(no_of_users * 3/5)
+    only_onlineShopping = int(individual_app_users*1/4)
+    only_cricScore = int(individual_app_users*1/6)
+    only_taxi = individual_app_users - (only_onlineShopping + only_cricScore)
 
-    finalArr.append([ usernames[i]+",Online Shopping\n" for i in range(70,75) ])  # both shopping and cricscore app users
-    finalArr.append([ usernames[i]+",CricScore\n" for i in range(70,75) ])
+    all_app = int((no_of_users - individual_app_users) * 1/4)
+    shopping_taxi = int((no_of_users - individual_app_users) * 1/4)
+    shopping_cricScore = int((no_of_users - individual_app_users) * 1/8)
+    taxi_cricScore = no_of_users - individual_app_users - (all_app + shopping_taxi + shopping_cricScore)
 
-    finalArr.append([ usernames[i]+",Taxi\n" for i in range(75,90) ])  # both taxi and cricscore app users
-    finalArr.append([ usernames[i]+",CricScore\n" for i in range(75,90) ])
+    finalArr.append([ usernames[i]+",Online Shopping\n" for i in range(0, only_onlineShopping) ])     # only online shopping app users
+    finalArr.append([ usernames[i]+",CricScore\n" for i in range(only_onlineShopping, only_onlineShopping+only_cricScore) ])     # only cricscore app users
+    finalArr.append([ usernames[i]+",Taxi\n" for i in range(only_onlineShopping+only_cricScore, only_onlineShopping+only_cricScore+only_taxi) ])     # only taxi app users
 
-    finalArr.append([ usernames[i]+",Online Shopping\n" for i in range(90,100) ])  # all 3 app users
-    finalArr.append([ usernames[i]+",Taxi\n" for i in range(90,100) ])
-    finalArr.append([ usernames[i]+",CricScore\n" for i in range(90,100) ])
+    v1 = individual_app_users + shopping_taxi
+    finalArr.append([ usernames[i]+",Online Shopping\n" for i in range(individual_app_users, v1) ])  # both shopping and taxi app users
+    finalArr.append([ usernames[i]+",Taxi\n" for i in range(individual_app_users, v1) ])
+
+    v2 = v1 + shopping_cricScore
+    finalArr.append([ usernames[i]+",Online Shopping\n" for i in range(v1, v2) ])  # both shopping and cricscore app users
+    finalArr.append([ usernames[i]+",CricScore\n" for i in range(v1, v2) ])
+
+    v3 = v2 + taxi_cricScore
+    finalArr.append([ usernames[i]+",Taxi\n" for i in range(v2, v3) ])  # both taxi and cricscore app users
+    finalArr.append([ usernames[i]+",CricScore\n" for i in range(v2, v3) ])
+
+    v4 = v3 + all_app
+    finalArr.append([ usernames[i]+",Online Shopping\n" for i in range(v3, v4) ])  # all 3 app users
+    finalArr.append([ usernames[i]+",Taxi\n" for i in range(v3, v4) ])
+    finalArr.append([ usernames[i]+",CricScore\n" for i in range(v3, v4) ])
 
     for outer in finalArr:
         for inner in outer:
@@ -97,13 +126,17 @@ def app_userScenario():
     file.write(finalStr)
     file.close()
 
-    print('User app pattern generation successful!')
+    print('[INFO] {}: User app pattern generation successful!'.format(str(datetime.now())))
 
 
-# generate 100 users and write data to a csv file ('$$ ' is used as delimiter)
+'''
+    This function will generate given number of users and write data to a csv file
+    data format: <username>, <password>, <first_name>, <last_name>, <organization>, <country>, <email>, <no(land)>, <no(mobile)>, <IM>, <url>
+    delimiter : '$$ '
+'''
 def genUsersCSV():
     csvString = ""
-    for i in range(100):
+    for i in range(no_of_users):
         userArr = generateUser(i+1)
         for ele in userArr:
             csvString += ele + '$$ '
@@ -112,7 +145,7 @@ def genUsersCSV():
     file = open(abs_path+'/../../data/scenario/{}/data/user_generation.csv'.format(scenario_name), 'w')
     file.write(csvString)
     file.close()
-    print('User generation successful!')
+    print('[INFO] {}: User generation successful!'.format(str(datetime.now())))
 
 
 # execute
@@ -126,4 +159,4 @@ elif args.option == 1:
     genUsersCSV()
     app_userScenario()
 else:
-    print("Invalid argument value {}!".format(args.option))
+    print("[INFO] {}: Invalid argument value {}!".format(str(datetime.now()), args.option))

@@ -23,20 +23,19 @@ api_manager:
 
 # details of APIs in the scenario
 apis:
-#  - name: news
-#    context: news
-#    version: 1
-#    resources:
-#     - method: GET
-#       path: menu
+  - name: news
+    context: news
+    version: 1
+    resources:
+      - method: GET
+        path: menu
 
-
-#  - name: places
-#    context: places
-#    version: 1
-#    resources:
-#      - method: GET
-#        path: menu
+  - name: places
+    context: places
+    version: 1
+    resources:
+      - method: GET
+        path: menu
 
   - name: payment
     context: payment
@@ -67,7 +66,6 @@ apis:
       - method: DELETE
         path: order
 
-
   - name: cricket
     context: cricket
     version: 1
@@ -76,4 +74,3 @@ apis:
         path: menu
       - method: DELETE
         path: order
-
