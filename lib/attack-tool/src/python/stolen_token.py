@@ -15,10 +15,11 @@
 # under the License.
 import sys
 from multiprocessing.dummy import Pool
+from multiprocessing import Process, Value
 import os
 import pickle
 import time
-
+import atexit
 import requests
 import yaml
 import string
@@ -28,6 +29,12 @@ import ipaddress
 import random
 import numpy as np
 from utils.util_methods import generate_biased_random
+
+
+def cleanup():
+    global process_list
+    for p in process_list:
+        p.terminate()
 
 
 def generate_unique_ip():
@@ -58,7 +65,7 @@ def generate_cookie():
     return cookie
 
 
-def execute_scenario(scenario):
+def execute_scenario(username, scenario):
     """
     Execute a scenario from the scenario pool to simulate the usage of a stolen token
     :param scenario: A list containing a scenario
@@ -69,37 +76,81 @@ def execute_scenario(scenario):
     up_time = datetime.now() - start_time
 
     if up_time.seconds < attack_duration:
-        request_target = scenario[0]
-        context = scenario[1]
-        version = scenario[2]
-        resource_path = scenario[3]
-        token = scenario[4]
-        method = scenario[5]
+        for app in scenario.values():
+            request_target = app[0]
+            # context = scenario[1]
+            # version = scenario[2]
+            # resource_path = scenario[3]
+            path = app[2]
+            token = app[3]
+            method = app[4]
 
-        request_path = "{}://{}:{}/{}/{}/{}".format(protocol, host, port, context, version, resource_path)
-        random_user_agent = random.choice(user_agents)
-        random_ip = generate_unique_ip()
-        random_cookie = generate_cookie()
-        random_payload = random.choice(payloads)
-        accept = content_type = "application/json"
+            request_path = "{}://{}:{}/{}".format(protocol, host, port, path)
+            random_user_agent = random.choice(user_agents)
+            random_ip = generate_unique_ip()
+            random_cookie = generate_cookie()
+            random_payload = random.choice(payloads)
+            accept = content_type = "application/json"
 
-        for i in range(request_target):
-            up_time = datetime.now() - start_time
-            if up_time.seconds >= attack_duration:
-                break
-            try:
-                response = util_methods.send_simple_request(request_path, method, token, random_ip, random_cookie, accept, content_type, random_user_agent, payload=random_payload)
-                request_info = "{},{},{},{},{},{},{},{},{},\"{}\",{}".format(datetime.now(), random_ip, token, method, request_path, random_cookie, accept, content_type, random_ip, random_user_agent,
-                                                                             response.status_code,
-                                                                             )
-                util_methods.log(dataset_path, request_info, "a")
-            except requests.exceptions.RequestException:
-                msg_string = "[Error] {} - Request Failure\n\t {}".format(datetime.now(), str(ex))
-                print(msg_string)
-                util_methods.log(attack_tool_log_path, msg_string, "a")
+            for i in range(request_target):
+                up_time = datetime.now() - start_time
+                if up_time.seconds >= attack_duration:
+                    break
+                try:
+                    response = util_methods.send_simple_request(request_path, method, token, random_ip, random_cookie, accept, content_type, random_user_agent, payload=random_payload)
+                    request_info = "{},{},{},{},{},{},{},{},{},\"{}\",{}".format(datetime.now(), random_ip, token, method, request_path, random_cookie, accept, content_type, random_ip,
+                                                                                 random_user_agent,
+                                                                                 response.status_code,
+                                                                                 )
+                    util_methods.log(dataset_path, request_info, "a")
+                except requests.exceptions.RequestException:
+                    msg_string = "[Error] {} - Request Failure\n\t {}".format(datetime.now(), str(ex))
+                    print(msg_string)
+                    util_methods.log(attack_tool_log_path, msg_string, "a")
 
-            # sleep the process for a random period of time between 0 and 5 seconds but biased to 0
-            time.sleep(abs(int(np.random.normal() * 10)))
+                # sleep the process for a random period of time between 0 and 5 seconds but biased to 0
+                time.sleep(abs(int(np.random.normal() * 10)))
+
+
+def simulate_user(username, user_data):
+    global attack_duration, protocol, host, port, payloads, user_agents, start_time, dataset_path, invoke_patterns
+
+    up_time = datetime.now() - start_time
+
+    if up_time.seconds < attack_duration:
+        for app in user_data.values():
+            j = 0
+            for scenario in app:
+                request_target = scenario[0]
+                path = scenario[2]
+                token = scenario[3]
+                method = scenario[4]
+                pattern = invoke_patterns[random.choice(list(invoke_patterns.keys()))].split(',')
+                request_path = "{}://{}:{}/{}".format(protocol, host, port, path)
+                random_user_agent = random.choice(user_agents)
+                random_ip = generate_unique_ip()
+                random_cookie = generate_cookie()
+                random_payload = random.choice(payloads)
+                accept = content_type = "application/json"
+
+                for i in range(request_target):
+                    up_time = datetime.now() - start_time
+                    if up_time.seconds >= attack_duration:
+                        break
+                    try:
+                        response = util_methods.send_simple_request(request_path, method, token, random_ip, random_cookie, accept, content_type, random_user_agent, payload=random_payload)
+                        request_info = "{},{},{},{},{},{},{},{},{},\"{}\",{}".format(datetime.now(), random_ip, token, method, request_path, random_cookie, accept, content_type, random_ip,
+                                                                                     random_user_agent,
+                                                                                     response.status_code,
+                                                                                     )
+                        util_methods.log(dataset_path, request_info, "a")
+                    except requests.exceptions.RequestException:
+                        msg_string = "[Error] {} - Request Failure\n\t {}".format(datetime.now(), str(ex))
+                        print(msg_string)
+                        util_methods.log(attack_tool_log_path, msg_string, "a")
+
+                    time.sleep(int(pattern[j % len(pattern)]))
+                    j += 1
 
 
 # Program Execution
@@ -108,8 +159,11 @@ if __name__ == '__main__':
     attack_tool_log_path = "../../../../../../logs/attack-tool.log"
 
     try:
-        with open(os.path.abspath(os.path.join(__file__, "../../../../traffic-tool/data/runtime_data/user_scenario_pool.sav")), "rb") as scenario_file:
+        with open(os.path.abspath(os.path.join(__file__, "../../../../traffic-tool/data/runtime_data/scenario_pool.sav")), "rb") as scenario_file:
             scenario_pool = pickle.load(scenario_file, )
+
+        with open(os.path.abspath(os.path.join(__file__, "../../../../traffic-tool/data/access_pattern/invoke_patterns.yaml")), "rb") as pattern_file:
+            invoke_patterns = yaml.load(pattern_file, Loader=yaml.FullLoader)['time_patterns']
 
         with open(os.path.abspath(os.path.join(__file__, "../../../../../config/attack-tool.yaml")), "r") as attack_config_file:
             attack_config = yaml.load(attack_config_file, Loader=yaml.FullLoader)
@@ -139,19 +193,38 @@ if __name__ == '__main__':
     print(log_string)
     util_methods.log(attack_tool_log_path, log_string, "a")
 
-    process_pool = Pool(processes=process_count)
+    process_list = []
+    for user_name, scenario in scenario_pool.items():
+        process = Process(target=simulate_user, args=(user_name, scenario))
+        process.daemon = False
+        process_list.append(process)
+        process.start()
 
-    # Executing scenarios until the attack duration elapses
     while True:
         time_elapsed = datetime.now() - start_time
         if time_elapsed.seconds >= attack_duration:
+            for process in process_list:
+                process.terminate()
             log_string = "[INFO] {} - Attack terminated successfully. Time elapsed: {} minutes".format(datetime.now(), time_elapsed.seconds / 60.0)
             print(log_string)
             util_methods.log(attack_tool_log_path, log_string, "a")
             break
-        else:
-            process_pool.map(execute_scenario, scenario_pool)
 
-    # closes the process pool and wait for the processes to finish
-    process_pool.close()
-    process_pool.join()
+    atexit.register(cleanup)
+
+    # process_pool = Pool(processes=process_count)
+    #
+    # # Executing scenarios until the attack duration elapses
+    # while True:
+    #     time_elapsed = datetime.now() - start_time
+    #     if time_elapsed.seconds >= attack_duration:
+    #         log_string = "[INFO] {} - Attack terminated successfully. Time elapsed: {} minutes".format(datetime.now(), time_elapsed.seconds / 60.0)
+    #         print(log_string)
+    #         util_methods.log(attack_tool_log_path, log_string, "a")
+    #         break
+    #     else:
+    #         process_pool.map(execute_scenario, scenario_pool)
+    #
+    # # closes the process pool and wait for the processes to finish
+    # process_pool.close()
+    # process_pool.join()
