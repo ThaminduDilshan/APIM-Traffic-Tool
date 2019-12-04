@@ -244,16 +244,16 @@ for item in scenario_data:
         for user in users:  # user[username,token,ip,cookie,user_agent]
             no_of_requests = varySlightly(call_median, user_count)
             scenario_pool.get(user[0]).get(app_name).append([no_of_requests, api_name, full_path, user[1], method, user[2], user[3], user[4], time_pattern])
-            scenario_distribution.append([no_of_requests, api_name, full_path, user[1], method, user[2], user[3], app_name, user[0], user[4]])
+            scenario_distribution.append([api_name, user[1], user[2], user[3]])
 
 # save scenario data
 write_str = "access_token,api_name,ip_address,user_cookie\n"
 
 for row in scenario_distribution:
-    api_name = row[1]
-    access_token = row[4]
-    ip_address = row[6]
-    user_cookie = row[7]
+    api_name = row[0]
+    access_token = row[1]
+    ip_address = row[2]
+    user_cookie = row[3]
     write_str += access_token + ',' + api_name + ',' + ip_address + ',' + user_cookie + "\n"
 
 with open(abs_path + '/../../data/scenario/{}/token_ip_cookie.csv'.format(scenario_name), 'w') as file:
