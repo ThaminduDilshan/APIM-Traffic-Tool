@@ -98,7 +98,6 @@ Default configurations for WSO2 API Manager and default scenario are given in al
 
 4. Configure the `<TOOL_HOME>/config/traffic-tool.yaml` file as stated below (Configurations for the traffic script).
    - Enter throttling tier, api visibility, production and sandbox endpoints for the APIs under api section (APIs are created using these configurations).
-   - Enter payload to send with POST requests when simulating a normal traffic under api section.
    - Enter throttling tier and token validity period for the applications under application section (Applications are created using these configurations).
    - Enter correct subscription tier for the app api subscriptions.
    - Enter scenario name in front of scenario_name section. If you are using the default scenario, scenario_name is `scenario_example`.
@@ -110,6 +109,9 @@ Default configurations for WSO2 API Manager and default scenario are given in al
       - `heavy_traffic`: If you want to simulate a heavy traffic, set this value as `true`. Otherwise set it to `false`.
 
         > It is recommended to set `heavy_traffic` to `false` in model training and testing environments to have a better training for attacks.
+        
+   - List payloads under `payloads` section to send with POST and DELETE requests when simulating a normal traffic. A random payload will be sent with each POST or DELETE request. If your DELETE endpoint operates with path parameters, leave payloads empty under `delete` section.
+   - List user agents under `user_agents` section. These user agents are sent randomly when simulating a normal traffic.
 
 5. Configure the `<TOOL_HOME>/config/attack-tool.yaml` file as stated below (Configurations for the attack script).
    - Modify **protocol**,**ip address** and **port** of the host using `api_host` section.
@@ -340,5 +342,6 @@ time_patterns:
   pattern2: 0,1,0,0,2,0,5,0,1,0,10,0,15,0,20,15,1800,0,1,0,0,0,2,1,0,1,0,0,15,0,10,0,20
   pattern3: 0,1,0,0,2,0,5,0,1,0,10,0,15,0,20,15,600,0,1,0,0,0,2,1,600,0,1,0,0,15,0,10,0,20
 ```
+> You can simulate a more realistic real world access pattern by adding time patterns from real world datasets.
 
 This product includes IP2Location LITE data available from <a href="https://www.ip2location.com">https://www.ip2location.com</a>.

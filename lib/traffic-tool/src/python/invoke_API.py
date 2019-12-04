@@ -30,6 +30,7 @@ import json
 import math
 from multiprocessing import Process, Value
 import numpy as np
+from scipy.stats import norm
 
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -47,7 +48,8 @@ host_protocol = None
 host_ip = None
 host_port = None
 heavy_traffic = None
-post_data = None
+post_data = []
+delete_data = []
 time_patterns = None
 
 script_starttime = None
@@ -62,7 +64,7 @@ abs_path = os.path.abspath(os.path.dirname(__file__))
     This function will load and set the configuration data
 '''
 def loadConfig():
-    global max_connection_refuse_count, host_protocol, host_ip, host_port, heavy_traffic, post_data, time_patterns
+    global max_connection_refuse_count, host_protocol, host_ip, host_port, heavy_traffic, post_data, delete_data, time_patterns
 
     with open(abs_path+'/../../../../config/traffic-tool.yaml', 'r') as file:
         traffic_config = yaml.load(file, Loader=yaml.FullLoader)
@@ -72,7 +74,8 @@ def loadConfig():
     host_protocol = traffic_config['api_host']['protocol']
     host_ip = traffic_config['api_host']['ip']
     host_port = traffic_config['api_host']['port']
-    post_data = traffic_config['api']['payload']
+    post_data = traffic_config['payloads']['post']
+    delete_data = traffic_config['payloads']['delete']
 
     with open(abs_path+'/../../data/access_pattern/invoke_patterns.yaml') as file:
         invoke_patterns = yaml.load(file, Loader=yaml.FullLoader)
@@ -89,9 +92,11 @@ def log(tag, write_string):
 
 
 '''
-    This function will send http requests to the given address: GET, POST only
+    This function will send http requests to the given address
 '''
 def sendRequest(url_protocol, url_ip, url_port, path, access_token, method, user_ip, cookie, app_name, username, user_agent):
+    global post_data, delete_data
+
     url = "{}://{}:{}/{}".format(url_protocol, url_ip, url_port, path)
     accept = 'application/json'
     content_type = 'application/json'
@@ -112,14 +117,39 @@ def sendRequest(url_protocol, url_ip, url_port, path, access_token, method, user
             response = requests.get(url=url, headers=headers, verify=False)
             code = response.status_code
             res_txt = response.text
+
         elif method=="POST":
-            data = json.dumps(post_data)
+            data = json.dumps(random.choice(post_data))
             response = requests.post(url=url, headers=headers, data=data, verify=False)
             code = response.status_code
             res_txt = response.text
+
+        elif method=="DELETE":
+            if delete_data != None:
+                data = json.dumps(random.choice(delete_data))
+                response = requests.delete(url=url, headers=headers, data=data, verify=False)
+                code = response.status_code
+                res_txt = response.text
+            else:
+                url = url + '/' + str(random.randint(0,1000))
+                response = requests.delete(url=url, headers=headers, verify=False)
+                code = response.status_code
+                res_txt = response.text
+
+        elif method=="PUT":
+            response = requests.put(url=url, headers=headers, verify=False)
+            code = response.status_code
+            res_txt = response.text
+
+        elif method=="PATCH":
+            response = requests.patch(url=url, headers=headers, verify=False)
+            code = response.status_code
+            res_txt = response.text
+
         else:
             code = '400'
             res_txt = 'Invalid type'
+
     except Exception as e:
         log("ERROR", str(e))
         code = '521'
@@ -151,8 +181,37 @@ def runInvoker(username, user_scenario, connection_refuse_count):
         app_scenario_list = user_scenario.get(app_name)
         time_pattern = None
 
+        iterations = 0
+        probability_list = []
+        invoke_pattern_indices = None
+
+        # prepare probabilities for the scenario
         for scenario in app_scenario_list:
-            no_of_requests = scenario[0] - random.randint(0, scenario[0])
+            iterations += scenario[0]
+            probability_list.append(scenario[0])
+
+        if iterations == 0:
+            continue
+
+        for i in range(len(probability_list)):
+            probability_list[i] = probability_list[i] / iterations
+
+        # increase probabilities if it's too small compared to max value
+        for i in range(len(probability_list)):
+            max_pro = max(probability_list)
+            if max_pro - probability_list[i] >= 0.5:
+                probability_list[i] = probability_list[i] + 0.075
+                probability_list[probability_list.index(max_pro)] = max_pro - 0.075
+
+        # prepare request pattern from list indices
+        invoke_pattern_indices = np.random.choice(len(app_scenario_list), size=iterations, p=probability_list)
+
+        for i in invoke_pattern_indices:
+            up_time = datetime.now() - script_starttime
+            if up_time.seconds >= script_runtime:
+                break
+
+            scenario = app_scenario_list[i]
             api_name = scenario[1]
             path = scenario[2]
             access_token = scenario[3]
@@ -161,6 +220,7 @@ def runInvoker(username, user_scenario, connection_refuse_count):
             cookie = scenario[6]
             user_agent = scenario[7]
 
+            # set time pattern if not set
             if time_pattern == None:
                 time_pattern = scenario[8]
                 time_pattern = time_patterns.get(time_pattern)
@@ -169,21 +229,17 @@ def runInvoker(username, user_scenario, connection_refuse_count):
                 else:
                     time_pattern = [time_pattern]
 
-            for i in range(no_of_requests):
-                up_time = datetime.now() - script_starttime
-                if up_time.seconds >= script_runtime:
-                    break
-
-                try:
-                    res_code, res_txt = sendRequest(host_protocol, host_ip, host_port, path, access_token, method, user_ip, cookie, app_name, username, user_agent)
-                    if res_code == '521':
-                        connection_refuse_count.value += 1
-                    if heavy_traffic != 'true':
-                        time.sleep(time_pattern[it%len(time_pattern)])
-                    it += 1
-                except Exception as e:
-                    log('ERROR', str(e))
+            # send the request
+            try:
+                res_code, res_txt = sendRequest(host_protocol, host_ip, host_port, path, access_token, method, user_ip, cookie, app_name, username, user_agent)
+                if res_code == '521':
                     connection_refuse_count.value += 1
+                if heavy_traffic != 'true':
+                    time.sleep(time_pattern[it%len(time_pattern)])
+                it += 1
+            except Exception as e:
+                log('ERROR', str(e))
+                connection_refuse_count.value += 1
 
         up_time = datetime.now() - script_starttime
         if up_time.seconds >= script_runtime:

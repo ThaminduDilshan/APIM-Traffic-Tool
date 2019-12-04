@@ -25,6 +25,8 @@ from datetime import datetime
 import ipaddress
 import pandas as pd
 import sys
+from scipy.stats import norm
+
 
 # variables
 scenario_name = None
@@ -93,14 +95,9 @@ def getPath(api_name, method):
 '''
     This function will return an integer slightly varied to the given median
 '''
-def varySlightly(median, no_of_users):
-    lower_bound = int(median) - int(int(no_of_users) / 2)
-    upper_bound = int(median) + int(int(no_of_users) / 2)
-    if lower_bound <= 0:
-        lower_bound = 1
-    req_count = random.randint(lower_bound, upper_bound)
-
-    return req_count
+def varySlightly(median):
+    st_div = 1
+    return abs(int(norm.rvs(loc=median, scale=st_div)))
 
 
 '''
@@ -242,7 +239,7 @@ for item in scenario_data:
         full_path = getPath(api_name, method)
 
         for user in users:  # user[username,token,ip,cookie,user_agent]
-            no_of_requests = varySlightly(call_median, user_count)
+            no_of_requests = varySlightly(call_median)
             scenario_pool.get(user[0]).get(app_name).append([no_of_requests, api_name, full_path, user[1], method, user[2], user[3], user[4], time_pattern])
             scenario_distribution.append([api_name, user[1], user[2], user[3]])
 
