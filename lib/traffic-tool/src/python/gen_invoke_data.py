@@ -30,6 +30,7 @@ import json
 import math
 from multiprocessing import Process, Value
 import numpy as np
+from scipy.stats import norm
 
 
 parser = argparse.ArgumentParser("generate traffic data")
@@ -107,8 +108,24 @@ def runInvoker(username, user_scenario, current_data_points):
         app_scenario_list = user_scenario.get(app_name)
         time_pattern = None
 
+        iterations = 0
+        probability_list = []
+        invoke_pattern_indices = None
+
         for scenario in app_scenario_list:
-            no_of_requests = scenario[0] - random.randint(0, scenario[0])
+            iterations += scenario[0]
+            probability_list.append(scenario[0])
+
+        for i in range(len(probability_list)):
+            probability_list[i] = probability_list[i] / iterations
+
+        invoke_pattern_indices = np.random.choice(len(app_scenario_list), size=iterations, p=probability_list)
+
+        for i in invoke_pattern_indices:
+            if current_data_points.value >= no_of_data_points:
+                break
+
+            scenario = app_scenario_list[i]
             api_name = scenario[1]
             path = scenario[2]
             access_token = scenario[3]
@@ -125,18 +142,14 @@ def runInvoker(username, user_scenario, current_data_points):
                 else:
                     time_pattern = [time_pattern]
 
-            for i in range(no_of_requests):
-                if current_data_points.value >= no_of_data_points:
-                    break
+            writeInvokeData(timestamp, path, access_token, method, user_ip, cookie, app_name, username, user_agent)
+            current_data_points.value += 1
 
-                writeInvokeData(timestamp, path, access_token, method, user_ip, cookie, app_name, username, user_agent)
-                current_data_points.value += 1
-
-                if heavy_traffic != 'true':
-                    timestamp += dt.timedelta(seconds=it%len(time_pattern))
-                else:
-                    timestamp += dt.timedelta(seconds=abs(int(np.random.normal())))
-                it += 1
+            if heavy_traffic != 'true':
+                timestamp += dt.timedelta(seconds=it%len(time_pattern))
+            else:
+                timestamp += dt.timedelta(seconds=abs(int(np.random.normal())))
+            it += 1
 
         if current_data_points.value >= no_of_data_points:
             break
