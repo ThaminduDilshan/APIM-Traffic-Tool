@@ -4,7 +4,6 @@ api:
   visibility: PUBLIC
   production_endpoint: https://localhost:9443/am/sample/pizzashack/v1/api/
   sandbox_endpoint: https://localhost:9443/am/sample/pizzashack/v1/api/
-  payload: {"customerName": "customer_name","delivered": true,"address": "customer_address","pizzaType": "customer_pizza","creditCardNumber": "customer_credit_card","quantity": 0,"orderId": "1"}
 
 # definitions for applications which will be created by the scenario
 application:
@@ -29,6 +28,16 @@ tool_config:
   max_connection_refuse_count: 50
   no_of_data_points: 10000
   heavy_traffic: false
+
+# payloads to send with POST and DELETE requests
+payloads:
+  post:
+    - {"customerName": "customer_1","delivered": true,"address": "customer1_address","pizzaType": "customer_pizza","creditCardNumber": "customer_credit_card","quantity": 0,"orderId": "1"}
+    - {"customerName": "customer_2","delivered": true,"address": "customer2_address","pizzaType": "customer_pizza","creditCardNumber": "customer_credit_card","quantity": 4,"orderId": "2"}
+    - {"customerName": "customer_3","delivered": true,"address": "customer3_address","pizzaType": "customer_pizza","creditCardNumber": "customer_credit_card","quantity": 1,"orderId": "3"}
+
+  delete:
+
 
 # Traffic tool will randomly append one of the following user agents to the request header
 user_agents:

@@ -112,13 +112,25 @@ def runInvoker(username, user_scenario, current_data_points):
         probability_list = []
         invoke_pattern_indices = None
 
+        # prepare probabilities for the scenario
         for scenario in app_scenario_list:
             iterations += scenario[0]
             probability_list.append(scenario[0])
 
+        if iterations == 0:
+            continue
+
         for i in range(len(probability_list)):
             probability_list[i] = probability_list[i] / iterations
 
+        # increase probabilities if it's too small compared to max value
+        for i in range(len(probability_list)):
+            max_pro = max(probability_list)
+            if max_pro - probability_list[i] >= 0.5:
+                probability_list[i] = probability_list[i] + 0.075
+                probability_list[probability_list.index(max_pro)] = max_pro - 0.075
+
+        # prepare request pattern from list indices
         invoke_pattern_indices = np.random.choice(len(app_scenario_list), size=iterations, p=probability_list)
 
         for i in invoke_pattern_indices:

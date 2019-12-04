@@ -31,6 +31,10 @@ invoke_scenario:
         method: POST
         no_of_requests: 3
 
+      - api: payment
+        method: DELETE
+        no_of_requests: 1
+
   - app_name: Online Shopping
     no_of_users: 5
     time_pattern: pattern4
