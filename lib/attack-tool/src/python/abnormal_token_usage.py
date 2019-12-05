@@ -13,6 +13,7 @@
 # KIND, either express or implied. See the License for the
 # specific language governing permissions and limitations
 # under the License.
+import atexit
 import sys
 from multiprocessing.dummy import Pool
 import os
@@ -25,6 +26,7 @@ from datetime import datetime
 from utils import util_methods
 import random
 import numpy as np
+from multiprocessing import Process, Value
 from utils.util_methods import generate_biased_random
 
 
@@ -74,14 +76,64 @@ def execute_scenario(scenario):
             time.sleep(abs(int(np.random.normal() * 10)))
 
 
+def simulate_user(user_data):
+    global attack_duration, protocol, host, port, payloads, user_agents, start_time, dataset_path, invoke_patterns, max_request_multiplier, min_request_multiplier
+
+    up_time = datetime.now() - start_time
+
+    if up_time.seconds < attack_duration:
+        for app in user_data.values():
+            invoke_pattern_iterator = 0
+
+            for scenario in app:
+                scenario[0] *= random.randint(min_request_multiplier, max_request_multiplier)
+
+            invoke_pattern_indices = util_methods.generate_method_invoke_pattern(app)
+            for i in invoke_pattern_indices:
+                up_time = datetime.now() - start_time
+
+                if up_time.seconds >= attack_duration:
+                    break
+
+                scenario = app[i]
+                path = scenario[2]
+                token = scenario[3]
+                method = scenario[4]
+                pattern = invoke_patterns[random.choice(list(invoke_patterns.keys()))].split(',')
+                request_path = "{}://{}:{}/{}".format(protocol, host, port, path)
+                random_user_agent = scenario[7]
+                ip = scenario[5]
+                cookie = scenario[6]
+                random_payload = random.choice(payloads)
+                accept = content_type = "application/json"
+
+                try:
+                    response = util_methods.send_simple_request(request_path, method, token, ip, cookie, accept, content_type, random_user_agent, payload=random_payload)
+                    request_info = "{},{},{},{},{},{},{},{},{},\"{}\",{}".format(datetime.now(), ip, token, method, request_path, cookie, accept, content_type, ip,
+                                                                                 random_user_agent,
+                                                                                 response.status_code,
+                                                                                 )
+                    util_methods.log(dataset_path, request_info, "a")
+                except requests.exceptions.RequestException:
+                    msg_string = "[Error] {} - Request Failure\n\t {}".format(datetime.now(), str(ex))
+                    print(msg_string)
+                    util_methods.log(attack_tool_log_path, msg_string, "a")
+
+                time.sleep(int(pattern[invoke_pattern_iterator % len(pattern)]))
+                invoke_pattern_iterator += 1
+
+
 # Program Execution
 if __name__ == '__main__':
 
     attack_tool_log_path = "../../../../../../logs/attack-tool.log"
 
     try:
-        with open(os.path.abspath(os.path.join(__file__, "../../../../traffic-tool/data/runtime_data/user_scenario_pool.sav")), "rb") as scenario_file:
+        with open(os.path.abspath(os.path.join(__file__, "../../../../traffic-tool/data/runtime_data/scenario_pool.sav")), "rb") as scenario_file:
             scenario_pool = pickle.load(scenario_file, )
+
+        with open(os.path.abspath(os.path.join(__file__, "../../../../traffic-tool/data/access_pattern/invoke_patterns.yaml")), "rb") as pattern_file:
+            invoke_patterns = yaml.load(pattern_file, Loader=yaml.FullLoader)['time_patterns']
 
         with open(os.path.abspath(os.path.join(__file__, "../../../../../config/attack-tool.yaml")), "r") as attack_config_file:
             attack_config = yaml.load(attack_config_file, Loader=yaml.FullLoader)
@@ -101,7 +153,7 @@ if __name__ == '__main__':
     process_count = attack_config['general_config']['number_of_processes']
     max_request_multiplier = attack_config['attacks']['abnormal_token_usage']['max_request_scalar']
     min_request_multiplier = attack_config['attacks']['abnormal_token_usage']['min_request_scalar']
-
+    compromised_user_count = attack_config['attacks']['abnormal_token_usage']['compromised_user_count']
     start_time = datetime.now()
 
     # Recording column names in the dataset csv file
@@ -112,19 +164,45 @@ if __name__ == '__main__':
     print(log_string)
     util_methods.log(attack_tool_log_path, log_string, "a")
 
-    process_pool = Pool(processes=process_count)
+    if compromised_user_count > len(scenario_pool):
+        error_string = "[ERROR] {} - More compromised users than the total users".format(datetime.now())
+        print(error_string)
+        util_methods.log(attack_tool_log_path, error_string, "a")
+        sys.exit()
 
-    # Executing scenarios until the attack duration elapses
+    compromised_users = np.random.choice(list(scenario_pool.values()), size=compromised_user_count, replace=False)
+    process_list = []
+    for user in compromised_users:
+        process = Process(target=simulate_user, args=(user,))
+        process.daemon = False
+        process_list.append(process)
+        process.start()
+
     while True:
         time_elapsed = datetime.now() - start_time
         if time_elapsed.seconds >= attack_duration:
+            for process in process_list:
+                process.terminate()
             log_string = "[INFO] {} - Attack terminated successfully. Time elapsed: {} minutes".format(datetime.now(), time_elapsed.seconds / 60.0)
             print(log_string)
             util_methods.log(attack_tool_log_path, log_string, "a")
             break
-        else:
-            process_pool.map(execute_scenario, scenario_pool)
 
-    # closes the process pool and wait for the processes to finish
-    process_pool.close()
-    process_pool.join()
+    atexit.register(util_methods.cleanup)
+
+    # process_pool = Pool(processes=process_count)
+
+    # Executing scenarios until the attack duration elapses
+    # while True:
+    #     time_elapsed = datetime.now() - start_time
+    #     if time_elapsed.seconds >= attack_duration:
+    #         log_string = "[INFO] {} - Attack terminated successfully. Time elapsed: {} minutes".format(datetime.now(), time_elapsed.seconds / 60.0)
+    #         print(log_string)
+    #         util_methods.log(attack_tool_log_path, log_string, "a")
+    #         break
+    #     else:
+    #         process_pool.map(execute_scenario, scenario_pool)
+    #
+    # # closes the process pool and wait for the processes to finish
+    # process_pool.close()
+    # process_pool.join()

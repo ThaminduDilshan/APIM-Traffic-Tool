@@ -31,10 +31,10 @@ import numpy as np
 from utils.util_methods import generate_biased_random
 
 
-def cleanup():
-    global process_list
-    for p in process_list:
-        p.terminate()
+# def cleanup():
+#     global process_list
+#     for p in process_list:
+#         p.terminate()
 
 
 def generate_unique_ip():
@@ -63,6 +63,30 @@ def generate_cookie():
     cookie = 'JSESSIONID='
     cookie += ''.join(random.choice(letters_and_digits) for ch in range(31))
     return cookie
+
+
+# def generate_method_invoke_pattern(app):
+#     probability_list = []
+#     iterations = 0
+#     DIFF_THRESHOLD = 0.5
+#     PROB_ADJUSTMENT = 0.075
+#
+#     for scenario in app:
+#         iterations += scenario[0]
+#         probability_list.append(scenario[0])
+#
+#     probability_list = list(map(lambda x: x / iterations, probability_list))
+#
+#     # increase probabilities if it's too small compared to max value
+#     for i in range(len(probability_list)):
+#         max_pro = max(probability_list)
+#         if max_pro - probability_list[i] >= DIFF_THRESHOLD:
+#             probability_list[i] = probability_list[i] + PROB_ADJUSTMENT
+#             probability_list[probability_list.index(max_pro)] = max_pro - PROB_ADJUSTMENT
+#
+#     # prepare request pattern from list indices
+#     method_pattern = np.random.choice(len(app), size=iterations, p=probability_list)
+#     return method_pattern
 
 
 def execute_scenario(username, scenario):
@@ -112,16 +136,24 @@ def execute_scenario(username, scenario):
                 time.sleep(abs(int(np.random.normal() * 10)))
 
 
-def simulate_user(username, user_data):
+def simulate_user(user_data):
     global attack_duration, protocol, host, port, payloads, user_agents, start_time, dataset_path, invoke_patterns
 
     up_time = datetime.now() - start_time
 
     if up_time.seconds < attack_duration:
         for app in user_data.values():
-            j = 0
-            for scenario in app:
-                request_target = scenario[0]
+            invoke_pattern_iterator = 0
+
+            invoke_pattern_indices = util_methods.generate_method_invoke_pattern(app)
+
+            for i in invoke_pattern_indices:
+                up_time = datetime.now() - start_time
+
+                if up_time.seconds >= attack_duration:
+                    break
+
+                scenario = app[i]
                 path = scenario[2]
                 token = scenario[3]
                 method = scenario[4]
@@ -133,30 +165,40 @@ def simulate_user(username, user_data):
                 random_payload = random.choice(payloads)
                 accept = content_type = "application/json"
 
-                for i in range(request_target):
-                    up_time = datetime.now() - start_time
-                    if up_time.seconds >= attack_duration:
-                        break
-                    try:
-                        response = util_methods.send_simple_request(request_path, method, token, random_ip, random_cookie, accept, content_type, random_user_agent, payload=random_payload)
-                        request_info = "{},{},{},{},{},{},{},{},{},\"{}\",{}".format(datetime.now(), random_ip, token, method, request_path, random_cookie, accept, content_type, random_ip,
-                                                                                     random_user_agent,
-                                                                                     response.status_code,
-                                                                                     )
-                        util_methods.log(dataset_path, request_info, "a")
-                    except requests.exceptions.RequestException:
-                        msg_string = "[Error] {} - Request Failure\n\t {}".format(datetime.now(), str(ex))
-                        print(msg_string)
-                        util_methods.log(attack_tool_log_path, msg_string, "a")
+                try:
+                    response = util_methods.send_simple_request(request_path, method, token, random_ip, random_cookie, accept, content_type, random_user_agent, payload=random_payload)
+                    request_info = "{},{},{},{},{},{},{},{},{},\"{}\",{}".format(datetime.now(), random_ip, token, method, request_path, random_cookie, accept, content_type, random_ip,
+                                                                                 random_user_agent,
+                                                                                 response.status_code,
+                                                                                 )
+                    util_methods.log(dataset_path, request_info, "a")
+                except requests.exceptions.RequestException:
+                    msg_string = "[Error] {} - Request Failure\n\t {}".format(datetime.now(), str(ex))
+                    print(msg_string)
+                    util_methods.log(attack_tool_log_path, msg_string, "a")
 
-                    time.sleep(int(pattern[j % len(pattern)]))
-                    j += 1
+                time.sleep(int(pattern[invoke_pattern_iterator % len(pattern)]))
+                invoke_pattern_iterator += 1
 
 
 # Program Execution
 if __name__ == '__main__':
 
     attack_tool_log_path = "../../../../../../logs/attack-tool.log"
+
+    # Constants
+    GENERAL_CONFIG = 'general_config'
+    API_HOST = 'api_host'
+    NUMBER_OF_PROCESSES = 'number_of_processes'
+    USER_AGENTS = 'user_agents'
+    PAYLOADS = 'payloads'
+    ATTACK_DURATION = 'attack_duration'
+    PORT = 'port'
+    IP = 'ip'
+    PROTOCOL = 'protocol'
+    COMPROMISED_USER_COUNT = 'compromised_user_count'
+    STOLEN_TOKEN = 'stolen_token'
+    ATTACKS = 'attacks'
 
     try:
         with open(os.path.abspath(os.path.join(__file__, "../../../../traffic-tool/data/runtime_data/scenario_pool.sav")), "rb") as scenario_file:
@@ -174,13 +216,14 @@ if __name__ == '__main__':
         sys.exit()
 
     # Reading configurations from attack-tool.yaml
-    protocol = attack_config['general_config']['api_host']['protocol']
-    host = attack_config['general_config']['api_host']['ip']
-    port = attack_config['general_config']['api_host']['port']
-    attack_duration = attack_config['general_config']['attack_duration']
-    payloads = attack_config['general_config']['payloads']
-    user_agents = attack_config['general_config']['user_agents']
-    process_count = attack_config['general_config']['number_of_processes']
+    protocol = attack_config[GENERAL_CONFIG][API_HOST][PROTOCOL]
+    host = attack_config[GENERAL_CONFIG][API_HOST][IP]
+    port = attack_config[GENERAL_CONFIG][API_HOST][PORT]
+    attack_duration = attack_config[GENERAL_CONFIG][ATTACK_DURATION]
+    payloads = attack_config[GENERAL_CONFIG][PAYLOADS]
+    user_agents = attack_config[GENERAL_CONFIG][USER_AGENTS]
+    process_count = attack_config[GENERAL_CONFIG][NUMBER_OF_PROCESSES]
+    compromised_user_count = attack_config[ATTACKS][STOLEN_TOKEN][COMPROMISED_USER_COUNT]
 
     # Recording column names in the dataset csv file
     dataset_path = "../../../../../../dataset/attack/stolen_token.csv"
@@ -193,9 +236,16 @@ if __name__ == '__main__':
     print(log_string)
     util_methods.log(attack_tool_log_path, log_string, "a")
 
+    if compromised_user_count > len(scenario_pool):
+        error_string = "[ERROR] {} - More compromised users than the total users".format(datetime.now())
+        print(error_string)
+        util_methods.log(attack_tool_log_path, error_string, "a")
+        sys.exit()
+
+    compromised_users = np.random.choice(list(scenario_pool.values()), size=compromised_user_count, replace=False)
     process_list = []
-    for user_name, scenario in scenario_pool.items():
-        process = Process(target=simulate_user, args=(user_name, scenario))
+    for user in compromised_users:
+        process = Process(target=simulate_user, args=(user,))
         process.daemon = False
         process_list.append(process)
         process.start()
@@ -210,7 +260,7 @@ if __name__ == '__main__':
             util_methods.log(attack_tool_log_path, log_string, "a")
             break
 
-    atexit.register(cleanup)
+    atexit.register(util_methods.cleanup)
 
     # process_pool = Pool(processes=process_count)
     #

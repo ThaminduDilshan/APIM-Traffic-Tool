@@ -21,6 +21,7 @@ from collections import defaultdict
 import random
 from datetime import datetime
 import requests
+import numpy as np
 # disabling warnings
 import urllib3
 
@@ -147,3 +148,33 @@ def generate_biased_random(minimum, maximum, exp):
     :return: A biased random number
     """
     return math.floor(minimum + (maximum - minimum) * pow(random.random(), exp))
+
+
+def generate_method_invoke_pattern(app):
+    probability_list = []
+    iterations = 0
+    DIFF_THRESHOLD = 0.5
+    PROB_ADJUSTMENT = 0.075
+
+    for scenario in app:
+        iterations += scenario[0]
+        probability_list.append(scenario[0])
+
+    probability_list = list(map(lambda x: x / iterations, probability_list))
+
+    # increase probabilities if it's too small compared to max value
+    for i in range(len(probability_list)):
+        max_pro = max(probability_list)
+        if max_pro - probability_list[i] >= DIFF_THRESHOLD:
+            probability_list[i] = probability_list[i] + PROB_ADJUSTMENT
+            probability_list[probability_list.index(max_pro)] = max_pro - PROB_ADJUSTMENT
+
+    # prepare request pattern from list indices
+    method_pattern = np.random.choice(len(app), size=iterations, p=probability_list)
+    return method_pattern
+
+
+def cleanup():
+    global process_list
+    for p in process_list:
+        p.terminate()
