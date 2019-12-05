@@ -40,16 +40,19 @@ The attack tool will attack WSO2 API Manager throughout a user specified time. A
    - Download and add apache ivy jar file (https://ant.apache.org/ivy/download.cgi)
    - Add attack tool helper package (can be found from `<TOOL_HOME>/resources/add-on/attack-tool-helpers.jar`)
 
-8. By default, access tokens get expired after 60 minutes time interval. So if you are planning to simulate a traffic for more than 1 hour duration, please configure WSO2 API Manager and APIM Traffic Tool as below.
+8. **Download a IP Geolocation Database from https://www.ipinfodb.com/free-database and add it to `<TOOL_HOME>/resources/libraries/` directory. Include name of the added file in `<TOOL_HOME>/config/user-settings.yaml` file infront of `ip_database` under `resources` (include name with the csv file extension).**
+> Above link contains two types of datasets "Free IP Geolocation Databases" and "Free IP Proxy Databases". Please download a IP Geolocation dataset.
+
+9. By default, access tokens get expired after 60 minutes time interval. So if you are planning to simulate a traffic for more than 1 hour duration, please configure WSO2 API Manager and APIM Traffic Tool as below.
    - Set the value of `<UserAccessTokenDefaultValidityPeriod>` element in the `<APIM_HOME>/repository/conf/identity/identity.xml` file as appropriate. It is recommended to set user access token validity period to at least `36000` for testing environments ([more on access tokens](https://docs.wso2.com/display/AM260/Working+with+Access+Tokens)).
    - Set the value of `token_validity_period` as appropriate in the `<TOOL_HOME>/config/traffic-tool.yaml` file. It is recommended to set `token_validity_period` to `-1` for testing environments.
 
-9. Verify that all configurations are set for the traffic and attack scripts as mentioned below.
+10. Verify that all configurations are set for the traffic and attack scripts as mentioned below.
 
 ## Configuring the Tool
 Default configurations for WSO2 API Manager and default scenario are given in all the config files. If you are running WSO2 API Manager on different configurations or using the tool for a custom scenario, you can change the tool configurations as stated below. All configuration files are in the `<TOOL_HOME>/config` folder.
 
-1. Add your jmeter path in the `<TOOL_HOME>/config/user-settings.yaml` file.
+1. Add your jmeter path in the `<TOOL_HOME>/config/user-settings.yaml` file under `path_variables`.
 
 2. Enter correct API Manager version (please state as `2.6` or `3.0`), endpoints, protocol type, host ip and ports of WSO2 API Manager in the `<TOOL_HOME>/config/apim.yaml` file (Default ports and details can be found at https://docs.wso2.com/display/AM260/Default+Product+Ports).
 
