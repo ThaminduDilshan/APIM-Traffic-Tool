@@ -43,8 +43,8 @@ attacks:
     min_request_scalar: 3
     max_request_scalar: 6
     # Number of compromised users being simulated
-    compromised_user_count: 150
+    compromised_user_count: 10
 
   stolen_token:
     # Number of compromised users being simulated
-    compromised_user_count: 110
+    compromised_user_count: 10
