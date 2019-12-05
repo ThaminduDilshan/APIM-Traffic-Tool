@@ -22,7 +22,7 @@ general_config:
     - Opera/9.80 (Windows NT 5.2; U; ru) Presto/2.5.22 Version/10.51
 
   # Attack duration in seconds. In DOS/DDOS attacks this duration will be per API
-  attack_duration: 60
+  attack_duration: 900
 
   # Number of processes or threads used to achieve concurrency
   number_of_processes: 100
@@ -40,5 +40,11 @@ general_config:
 attacks:
   abnormal_token_usage:
     # Attack tool will use a random value between the min and max scalars to multiply the request count in normal traffic.
-    min_request_scalar: 5
-    max_request_scalar: 10
+    min_request_scalar: 3
+    max_request_scalar: 6
+    # Number of compromised users being simulated
+    compromised_user_count: 150
+
+  stolen_token:
+    # Number of compromised users being simulated
+    compromised_user_count: 110
